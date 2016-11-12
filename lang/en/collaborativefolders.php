@@ -40,3 +40,5 @@ $string['collaborativefoldersname_help'] = 'This is the content of the help tool
 $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
+$string['fieldsetgroups'] = 'Choose groups for collaborative work';
+$string['existinggroups'] = 'Existing Groups';

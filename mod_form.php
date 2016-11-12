@@ -42,7 +42,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
+        global $CFG, $PAGE;
 
         $mform = $this->_form;
 
@@ -69,12 +69,18 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 
         // Adding the rest of collaborativefolders settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'collaborativefolderssetting1', 'Your collaborativefolders fields go here. Replace me!');
+        $mform->addElement('text', 'label1', 'sometext');
 
-        $mform->addElement('header', 'collaborativefoldersfieldset', get_string('collaborativefoldersfieldset', 'collaborativefolders'));
-        $mform->addElement('static', 'label2', 'collaborativefolderssetting2', 'Your collaborativefolders fields go here. Replace me!');
+        $mform->addElement('header', 'groupmodus', get_string('fieldsetgroups', 'collaborativefolders'));
+        $renderer = $PAGE->get_renderer('mod_collaborativefolders');
+        $arrayofgroups = $this->get_relevant_fields();
+        $tableofgroups = $renderer->render_table_of_existing_groups($arrayofgroups);
+        $htmltableofgroups = html_writer::table($tableofgroups);
+        $mform->addElement('static', 'table', $htmltableofgroups);
 
-        // Add standard grading elements.
+        $mform->addElement('text', 'label3', get_string('fieldsetgroups', 'collaborativefolders'));
+
+        // TODO do we need Grades for colaborative Folders?
         $this->standard_grading_coursemodule_elements();
 
         // Add standard elements, common to all modules.
@@ -82,5 +88,22 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
+    }
+    public function get_all_groups(){
+        global $DB;
+        //TODO for Performance reasons only get neccessary record
+        return $DB->get_records('groups');
+    }
+    public function get_relevant_fields(){
+        $allgroups = $this->get_all_groups();
+        $relevantinformation = array();
+        foreach($allgroups as $key => $group){
+            $relevantinformation[$key]['name']= $group->name;
+            $relevantinformation[$key]['id'] = $group->id;
+            $numberofparticipants = count(groups_get_members($group->id));
+            $relevantinformation[$key]['numberofparticipants'] = $numberofparticipants;
+        }
+        return $relevantinformation;
+
     }
 }
