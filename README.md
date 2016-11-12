@@ -1,0 +1,1 @@
+#moodle-mod_collaborativefolders
