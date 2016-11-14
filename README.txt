@@ -1,4 +1,4 @@
-The following steps should get you up and running with
+he following steps should get you up and running with
 this module template code.
 
 * DO NOT PANIC!
