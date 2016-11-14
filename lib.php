@@ -137,10 +137,10 @@ function collaborativefolders_refresh_events($courseid = 0) {
         }
     }
 
-    foreach ($collaborativefolderss as $collaborativefolders) {
+    /*foreach ($collaborativefolderss as $collaborativefolders) {
         // Create a function such as the one below to deal with updating calendar events.
         // collaborativefolders_update_events($collaborativefolders);
-    }
+    }*/
 
     return true;
 }

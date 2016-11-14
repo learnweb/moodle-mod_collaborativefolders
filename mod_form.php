@@ -66,17 +66,24 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         } else {
             $this->add_intro_editor();
         }
-
-        // Adding the rest of collaborativefolders settings, spreading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('text', 'label1', 'sometext');
-
-        $mform->addElement('header', 'groupmodus', get_string('fieldsetgroups', 'collaborativefolders'));
         $renderer = $PAGE->get_renderer('mod_collaborativefolders');
+        $mform->addElement('header', 'groupmodus', get_string('createforall', 'collaborativefolders'));
         $arrayofgroups = $this->get_relevant_fields();
-        $tableofgroups = $renderer->render_table_of_existing_groups($arrayofgroups);
-        $htmltableofgroups = html_writer::table($tableofgroups);
+        $tableofallgroups = $renderer->render_table_of_existing_groups($arrayofgroups);
+        $htmltableofgroups = html_writer::table($tableofallgroups);
         $mform->addElement('static', 'table', $htmltableofgroups);
+        $mform->addElement('url', 'externalurl', get_string('externalurl', 'collaborativefolders'), array('size' => '60'), array('usefilepicker' => true));
+        $mform->setType('externalurl', PARAM_RAW_TRIMMED);
+        $mform->addRule('externalurl', null, 'required', null, 'client');
+
+//    TODO    More specific when link should be shared with groups
+        /*$mform->addElement('header', 'groupmodus', get_string('fieldsetgroups', 'collaborativefolders'));
+
+        foreach($arrayofgroups as $group) {
+            $mform->addElement('static', 'table', $group['name']);
+//            TODO only works if file picker works!
+            $mform->addElement('url', 'externalurl', get_string('externalurl', 'collaborativefolders'), array('size' => '60'), array('usefilepicker' => true));
+        }*/
 
         $mform->addElement('text', 'label3', get_string('fieldsetgroups', 'collaborativefolders'));
 
