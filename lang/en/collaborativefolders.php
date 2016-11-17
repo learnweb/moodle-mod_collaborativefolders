@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'collaborativefolders';
 $string['modulenameplural'] = 'collaborativefolderss';
-$string['modulename_help'] = 'Use the collaborativefolders module for... | The collaborativefolders module allows...';
+$string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
 $string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
 $string['collaborativefolders:submit'] = 'Submit collaborativefolders';
 $string['collaborativefolders:view'] = 'View collaborativefolders';
@@ -40,8 +40,8 @@ $string['collaborativefoldersname_help'] = 'This is the content of the help tool
 $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
-$string['fieldsetgroups'] = 'Choose individual File for every group';
+$string['fieldsetgroups'] = 'Choose a name for the Folder';
 $string['createforall'] = 'Creates Share for every group';
 $string['existinggroups'] = 'Existing Groups';
-$string['externalurl'] = 'Link the Place to share Folder';
+$string['externalurl'] = 'Link the Place the shared Folder';
 $string['textview.php'] = 'Im folgenden finden sie Ihren Link zu dem Ordner für kollaboratives Arbeiten:';

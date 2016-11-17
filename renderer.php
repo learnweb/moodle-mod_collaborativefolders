@@ -50,9 +50,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         $table->data[] = $onegroup;
         return $table;
     }
-    public function get_link_view($link){
+    public function get_link_view($link, $name){
         $textandlink = html_writer::div(get_string('textview.php', 'mod_collaborativefolders'));
-        $textandlink .= html_writer::link($link, 'folder');
+
+        $textandlink .= html_writer::link($link . $name, 'folder');
 
         return $textandlink;
     }

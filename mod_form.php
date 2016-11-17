@@ -72,6 +72,9 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $tableofallgroups = $renderer->render_table_of_existing_groups($arrayofgroups);
         $htmltableofgroups = html_writer::table($tableofallgroups);
         $mform->addElement('static', 'table', $htmltableofgroups);
+        $mform->addElement('text', 'foldername', get_string('fieldsetgroups', 'collaborativefolders'));
+        $mform->setType('foldername', PARAM_RAW_TRIMMED);
+        $mform->addRule('foldername', null, 'required', null, 'client');
         $mform->addElement('url', 'externalurl', get_string('externalurl', 'collaborativefolders'), array('size' => '60'), array('usefilepicker' => true));
         $mform->setType('externalurl', PARAM_RAW_TRIMMED);
         $mform->addRule('externalurl', null, 'required', null, 'client');
@@ -84,8 +87,6 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 //            TODO only works if file picker works!
             $mform->addElement('url', 'externalurl', get_string('externalurl', 'collaborativefolders'), array('size' => '60'), array('usefilepicker' => true));
         }*/
-
-        $mform->addElement('text', 'label3', get_string('fieldsetgroups', 'collaborativefolders'));
 
         // TODO do we need Grades for colaborative Folders?
         $this->standard_grading_coursemodule_elements();

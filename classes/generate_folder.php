@@ -30,29 +30,11 @@ namespace mod_collaborativefolders\generator;
 defined('MOODLE_INTERNAL') || die();
 
 public class folder_generator{
+    public function __construct()
+    {
+    }
+
     public function generate_folder($username, $password, $path, $persons=null){
-        $ch = curl_init();
-        $username = $username;
-        $password = $password;
-
-        curl_setopt($ch, CURLOPT_URL, "localhost/owncloud/ocs/v1.php/apps/files_sharing/api/v1/shares");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,
-            http_build_query(array('path' => $path,
-                'shareType' => 3,
-                'publicUpload' => false,
-                'permissions' => 31,
-            )));
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-
-        $output = curl_exec($ch);
-
-        print $output;
-
-        curl_close($ch);
-
 
     }
 }

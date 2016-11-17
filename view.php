@@ -166,7 +166,8 @@ echo $OUTPUT->heading('Link to collaborative Folder');
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 $mylink = $DB->get_record('collaborativefolders',array('id' => $cm->instance));
 //array('id' => $groupid)
-echo $renderer->get_link_view($mylink->externalurl);
+echo print_r($mylink->externalurl . $mylink->foldername);
+echo $renderer->get_link_view($mylink->externalurl, $mylink->foldername);
 // Finish the page.
 echo $OUTPUT->footer();
 
