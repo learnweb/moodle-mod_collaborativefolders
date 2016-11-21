@@ -164,10 +164,10 @@ if ($collaborativefolders->intro) {
 // Replace the following lines with you own code.
 echo $OUTPUT->heading('Link to collaborative Folder');
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
-$mylink = $DB->get_record('collaborativefolders',array('id' => $cm->instance));
+$myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
 //array('id' => $groupid)
-echo print_r($mylink->externalurl . $mylink->foldername);
-echo $renderer->get_link_view($mylink->externalurl, $mylink->foldername);
+echo print_r($myinstance->externalurl);
+
 // Finish the page.
 echo $OUTPUT->footer();
 

@@ -27,12 +27,35 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/*
- * Does something really useful with the passed things
- *
- * @param array $things
- * @return object
- *function collaborativefolders_do_something_useful(array $things) {
- *    return new stdClass();
- *}
- */
+require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
+require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
+require_once ($CFG->dirroot.'/lib/setuplib.php');
+
+class manage_webdavclient {
+    public function make_folder($foldername, $intention){
+        $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
+            'password', 'basic', 'ssl://');
+        $mywebdavclient->port = 443;
+        $mywebdavclient->path = 'remote.php/webdav/';
+
+        $mywebdavclient->open();
+        $webdavpath = rtrim('/'.ltrim('remote.php/webdav/', '/ '), '/ ');
+        if ($intention == 'make') {
+            $mywebdavclient->mkcol($webdavpath . '/' . $foldername);
+        }
+        if ($intention == 'delete') {
+            $mywebdavclient->delete($webdavpath . '/' . $foldername);
+        } else {
+//            TODO: right exception
+        }
+        $mywebdavclient->debug = false;
+        $mywebdavclient->close();
+    }
+    public function delete_folder(){
+
+    }
+    public function set_up_client(){
+
+    }
+
+}
