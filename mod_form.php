@@ -63,52 +63,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
-       /* $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
-            'password', 'basic', 'ssl://');
-        $mywebdavclient->port = 443;
-        $mywebdavclient->path = 'remote.php/webdav/';
 
-        $mywebdavclient->open();
-        $webdavpath = rtrim('/'.ltrim('remote.php/webdav/', '/ '), '/ ');
-        $localpath = sprintf('%s/%s', make_request_directory(), 'Other');
-        $mywebdavclient->mkcol($webdavpath . '/' . 'Other');
-        $mywebdavclient->debug = false;*/
-
-        /*$webdav_type = 'ssl://';
-        $webdav_port = 443;
-        $webdav_path = 'remote.php/webdav/';
-        $type = 'sciebo';
-        $typeid = 9;
-        $options['webdav_server'] = 'uni-muenster.sciebo.de';
-        $port = ':443';
-        $webdav_host = $webdav_type.$options['webdav_server'].$port;
-
-        $context = context_course::instance($COURSE->id);
-
-        $scieborepository = new repository_sciebo('9', $context);
-        $scieborepository->webdav_path= 'remote.php/webdav/';
-        $scieborepository->type = $type;
-        $scieborepository->typeid = $typeid;
-//        $scieborepository->instance =
-        $scieborepository->instance->name = 'Sciebo';
-        $scieborepository->instance->typeid = 9;
-        $scieborepository->instance->repositorytype = 'sciebo';
-        $scieborepository->instance->sortorder = 9;
-
-        $scieborepository->webdav_type = $webdav_type;
-        $scieborepository->webdav_port = $webdav_port;
-        $scieborepository->options['webdav_server'] = $options['webdav_server'];
-        $scieborepository->webdav_host = $webdav_host;
-
-        $scieborepository->options['webdav_auth'] = 'basic';
-        $scieborepository->dav = new sciebo_webdav_client($scieborepository->options['webdav_server'], $scieborepository->options['webdav_user'],
-            $scieborepository->options['webdav_password'], $scieborepository->options['webdav_auth'], $scieborepository->webdav_type);
-        $scieborepository->dav->port = $scieborepository->webdav_port;
-
-        $scieborepository->dav->debug = false;
-        $probepath = 'https://uni-muenster.sciebo.de/index.php/apps/files/Folder';
-        $scieborepository->make_new_file('Folder', $probepath);*/
-        // Adding the standard "intro" and "introformat" fields.
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
         } else {
