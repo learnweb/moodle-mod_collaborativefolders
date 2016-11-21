@@ -37,6 +37,9 @@ defined('MOODLE_INTERNAL') || die();
 define('COLLABORATIVEFOLDERS_ULTIMATE_ANSWER', 42);
 require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
 require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
+require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
+require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
+require_once ($CFG->dirroot.'/lib/setuplib.php');
 
 
 /* Moodle core API */
@@ -86,6 +89,17 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
+    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
+        'password', 'basic', 'ssl://');
+    $mywebdavclient->port = 443;
+   $mywebdavclient->path = 'remote.php/webdav/';
+
+    $mywebdavclient->open();
+    $webdavpath = rtrim('/'.ltrim('remote.php/webdav/', '/ '), '/ ');
+    $localpath = sprintf('%s/%s', make_request_directory(), 'Other');
+    $mywebdavclient->mkcol($webdavpath . '/' . $collaborativefolders->name);
+    $mywebdavclient->debug = false;
+//
     collaborativefolders_grade_item_update($collaborativefolders);
 
     return $collaborativefolders->id;

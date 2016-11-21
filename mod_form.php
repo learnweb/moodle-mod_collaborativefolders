@@ -63,20 +63,17 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
-
-        $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
-            'passwort', 'basic', 'ssl://');
+       /* $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
+            'password', 'basic', 'ssl://');
         $mywebdavclient->port = 443;
         $mywebdavclient->path = 'remote.php/webdav/';
-        $probepath = 'Folder';
+
         $mywebdavclient->open();
         $webdavpath = rtrim('/'.ltrim('remote.php/webdav/', '/ '), '/ ');
-        $localpath = sprintf('%s/%s', make_request_directory(), 'Folder');
-        $mywebdavclient->get_file($webdavpath . '/Photos/Paris.jpg', $localpath);
-        $mywebdavclient->debug = false;
-        echo '<p>';
-        echo print_r($mywebdavclient->get_file($webdavpath . '/Photos/Paris.jpg', $localpath));
-        echo '</p>';
+        $localpath = sprintf('%s/%s', make_request_directory(), 'Other');
+        $mywebdavclient->mkcol($webdavpath . '/' . 'Other');
+        $mywebdavclient->debug = false;*/
+
         /*$webdav_type = 'ssl://';
         $webdav_port = 443;
         $webdav_path = 'remote.php/webdav/';
