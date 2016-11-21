@@ -35,6 +35,9 @@ defined('MOODLE_INTERNAL') || die();
  * Example constant, you probably want to remove this :-)
  */
 define('COLLABORATIVEFOLDERS_ULTIMATE_ANSWER', 42);
+require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
+require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
+
 
 /* Moodle core API */
 
