@@ -31,7 +31,6 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/repository/sciebo/lib.php');
 require_once($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
 require_once($CFG->dirroot.'/lib/setuplib.php');
-///home/nina/Entwicklung/ps/psmoodle/lib/setuplib.php
 
 /**
  * Module instance settings form

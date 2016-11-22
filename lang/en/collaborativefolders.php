@@ -45,3 +45,7 @@ $string['createforall'] = 'Creates Share for every group';
 $string['existinggroups'] = 'Existing Groups';
 $string['externalurl'] = 'Link the Place the shared Folder';
 $string['textview.php'] = 'Im folgenden finden sie Ihren Link zu dem Ordner für kollaboratives Arbeiten:';
+$string['kennung'] = 'Geben sie hier ihre Sciebo-Kennung ein:';
+$string['downloadfolder'] = 'Klicken sie {$a} um den Ordner herunterzuladen.';
+$string['accessfolder'] = 'Klicken sie {$a} um auf den Ordner zuzugreifen.';
+

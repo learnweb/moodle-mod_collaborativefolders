@@ -24,96 +24,12 @@
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-/*
-// Replace collaborativefolders with the name of your module and remove this line.
-require('../../config.php');
-require_once("$CFG->dirroot/mod/collaborativefolders/lib.php");
-require_once("$CFG->dirroot/mod/collaborativefolders/locallib.php");
-require_once($CFG->libdir . '/completionlib.php');
 
-$id       = optional_param('id', 0, PARAM_INT);        // Course module ID
-$u        = optional_param('u', 0, PARAM_INT);         // URL instance id
-$redirect = optional_param('redirect', 0, PARAM_BOOL);
-
-if ($u) {  // Two ways to specify the module
-    $url = $DB->get_record('url', array('id'=>$u), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('url', $url->id, $url->course, false, MUST_EXIST);
-
-} else {
-    $cm = get_coursemodule_from_id('url', $id, 0, false, MUST_EXIST);
-    $url = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
-}
-
-$course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
-
-require_course_login($course, true, $cm);
-$context = context_module::instance($cm->id);
-require_capability('mod/url:view', $context);
-
-// Completion and trigger events.
-url_view($url, $course, $cm, $context);
-
-$PAGE->set_url('/mod/url/view.php', array('id' => $cm->id));
-
-// Make sure URL exists before generating output - some older sites may contain empty urls
-// Do not use PARAM_URL here, it is too strict and does not support general URIs!
-$exturl = trim($url->externalurl);
-if (empty($exturl) or $exturl === 'http://') {
-    url_print_header($url, $cm, $course);
-    url_print_heading($url, $cm, $course);
-    url_print_intro($url, $cm, $course);
-    notice(get_string('invalidstoredurl', 'url'), new moodle_url('/course/view.php', array('id'=>$cm->course)));
-    die;
-}
-unset($exturl);
-
-$displaytype = url_get_final_display_type($url);
-if ($displaytype == RESOURCELIB_DISPLAY_OPEN) {
-    // For 'open' links, we always redirect to the content - except if the user
-    // just chose 'save and display' from the form then that would be confusing
-    if (strpos(get_local_referer(false), 'modedit.php') === false) {
-        $redirect = true;
-    }
-}
-
-if ($redirect) {
-    // coming from course page or url index page,
-    // the redirection is needed for completion tracking and logging
-    $fullurl = str_replace('&amp;', '&', url_get_full_url($url, $cm, $course));
-
-    if (!course_get_format($course)->has_view_page()) {
-        // If course format does not have a view page, add redirection delay with a link to the edit page.
-        // Otherwise teacher is redirected to the external URL without any possibility to edit activity or course settings.
-        $editurl = null;
-        if (has_capability('moodle/course:manageactivities', $context)) {
-            $editurl = new moodle_url('/course/modedit.php', array('update' => $cm->id));
-            $edittext = get_string('editthisactivity');
-        } else if (has_capability('moodle/course:update', $context->get_course_context())) {
-            $editurl = new moodle_url('/course/edit.php', array('id' => $course->id));
-            $edittext = get_string('editcoursesettings');
-        }
-        if ($editurl) {
-            redirect($fullurl, html_writer::link($editurl, $edittext)."<br/>".
-                get_string('pageshouldredirect'), 10);
-        }
-    }
-    redirect($fullurl);
-}
-
-switch ($displaytype) {
-    case RESOURCELIB_DISPLAY_EMBED:
-        url_display_embed($url, $cm, $course);
-        break;
-    case RESOURCELIB_DISPLAY_FRAME:
-        url_display_frame($url, $cm, $course);
-        break;
-    default:
-        url_print_workaround($url, $cm, $course);
-        break;
-}*/
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+require_once($CFG->dirroot.'/mod/collaborativefolders/enrolyourself.php');
+
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // ... collaborativefolders instance ID - it should be named as the first character of the module.
@@ -163,10 +79,13 @@ if ($collaborativefolders->intro) {
 
 // Replace the following lines with you own code.
 echo $OUTPUT->heading('Link to collaborative Folder');
+
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
-//array('id' => $groupid)
-echo print_r($myinstance->externalurl);
+echo html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($myinstance->externalurl .'&download', 'hier')));
+echo html_writer::div(' ');
+echo html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($myinstance->externalurl , 'hier')));
+
 
 // Finish the page.
 echo $OUTPUT->footer();

@@ -57,4 +57,6 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
+
 }
+

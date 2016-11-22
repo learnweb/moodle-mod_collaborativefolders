@@ -88,8 +88,11 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     // You may have to add extra stuff in here.
 
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
-    $collaborativefolders->externalurl = get_link( $collaborativefolders->foldername);
-    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
+
+    $collaborativefolders->externalurl = get_link($collaborativefolders->foldername);
+    $DB->update_record('collaborativefolders', $collaborativefolders);
+
+    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
         'password', 'basic', 'ssl://');
     $mywebdavclient->port = 443;
     $mywebdavclient->path = 'remote.php/webdav/';
@@ -100,7 +103,7 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $mywebdavclient->debug = false;
     $mywebdavclient->close();
-//
+
     collaborativefolders_grade_item_update($collaborativefolders);
 
     return $collaborativefolders->id;
@@ -126,7 +129,7 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $result = $DB->update_record('collaborativefolders', $collaborativefolders);
     $collaborativefolders->externalurl = get_link( $collaborativefolders->foldername);
-    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
+    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
         'password', 'basic', 'ssl://');
     $mywebdavclient->port = 443;
     $mywebdavclient->path = 'remote.php/webdav/';
@@ -191,7 +194,7 @@ function collaborativefolders_delete_instance($id) {
     if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     }
-    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
+    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
         'password', 'basic', 'ssl://');
     $mywebdavclient->port = 443;
     $mywebdavclient->path = 'remote.php/webdav/';
@@ -521,11 +524,11 @@ function get_link($url)
 {
     // Hardcoded user data here. Has to be replaced as soon as OAuth is ready.
     // TODO How can requests be send without user data in clear text?
-    $username = 'n_herr03@uni-muenster.de';
+    $username = 'collaborativefolder.pbox@uni-muenster.de';
     $password = 'password';
     $pref = 'https://';
 
-
+//https://uni-muenster.sciebo.de
     $ch = curl_init();
 
     // A POST request creating a share for the chosen file is generated here.
@@ -538,7 +541,7 @@ function get_link($url)
     curl_setopt($ch, CURLOPT_POSTFIELDS,
         http_build_query(array('path' => $url,
             'shareType' => 3,
-            'publicUpload' => false,
+            'publicUpload' => true,
             'permissions' => 31,
         ), null, "&"));
 
@@ -559,6 +562,6 @@ function get_link($url)
     // And then its inserted into a dynamic link that will be provided to the user.
     // WARNING: if you wish to generate a link for a local instance of owncloud, the path has to be edited
     // in the namespace of the concerning window (e.g. http://localhost/owncloud/...).
-    return $pref.'uni-muenster.sciebo.de'.'/public.php?service=files&t='.$fileid.'&download';
+    return $pref.'uni-muenster.sciebo.de'.'/public.php?service=files&t='.$fileid;
 }
 
