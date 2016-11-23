@@ -121,8 +121,9 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
 
     $result = $DB->update_record('collaborativefolders', $collaborativefolders);
-    make_folder($collaborativefolders->foldername, 'make');
-    $collaborativefolders->externalurl = get_link($collaborativefolders->foldername);
+    $mylocallib = new mylocallib();
+    $mylocallib->make_folder($collaborativefolders->foldername, 'make');
+    $collaborativefolders->externalurl = $mylocallib->get_link($collaborativefolders->foldername);
 
     collaborativefolders_grade_item_update($collaborativefolders);
 
