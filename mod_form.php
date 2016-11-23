@@ -62,7 +62,9 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
-
+        $mform->addElement('text', 'foldername', get_string('fieldsetgroups', 'collaborativefolders'));
+        $mform->setType('foldername', PARAM_RAW_TRIMMED);
+        $mform->addRule('foldername', null, 'required', null, 'client');
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
         } else {
@@ -70,13 +72,12 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         }
         $renderer = $PAGE->get_renderer('mod_collaborativefolders');
         $mform->addElement('header', 'groupmodus', get_string('createforall', 'collaborativefolders'));
+
         $arrayofgroups = $this->get_relevant_fields();
         $tableofallgroups = $renderer->render_table_of_existing_groups($arrayofgroups);
         $htmltableofgroups = html_writer::table($tableofallgroups);
         $mform->addElement('static', 'table', $htmltableofgroups);
-        $mform->addElement('text', 'foldername', get_string('fieldsetgroups', 'collaborativefolders'));
-        $mform->setType('foldername', PARAM_RAW_TRIMMED);
-        $mform->addRule('foldername', null, 'required', null, 'client');
+
 
 
 //    TODO    More specific when link should be shared with groups
@@ -87,7 +88,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 */
 
         // TODO do we need Grades for colaborative Folders?
-        $this->standard_grading_coursemodule_elements();
+//        $this->standard_grading_coursemodule_elements();
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();

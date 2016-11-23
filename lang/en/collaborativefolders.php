@@ -29,18 +29,18 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'collaborativefolders';
-$string['modulenameplural'] = 'collaborativefolderss';
+$string['modulenameplural'] = 'collaborativefolders';
 $string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
 $string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
 $string['collaborativefolders:submit'] = 'Submit collaborativefolders';
 $string['collaborativefolders:view'] = 'View collaborativefolders';
 $string['collaborativefoldersfieldset'] = 'Custom example fieldset';
-$string['collaborativefoldersname'] = 'collaborativefolders name';
+$string['collaborativefoldersname'] = 'Name for Folder in Moodle:';
 $string['collaborativefoldersname_help'] = 'This is the content of the help tooltip associated with the collaborativefoldersname field. Markdown syntax is supported.';
 $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
-$string['fieldsetgroups'] = 'Choose a name for the Folder';
+$string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
 $string['createforall'] = 'Creates Share for every group';
 $string['existinggroups'] = 'Existing Groups';
 $string['externalurl'] = 'Link the Place the shared Folder';
