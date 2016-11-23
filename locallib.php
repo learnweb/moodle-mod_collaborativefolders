@@ -36,7 +36,7 @@ class mylocallib
     public function make_folder($foldername, $intention)
     {
         $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
-            '#eipsfnf', 'basic', 'ssl://');
+            '', 'basic', 'ssl://');
         $mywebdavclient->port = 443;
         $mywebdavclient->path = 'remote.php/webdav/';
 
@@ -59,7 +59,7 @@ class mylocallib
         // Hardcoded user data here. Has to be replaced as soon as OAuth is ready.
         // TODO How can requests be send without user data in clear text?
         $username = 'collaborativefolder.pbox@uni-muenster.de';
-        $password = '#eipsfnf';
+        $password = '';
         $pref = 'https://';
 
         $ch = curl_init();
@@ -85,6 +85,7 @@ class mylocallib
                 'publicUpload' => true,
                 'permissions' => 31,
             ), null, "&"));*/
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
         $output = curl_exec($ch);

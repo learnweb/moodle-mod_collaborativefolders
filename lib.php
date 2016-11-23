@@ -176,7 +176,8 @@ function collaborativefolders_delete_instance($id) {
     if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     }
-    make_folder($collaborativefolders->foldername, 'delete');
+    $mylocallib = new mylocallib();
+    $mylocallib->make_folder($collaborativefolders->foldername, 'delete');
     // Delete any dependent records here.
 
     $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
