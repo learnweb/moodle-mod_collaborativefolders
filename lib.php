@@ -88,10 +88,11 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     // You may have to add extra stuff in here.
 
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
-    make_folder($collaborativefolders->foldername, 'make');
+    $mylocallib = new mylocallib();
+    $mylocallib->make_folder($collaborativefolders->foldername, 'make');
 
 
-    $collaborativefolders->externalurl = get_link($collaborativefolders->foldername);
+    $collaborativefolders->externalurl = $mylocallib->get_link($collaborativefolders->foldername);
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
