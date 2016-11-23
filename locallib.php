@@ -31,31 +31,69 @@ require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
 require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
 require_once ($CFG->dirroot.'/lib/setuplib.php');
 
-class manage_webdavclient {
-    public function make_folder($foldername, $intention){
-        $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'n_herr03@uni-muenster.de',
-            'password', 'basic', 'ssl://');
-        $mywebdavclient->port = 443;
-        $mywebdavclient->path = 'remote.php/webdav/';
 
-        $mywebdavclient->open();
-        $webdavpath = rtrim('/'.ltrim('remote.php/webdav/', '/ '), '/ ');
-        if ($intention == 'make') {
-            $mywebdavclient->mkcol($webdavpath . '/' . $foldername);
-        }
-        if ($intention == 'delete') {
-            $mywebdavclient->delete($webdavpath . '/' . $foldername);
-        } else {
+function make_folder($foldername, $intention){
+    $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
+        '#eipsfnf', 'basic', 'ssl://');
+    $mywebdavclient->port = 443;
+    $mywebdavclient->path = 'remote.php/webdav/';
+
+    $mywebdavclient->open();
+    $webdavpath = rtrim('/'.ltrim('remote.php/webdav/', '/ '), '/ ');
+    if ($intention == 'make') {
+        $mywebdavclient->mkcol($webdavpath . '/' . $foldername);
+    }
+    if ($intention == 'delete') {
+        $mywebdavclient->delete($webdavpath . '/' . $foldername);
+    } else {
 //            TODO: right exception
-        }
-        $mywebdavclient->debug = false;
-        $mywebdavclient->close();
     }
-    public function delete_folder(){
-
-    }
-    public function set_up_client(){
-
-    }
-
+    $mywebdavclient->debug = false;
+    $mywebdavclient->close();
 }
+function get_link($url)
+{
+    // Hardcoded user data here. Has to be replaced as soon as OAuth is ready.
+    // TODO How can requests be send without user data in clear text?
+    $username = 'collaborativefolder.pbox@uni-muenster.de';
+    $password = '#eipsfnf';
+    $pref = 'https://';
+
+    $ch = curl_init();
+
+    // A POST request creating a share for the chosen file is generated here.
+    curl_setopt($ch, CURLOPT_URL, $pref.'uni-muenster.sciebo.de'.'/ocs/v1.php/apps/files_sharing/api/v1/shares');
+    curl_setopt($ch, CURLOPT_POST, 1);
+
+    // http_build_query additionally needs a new arg_separator ("&" instead of "&amp;")
+    // to be able to create the message body.
+    // Additional POST arguments can be edited.
+    curl_setopt($ch, CURLOPT_POSTFIELDS,
+        http_build_query(array('path' => $url,
+            'shareType' => 3,
+            'publicUpload' => true,
+            'permissions' => 31,
+        ), null, "&"));
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+    $output = curl_exec($ch);
+
+    // The output has to be transformed into an xml file to be able to extract specific arguments
+    // of the response from the owncloud Server.
+    $xml = simplexml_load_string($output);
+
+    curl_close($ch);
+
+    // The unique fileID is extracted from the given shared link.
+    $fields = explode("/s/", $xml->data[0]->url[0]);
+    $fileid = $fields[1];
+
+    // And then its inserted into a dynamic link that will be provided to the user.
+    // WARNING: if you wish to generate a link for a local instance of owncloud, the path has to be edited
+    // in the namespace of the concerning window (e.g. http://localhost/owncloud/...).
+    return $pref.'uni-muenster.sciebo.de'.'/public.php?service=files&t='.$fileid;
+}
+
+
+
