@@ -36,7 +36,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 define('COLLABORATIVEFOLDERS_ULTIMATE_ANSWER', 42);
 require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
-require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
 require_once ($CFG->dirroot.'/lib/setuplib.php');
 require_once ($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
 require_once($CFG->dirroot . '/repository/lib.php');

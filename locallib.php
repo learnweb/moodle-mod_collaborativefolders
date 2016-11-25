@@ -28,14 +28,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
-require_once ($CFG->dirroot.'/repository/sciebo/mywebdavlib.php');
 require_once ($CFG->dirroot.'/lib/setuplib.php');
+require_once ($CFG->dirroot.'/lib/webdavlib.php');
 
 class mylocallib
 {
     public function make_folder($foldername, $intention)
     {
-        $mywebdavclient = new sciebo_webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
+        $mywebdavclient = new webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
             '', 'basic', 'ssl://');
         $mywebdavclient->port = 443;
         $mywebdavclient->path = 'remote.php/webdav/';
