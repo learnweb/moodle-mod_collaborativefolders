@@ -28,8 +28,9 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
-// Require_once($CFG->dirroot.'/mod/collaborativefolders/enrolyourself.php');
-
+require_once($CFG->dirroot.'/mod/collaborativefolders/enrol_yourself_form.php');
+// /home/nina/Entwicklung/ps/psmoodle/mod/collaborativefolders/classes/enrol_yourself_form.php
+// /home/nina/Entwicklung/ps/psmoodle/mod/collaborativefolders/classes/enrol_yourself_form.php
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // ... collaborativefolders instance ID - it should be named as the first character of the module.
@@ -85,7 +86,8 @@ $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->instanc
 echo html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($myinstance->externalurl .'&download', 'hier')));
 echo html_writer::div(' ');
 echo html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($myinstance->externalurl , 'hier')));
-
+$form = new enrol_yourself_form();
+echo $form->to_html();
 
 // Finish the page.
 echo $OUTPUT->footer();
