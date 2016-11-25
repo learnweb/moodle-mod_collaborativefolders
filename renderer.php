@@ -44,13 +44,13 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         }
         return $table;
     }
-    public function render_column_for_existing_groups($onegroup){
+    public function render_column_for_existing_groups($onegroup) {
         $table = new html_table();
         $table->attributes['class'] = 'admintable deprovisionuser generaltable';
         $table->data[] = $onegroup;
         return $table;
     }
-    public function get_link_view($link, $name){
+    public function get_link_view($link, $name) {
         $textandlink = html_writer::div(get_string('textview.php', 'mod_collaborativefolders'));
 
         $textandlink .= html_writer::link($link . $name, 'folder');

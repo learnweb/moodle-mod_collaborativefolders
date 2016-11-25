@@ -29,12 +29,11 @@ namespace mod_collaborativefolders\generator;
 
 defined('MOODLE_INTERNAL') || die();
 
-public class folder_generator{
-    public function __construct()
-    {
+class folder_generator{
+    public function __construct() {
     }
 
-    public function generate_folder($username, $password, $path, $persons=null){
+    public function generate_folder($username, $password, $path, $persons=null) {
 
     }
 }

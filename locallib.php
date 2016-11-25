@@ -27,14 +27,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
-require_once ($CFG->dirroot.'/lib/setuplib.php');
-require_once ($CFG->dirroot.'/lib/webdavlib.php');
+require_once($CFG->dirroot.'/repository/sciebo/lib.php');
+require_once($CFG->dirroot.'/lib/setuplib.php');
+require_once($CFG->dirroot.'/lib/webdavlib.php');
 
-class mylocallib
-{
-    public function make_folder($foldername, $intention)
-    {
+class mylocallib {
+    public function make_folder($foldername, $intention) {
         $mywebdavclient = new webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
             '', 'basic', 'ssl://');
         $mywebdavclient->port = 443;
@@ -47,15 +45,12 @@ class mylocallib
         }
         if ($intention == 'delete') {
             $mywebdavclient->delete($webdavpath . '/' . $foldername);
-        } else {
-//            TODO: right exception
         }
         $mywebdavclient->debug = false;
         $mywebdavclient->close();
     }
 
-    public function get_link($url)
-    {
+    public function get_link($url) {
         // Hardcoded user data here. Has to be replaced as soon as OAuth is ready.
         // TODO How can requests be send without user data in clear text?
         $username = 'collaborativefolder.pbox@uni-muenster.de';

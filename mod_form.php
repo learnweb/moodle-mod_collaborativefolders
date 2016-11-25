@@ -78,14 +78,12 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $htmltableofgroups = html_writer::table($tableofallgroups);
         $mform->addElement('static', 'table', $htmltableofgroups);
 
-
-
-//    TODO    More specific when link should be shared with groups
+        // TODO    More specific when link should be shared with groups
         /*$mform->addElement('header', 'groupmodus', get_string('fieldsetgroups', 'collaborativefolders'));
 
         foreach($arrayofgroups as $group) {
             $mform->addElement('static', 'table', $group['name']);
-*/
+        */
 
         // TODO do we need Grades for colaborative Folders?
         $this->standard_grading_coursemodule_elements();
@@ -98,14 +96,14 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
     }
     public function get_all_groups(){
         global $DB;
-        //TODO for Performance reasons only get neccessary record
+        // TODO for Performance reasons only get neccessary record
         return $DB->get_records('groups');
     }
     public function get_relevant_fields(){
         $allgroups = $this->get_all_groups();
         $relevantinformation = array();
-        foreach($allgroups as $key => $group){
-            $relevantinformation[$key]['name']= $group->name;
+        foreach ($allgroups as $key => $group) {
+            $relevantinformation[$key]['name'] = $group->name;
             $relevantinformation[$key]['id'] = $group->id;
             $numberofparticipants = count(groups_get_members($group->id));
             $relevantinformation[$key]['numberofparticipants'] = $numberofparticipants;

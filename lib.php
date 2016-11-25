@@ -35,9 +35,9 @@ defined('MOODLE_INTERNAL') || die();
  * Example constant, you probably want to remove this :-)
  */
 define('COLLABORATIVEFOLDERS_ULTIMATE_ANSWER', 42);
-require_once ($CFG->dirroot.'/repository/sciebo/lib.php');
-require_once ($CFG->dirroot.'/lib/setuplib.php');
-require_once ($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
+require_once($CFG->dirroot.'/repository/sciebo/lib.php');
+require_once($CFG->dirroot.'/lib/setuplib.php');
+require_once($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
 require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir.'/oauthlib.php');
 
@@ -90,11 +90,9 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     $mylocallib = new mylocallib();
     $mylocallib->make_folder($collaborativefolders->foldername, 'make');
 
-
     $collaborativefolders->externalurl = $mylocallib->get_link($collaborativefolders->foldername);
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
-
 
     collaborativefolders_grade_item_update($collaborativefolders);
 
@@ -117,7 +115,6 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $collaborativefolders->timemodified = time();
     $collaborativefolders->id = $collaborativefolders->instance;
-
 
     $result = $DB->update_record('collaborativefolders', $collaborativefolders);
     $mylocallib = new mylocallib();
