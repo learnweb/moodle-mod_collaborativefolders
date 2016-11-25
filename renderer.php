@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
-    public function render_table_of_existing_groups($myarray){
+    public function render_table_of_existing_groups($myarray) {
 
         $table = new html_table();
         $table->head = array(get_string('existinggroups', 'mod_collaborativefolders'), 'id', 'Number of Participants');

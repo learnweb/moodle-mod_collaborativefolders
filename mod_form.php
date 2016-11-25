@@ -94,12 +94,12 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
-    public function get_all_groups(){
+    public function get_all_groups() {
         global $DB;
         // TODO for Performance reasons only get neccessary record
         return $DB->get_records('groups');
     }
-    public function get_relevant_fields(){
+    public function get_relevant_fields() {
         $allgroups = $this->get_all_groups();
         $relevantinformation = array();
         foreach ($allgroups as $key => $group) {
