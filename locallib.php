@@ -57,48 +57,20 @@ class mylocallib {
         $password = '';
         $pref = 'https://';
 
-        $ch = curl_init();
-
-        // A POST request creating a share for the chosen file is generated here.
-        curl_setopt($ch, CURLOPT_URL, $pref . 'uni-muenster.sciebo.de' . '/ocs/v1.php/apps/files_sharing/api/v1/shares');
-        curl_setopt($ch, CURLOPT_POST, 1);
-
-        // http_build_query additionally needs a new arg_separator ("&" instead of "&amp;")
-        // to be able to create the message body.
-        // Additional POST arguments can be edited.
-        curl_setopt($ch, CURLOPT_POSTFIELDS,
+        $ch = new curl();
+        $output = $ch->post($pref.$this->options['webdav_server'].'/ocs/v1.php/apps/files_sharing/api/v1/shares',
             http_build_query(array('path' => $url,
                 'shareType' => 3,
-                'publicUpload' => true,
+                'publicUpload' => false,
                 'permissions' => 31,
-            ), null, "&"));
+            ), null, "&"),
+            array('CURLOPT_USERPWD' => "$username:$password"));
 
-        /*curl_setopt($ch, CURLOPT_POSTFIELDS,
-            http_build_query(array('path' => $url,
-                'shareType' => 0,
-                'shareWith' => 'n_herr03@uni-muenster.de',
-                'publicUpload' => true,
-                'permissions' => 31,
-            ), null, "&"));*/
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-        $output = curl_exec($ch);
-
-        // The output has to be transformed into an xml file to be able to extract specific arguments
-        // of the response from the owncloud Server.
         $xml = simplexml_load_string($output);
-
-        curl_close($ch);
-
-        // The unique fileID is extracted from the given shared link.
         $fields = explode("/s/", $xml->data[0]->url[0]);
         $fileid = $fields[1];
-
-        // And then its inserted into a dynamic link that will be provided to the user.
-        // WARNING: if you wish to generate a link for a local instance of owncloud, the path has to be edited
-        // in the namespace of the concerning window (e.g. http://localhost/owncloud/...).
-        return $pref . 'uni-muenster.sciebo.de' . '/public.php?service=files&t=' . $fileid;
+        $this->logout();
+        return $pref.$this->options['webdav_server'].'/public.php?service=files&t='.$fileid.'&download';
     }
 }
 
