@@ -31,14 +31,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Example constant, you probably want to remove this :-)
- */
-define('COLLABORATIVEFOLDERS_ULTIMATE_ANSWER', 42);
-require_once($CFG->dirroot.'/repository/sciebo/lib.php');
 require_once($CFG->dirroot.'/lib/setuplib.php');
 require_once($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
-require_once($CFG->dirroot . '/repository/lib.php');
 require_once($CFG->libdir.'/oauthlib.php');
 
 /* Moodle core API */
@@ -87,10 +81,11 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     // You may have to add extra stuff in here.
 
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
-    $mylocallib = new mylocallib();
-    $mylocallib->make_folder($collaborativefolders->foldername, 'make');
 
-    $collaborativefolders->externalurl = $mylocallib->get_link($collaborativefolders->foldername);
+    $helper = new mylocallib();
+    $helper->make_folder($collaborativefolders->foldername, 'make');
+    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->foldername);
+    $helper = null;
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
@@ -117,9 +112,11 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
     $collaborativefolders->id = $collaborativefolders->instance;
 
     $result = $DB->update_record('collaborativefolders', $collaborativefolders);
-    $mylocallib = new mylocallib();
-    $mylocallib->make_folder($collaborativefolders->foldername, 'make');
-    $collaborativefolders->externalurl = $mylocallib->get_link($collaborativefolders->foldername);
+
+    $helper = new mylocallib();
+    $helper->make_folder($collaborativefolders->foldername, 'make');
+    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->foldername);
+    $helper = null;
 
     collaborativefolders_grade_item_update($collaborativefolders);
 
@@ -173,8 +170,9 @@ function collaborativefolders_delete_instance($id) {
     if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     }
-    $mylocallib = new mylocallib();
-    $mylocallib->make_folder($collaborativefolders->foldername, 'delete');
+    $helper = new mylocallib();
+    $helper->make_folder($collaborativefolders->foldername, 'delete');
+    $helper = null;
     // Delete any dependent records here.
 
     $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
