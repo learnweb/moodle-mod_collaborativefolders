@@ -24,15 +24,15 @@
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//namespace mod_collaborativefolders;
+// namespace mod_collaborativefolders;
 global $CFG;
 require_once($CFG->libdir.'/formslib.php');
-require_once ($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot.'/lib/formslib.php');
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_yourself_form extends moodleform {
-    public function definition(){
+    public function definition() {
         $mform = $this->_form;
         $mform->addElement('header', 'enrol', get_string('enrol', 'collaborativefolders'));
         $mform->addElement('text', 'Kennung', get_string('kennung', 'collaborativefolders'), array('size' => '64'));
@@ -40,7 +40,7 @@ class enrol_yourself_form extends moodleform {
         $mform->addRule('text', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $this->add_action_buttons(true);
     }
-    public function to_html(){
+    public function to_html() {
         $o = '';
         $o .= $this->_form->getValidationScript();
         $o .= $this->_form->toHtml();
