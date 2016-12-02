@@ -37,13 +37,10 @@ class enrol_yourself_form extends moodleform {
         $mform->addElement('header', 'enrol', get_string('enrol', 'collaborativefolders'));
         $mform->addElement('text', 'Kennung', get_string('kennung', 'collaborativefolders'), array('size' => '64'));
         $mform->addRule('text', null, 'required', null, 'client');
-        $mform->addRule('text', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $this->add_action_buttons(true);
     }
-    public function to_html() {
-        $o = '';
-        $o .= $this->_form->getValidationScript();
-        $o .= $this->_form->toHtml();
-        return $o;
+    function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+        return array();
     }
 }

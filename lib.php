@@ -32,8 +32,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/setuplib.php');
-require_once($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
 require_once($CFG->libdir.'/oauthlib.php');
+require_once($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
 
 /* Moodle core API */
 
@@ -85,7 +85,7 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     $helper = new mylocallib();
     $helper->make_folder($collaborativefolders->foldername, 'make');
     $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->foldername);
-    $helper = null;
+
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
@@ -116,7 +116,6 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
     $helper = new mylocallib();
     $helper->make_folder($collaborativefolders->foldername, 'make');
     $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->foldername);
-    $helper = null;
 
     collaborativefolders_grade_item_update($collaborativefolders);
 
@@ -172,7 +171,7 @@ function collaborativefolders_delete_instance($id) {
     }
     $helper = new mylocallib();
     $helper->make_folder($collaborativefolders->foldername, 'delete');
-    $helper = null;
+
     // Delete any dependent records here.
 
     $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));

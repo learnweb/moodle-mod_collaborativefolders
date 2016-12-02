@@ -49,4 +49,5 @@ $string['kennung'] = 'Sciebo-Kennung:';
 $string['downloadfolder'] = 'Klicken sie {$a} um den Ordner herunterzuladen.';
 $string['accessfolder'] = 'Klicken sie {$a} um auf den Ordner zuzugreifen.';
 $string['enrol'] = 'Enrol yourself here';
+$string['Canceled'] = 'You canceled the Form';
 

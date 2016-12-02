@@ -86,8 +86,21 @@ $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->instanc
 echo html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($myinstance->externalurl .'&download', 'hier')));
 echo html_writer::div(' ');
 echo html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($myinstance->externalurl , 'hier')));
-$form = new enrol_yourself_form();
-echo $form->to_html();
+$mform = new enrol_yourself_form();
+if ($mform->is_cancelled()) {
+    redirect($PAGE->url);
+    //Handle form cancel operation, if cancel button is present on form
+} else if ($data = $mform->get_data()) {
+    //In this case you process validated data. $mform->get_data() returns data posted in form.
+} else {
+    // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
+    // or on the first display of the form.
+
+    //Set default data (if any)
+    $mform->set_data(array('Kennung' => 'my.sciebo@kennung'));
+    //displays the form
+    $mform->display();
+}
 
 // Finish the page.
 echo $OUTPUT->footer();
