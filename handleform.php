@@ -11,11 +11,11 @@ require_once($CFG->dirroot.'/mod/collaborativefolders/enrol_yourself_form.php');
 class handleform
 {
     function handle_my_form($id){
-        $mform = new enrol_yourself_form();
+        $mform = new enrol_yourself_form($id);
 
         if ($mform->is_cancelled()) {
             // TODO course ->id does not work redirects to view
-            redirect(new moodle_url('/collaborativefolder/view.php', array('id' => $id)));
+            redirect(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
             //Handle form cancel operation, if cancel button is present on form
         }
         if ($fromform = $mform->get_data()) {

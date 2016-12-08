@@ -31,8 +31,19 @@ require_once("$CFG->libdir/formslib.php");
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_yourself_form extends moodleform {
+
+    private $id;
+
+    public function __construct($id){
+        $this->id = $id;
+        parent::__construct();
+    }
+
     public function definition() {
         $mform = $this->_form;
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+        $mform->setDefault('id', $this->id);
         $mform->addElement('text', 'name', get_string('kennung', 'collaborativefolders'), array('size' => '80'));
         $mform->setType('name', PARAM_NOTAGS);
         $mform->addRule('name', get_string('maximumchars', '', 80), 'maxlength', 80, 'client');

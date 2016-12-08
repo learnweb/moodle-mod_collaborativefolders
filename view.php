@@ -31,13 +31,16 @@ require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->dirroot.'/mod/collaborativefolders/handleform.php');
 
 $id = required_param('id', PARAM_INT);
+
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $collaborativefolders = $DB->get_record('collaborativefolders', array('id'=> $cm->instance), '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 
+$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
+
 $formhandler = new handleform();
-$myform = $formhandler->handle_my_form($course->id);
+$myform = $formhandler->handle_my_form($cm->id);
 
 // TODO does not work yet : Coding error detected, it must be fixed by a programmer: The course_module_viewed event must define objectid and object table.
 
@@ -51,7 +54,7 @@ $myform = $formhandler->handle_my_form($course->id);
 
 // Print the page header.
 
-    $PAGE->set_url('/mod/collaborativefolders/view.php', array('id' => $cm->id));
+
     $PAGE->set_title(format_string($collaborativefolders->name));
     $PAGE->set_heading(format_string($course->fullname));
 //    $PAGE->set_cacheable(false);
@@ -72,8 +75,8 @@ $myform = $formhandler->handle_my_form($course->id);
         echo $OUTPUT->box(format_module_intro('collaborativefolders', $collaborativefolders, $cm->id), 'generalbox mod_introbox', 'collaborativefoldersintro');
     }*/
 
-    $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
-    echo $renderer->render_view_page($collaborativefolders->externalurl, $course->id);
+    $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->id));
+    echo $renderer->render_view_page($collaborativefolders->externalurl, $cm->id);
 
 // Finish the page.
     echo $renderer->create_footer();
