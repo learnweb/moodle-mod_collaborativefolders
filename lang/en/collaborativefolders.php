@@ -50,4 +50,8 @@ $string['downloadfolder'] = 'Klicken sie {$a} um den Ordner herunterzuladen.';
 $string['accessfolder'] = 'Klicken sie {$a} um auf den Ordner zuzugreifen.';
 $string['enrol'] = 'Enrol yourself here';
 $string['Canceled'] = 'You canceled the Form';
+$string['addtosciebo'] = 'sciebo@identifier.de';
+$string['Sciebo-email'] = 'Sciebo Identifier';
+$string['Sciebo-email_help'] = 'Your Sciebo E-Mail is not neccessary your Moodle identifier. In the University of Muenster your
+identifier ist most likely: ziv_kennung@uni-muenster.de';
 

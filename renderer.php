@@ -31,6 +31,8 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2016 Nina Herrmann
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once($CFG->dirroot.'/mod/collaborativefolders/handleform.php');
+
 class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
     public function render_table_of_existing_groups($myarray) {
@@ -57,6 +59,30 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
+    public function render_view_page($externalurl, $courseid){
+        global $OUTPUT;
+        $output = '';
+        $output .= $OUTPUT->heading('Link to collaborative Folder');
+        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($externalurl . '&download', 'hier')));
+        $output .= html_writer::div(' ');
+        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($externalurl, 'hier')));
+        $formhandler = new handleform();
+        $myform = $formhandler->handle_my_form($courseid);
+        $output .= html_writer::div($myform->display(), 'myform');
+        return $output;
+    }
 
+    public function create_header(){
+        global $OUTPUT;
+        $output = '';
+        $output .= $OUTPUT->header();
+        echo $output;
+    }
+    public function create_footer(){
+        global $OUTPUT;
+        $output = '';
+        $output .= $OUTPUT->footer();
+        echo $output;
+    }
 }
 

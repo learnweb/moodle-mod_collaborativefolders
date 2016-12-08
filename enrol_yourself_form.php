@@ -26,21 +26,26 @@
  */
 // namespace mod_collaborativefolders;
 global $CFG;
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/lib/formslib.php');
-require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once("$CFG->libdir/formslib.php");
+
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_yourself_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
-        $mform->addElement('header', 'enrol', get_string('enrol', 'collaborativefolders'));
-        $mform->addElement('text', 'Kennung', get_string('kennung', 'collaborativefolders'), array('size' => '64'));
-        $mform->addRule('text', null, 'required', null, 'client');
+        $mform->addElement('text', 'name', get_string('kennung', 'collaborativefolders'), array('size' => '80'));
+        $mform->setType('name', PARAM_NOTAGS);
+        $mform->addRule('name', get_string('maximumchars', '', 80), 'maxlength', 80, 'client');
+        $mform->setDefault('name', get_string('addtosciebo', 'collaborativefolders'));
+        $mform->addHelpButton('name','Sciebo-email','collaborativefolders');
         $this->add_action_buttons(true);
     }
     function validation($data, $files) {
-        $errors = parent::validation($data, $files);
         return array();
+    }
+    public function to_html() {
+        $o = '';
+        $o .= $this->_form->toHtml();
+        return $o;
     }
 }

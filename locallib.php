@@ -33,8 +33,7 @@ require_once($CFG->dirroot.'/lib/setuplib.php');
 require_once($CFG->dirroot.'/lib/webdavlib.php');
 
 class mylocallib {
-    public function make_folder($foldername, $intention)
-    {
+    public function make_folder($foldername, $intention) {
         $mywebdavclient = new webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
             '', 'basic', 'ssl://');
         $mywebdavclient->port = 443;
@@ -90,8 +89,9 @@ class mylocallib {
         curl_setopt($ch, CURLOPT_POSTFIELDS,
             http_build_query(array('path' => $url,
                 'shareType' => 0,
-                'shareWith' => $scieboname,
+                'shareWith' => $scieboidentifier,
                 'publicUpload' => true,
+                'publicUpload' => false,
                 'permissions' => 31,
             ), null, "&"));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
