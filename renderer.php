@@ -59,7 +59,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
-    public function render_view_page($externalurl, $cmid){
+    public function render_view_page($externalurl, $cmid, $isntanceid){
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->heading('Link to collaborative Folder');
@@ -67,7 +67,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         $output .= html_writer::div(' ');
         $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($externalurl, 'hier')));
         $formhandler = new handleform();
-        $myform = $formhandler->handle_my_form($cmid);
+        $myform = $formhandler->handle_my_form($cmid, $isntanceid);
         $output .= html_writer::div($myform->display(), 'myform');
         return $output;
     }

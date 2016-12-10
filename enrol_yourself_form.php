@@ -33,9 +33,11 @@ defined('MOODLE_INTERNAL') || die();
 class enrol_yourself_form extends moodleform {
 
     private $id;
+    private $modid;
 
-    public function __construct($id){
+    public function __construct($id, $modid){
         $this->id = $id;
+        $this->modid = $modid;
         parent::__construct();
     }
 
@@ -44,6 +46,9 @@ class enrol_yourself_form extends moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $this->id);
+        $mform->addElement('hidden', 'modid');
+        $mform->setType('modid', PARAM_INT);
+        $mform->setDefault('modid', $this->modid);
         $mform->addElement('text', 'name', get_string('kennung', 'collaborativefolders'), array('size' => '80'));
         $mform->setType('name', PARAM_NOTAGS);
         $mform->addRule('name', get_string('maximumchars', '', 80), 'maxlength', 80, 'client');
