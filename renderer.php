@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Class of the tool_deprovisionuser renderer.
  *
@@ -31,6 +29,8 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2016 Nina Herrmann
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die;
+
 require_once($CFG->dirroot.'/mod/collaborativefolders/handleform.php');
 
 class mod_collaborativefolders_renderer extends plugin_renderer_base{
@@ -59,7 +59,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
-    public function render_view_page($externalurl, $cmid, $isntanceid){
+    public function render_view_page($externalurl, $cmid, $isntanceid) {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->heading('Link to collaborative Folder');
@@ -72,13 +72,13 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         return $output;
     }
 
-    public function create_header(){
+    public function create_header() {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->header();
         echo $output;
     }
-    public function create_footer(){
+    public function create_footer() {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->footer();

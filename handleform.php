@@ -25,21 +25,20 @@ require_once($CFG->dirroot.'/mod/collaborativefolders/enrol_yourself_form.php');
 
 class handleform
 {
-    function handle_my_form($id, $modid){
+    public function handle_my_form($id, $modid) {
         global $DB;
         $mform = new enrol_yourself_form($id, $modid);
 
         if ($mform->is_cancelled()) {
             // notice has exit in it
             notice(get_string('cancelform', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
-            //Handle form cancel operation, if cancel button is present on form
+            // Handle form cancel operation, if cancel button is present on form
         }
         if ($fromform = $mform->get_data()) {
-            //In this case you process validated data. $mform->get_data() returns data posted in form.
-            $thisdata= $mform->get_data();
+            // In this case you process validated data. $mform->get_data() returns data posted in form.
+            $thisdata = $mform->get_data();
             $scieboidentifier = $thisdata->name;
-            $collaborativefolders = $DB->get_record('collaborativefolders',array('id'=>$modid));
-
+            $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $modid));
             add_to_personal_account($collaborativefolders->externalurl, $scieboidentifier);
         }
 

@@ -35,7 +35,7 @@ class enrol_yourself_form extends moodleform {
     private $id;
     private $modid;
 
-    public function __construct($id, $modid){
+    public function __construct($id, $modid) {
         $this->id = $id;
         $this->modid = $modid;
         parent::__construct();
@@ -53,10 +53,10 @@ class enrol_yourself_form extends moodleform {
         $mform->setType('name', PARAM_NOTAGS);
         $mform->addRule('name', get_string('maximumchars', '', 80), 'maxlength', 80, 'client');
         $mform->setDefault('name', get_string('addtosciebo', 'collaborativefolders'));
-        $mform->addHelpButton('name','Sciebo-email','collaborativefolders');
+        $mform->addHelpButton('name', 'Sciebo-email', 'collaborativefolders');
         $this->add_action_buttons(true);
     }
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return array();
     }
     public function to_html() {

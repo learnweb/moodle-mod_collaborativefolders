@@ -33,7 +33,7 @@ require_once($CFG->dirroot.'/mod/collaborativefolders/handleform.php');
 $id = required_param('id', PARAM_INT);
 
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
-$collaborativefolders = $DB->get_record('collaborativefolders', array('id'=> $cm->instance), '*', MUST_EXIST);
+$collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $cm->instance), '*', MUST_EXIST);
 
 require_login($course, true, $cm);
 
@@ -54,10 +54,9 @@ $myform = $formhandler->handle_my_form($cm->id, $collaborativefolders->id);
 
 // Print the page header.
 
-
     $PAGE->set_title(format_string($collaborativefolders->name));
     $PAGE->set_heading(format_string($course->fullname));
-//    $PAGE->set_cacheable(false);
+// $PAGE->set_cacheable(false);
 
     /*
      * Other things you may want to set - remove if not needed.

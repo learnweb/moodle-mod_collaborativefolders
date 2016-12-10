@@ -74,19 +74,19 @@ class mylocallib {
                         'permissions' => 31,
                     ), null, "&"));
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
                 $output = curl_exec($ch);
 
                 // The output has to be transformed into an xml file to be able to extract specific arguments
                 // of the response from the owncloud Server.
-        $xml = simplexml_load_string($output);
+                $xml = simplexml_load_string($output);
 
                 curl_close($ch);
 
                 // The unique fileID is extracted from the given shared link.
-        $fields = explode("/s/", $xml->data[0]->url[0]);
-        $fileid = $fields[1];
+                $fields = explode("/s/", $xml->data[0]->url[0]);
+                $fileid = $fields[1];
 
                 // And then its inserted into a dynamic link that will be provided to the user.
                 // WARNING: if you wish to generate a link for a local instance of owncloud, the path has to be edited
