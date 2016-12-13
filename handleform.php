@@ -23,8 +23,14 @@
  */
 require_once($CFG->dirroot.'/mod/collaborativefolders/enrol_yourself_form.php');
 
+use mod_collaborativefolders\folder_generator;
+
 class handleform
 {
+    public function _construct(){
+
+    }
+
     public function handle_my_form($id, $modid) {
         global $DB;
         $mform = new enrol_yourself_form($id, $modid);
@@ -39,7 +45,10 @@ class handleform
             $thisdata = $mform->get_data();
             $scieboidentifier = $thisdata->name;
             $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $modid));
-            add_to_personal_account($collaborativefolders->externalurl, $scieboidentifier);
+
+            $foldergenerator = new folder_generator();
+            $result = $foldergenerator->add_to_personal_account($collaborativefolders->foldername, $scieboidentifier);
+
         }
 
         // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
