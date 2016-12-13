@@ -30,5 +30,3 @@ $id = required_param('id', 0, PARAM_INT);
     $cm = get_coursemodule_from_id('collaborativefolders', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $cm->instance), '*', MUST_EXIST);
-
-    echo 'something';

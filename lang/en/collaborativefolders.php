@@ -55,3 +55,6 @@ $string['Sciebo-email'] = 'Sciebo Identifier';
 $string['Sciebo-email_help'] = 'Your Sciebo E-Mail is not neccessary your Moodle identifier. In the University of Muenster your
 identifier ist most likely: ziv_kennung@uni-muenster.de';
 $string['cancelform'] = 'You canceled the form.';
+$string['failedtoaddfolder'] = 'Your request failed.';
+$string['successtoaddfolder'] = 'The Folder was sucessfull added to your account.';
+

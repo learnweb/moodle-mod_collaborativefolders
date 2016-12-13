@@ -27,6 +27,8 @@
 
 namespace mod_collaborativefolders;
 
+use moodle_url;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -36,7 +38,7 @@ require_once($CFG->dirroot.'/lib/webdavlib.php');
 
 class folder_generator{
 
-    public function add_to_personal_account($url, $scieboidentifier) {
+    public function add_to_personal_account($url, $scieboidentifier, $id) {
         // Hardcoded user data here. Has to be replaced as soon as OAuth is ready.
         // TODO How can requests be send without user data in clear text?
         $username = 'collaborativefolder.pbox@uni-muenster.de';
@@ -56,7 +58,7 @@ class folder_generator{
                 'shareType' => 0,
                 'shareWith' => $scieboidentifier,
                 'publicUpload' => true,
-                'permissions' => 31,
+                'permissions' => 4,
             ), null, "&"));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
@@ -65,7 +67,10 @@ class folder_generator{
         // of the response from the owncloud Server.
         $xml = simplexml_load_string($output);
         curl_close($ch);
-        return $output;
+        if($xml->meta->status = 'failure'){
+            notice(get_string('failedtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
+        }
+        return $xml;
 
     }
 }
