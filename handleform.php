@@ -47,13 +47,7 @@ class handleform
             $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $modid));
 
             $foldergenerator = new folder_generator();
-            $result = $foldergenerator->add_to_personal_account($collaborativefolders->foldername, $scieboidentifier, $id);
-            echo '<p>';
-            echo print_r($result->meta->status);
-            echo '</p>';
-            if($result->meta->status = 'success'){
-                notice(get_string('successtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
-            }
+            $foldergenerator->add_to_personal_account($collaborativefolders->foldername, $scieboidentifier, $id);
 
         }
 

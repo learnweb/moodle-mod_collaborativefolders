@@ -67,8 +67,10 @@ class folder_generator{
         // of the response from the owncloud Server.
         $xml = simplexml_load_string($output);
         curl_close($ch);
-        if($xml->meta->status = 'failure'){
-            notice(get_string('failedtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
+        if($xml->meta->statuscode == 100 && $xml->meta->status == 'ok'){
+            notice(get_string('successtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
+        } else {
+            notice($xml->meta->message, new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
         }
         return $xml;
 
