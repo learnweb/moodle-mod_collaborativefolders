@@ -48,7 +48,6 @@ class folder_generator{
         $ch = curl_init();
         // A POST request creating a share for the chosen file is generated here.
         curl_setopt($ch, CURLOPT_URL, $pref . 'uni-muenster.sciebo.de' . '/ocs/v1.php/apps/files_sharing/api/v1/shares');
-//        TODO uni-muenster.de replace with webdavserver
         curl_setopt($ch, CURLOPT_POST, 1);
         // http_build_query additionally needs a new arg_separator ("&" instead of "&amp;")
         // to be able to create the message body.
@@ -67,7 +66,7 @@ class folder_generator{
         // of the response from the owncloud Server.
         $xml = simplexml_load_string($output);
         curl_close($ch);
-        if($xml->meta->statuscode == 100 && $xml->meta->status == 'ok'){
+        if($xml->meta->statuscode == 100 && $xml->meta->status == 'ok') {
             notice(get_string('successtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
         } else {
             notice($xml->meta->message, new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
@@ -83,12 +82,12 @@ class folder_generator{
         $webdavpath = rtrim('/' . ltrim('remote.php/webdav/', '/ '), '/ ');
 
         if ($intention == 'make') {
-//            if($mywebdavclient->get($webdavpath . '/' . $foldername, $buffer) == 404) {
-                $mywebdavclient->mkcol($webdavpath . '/' . $foldername);
-//            } else {
-//                $DB->get_record('course_modules',array())
-//                notice(get_string('failedtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
-//            }
+            // if($mywebdavclient->get($webdavpath . '/' . $foldername, $buffer) == 404) {
+            $mywebdavclient->mkcol($webdavpath . '/' . $foldername);
+            // } else {
+            // $DB->get_record('course_modules',array())
+            // notice(get_string('failedtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
+            // }
         }
         if ($intention == 'delete') {
             $mywebdavclient->delete($webdavpath . '/' . $foldername);
