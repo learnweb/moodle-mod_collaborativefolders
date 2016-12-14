@@ -25,6 +25,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_collaborativefolders\folder_generator;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
@@ -110,5 +112,13 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         }
         return $relevantinformation;
 
+    }
+    public function validation($data, $files)
+    {
+        $errors = parent::validation($data, $files);
+        $folder_generator = new folder_generator();
+        if($folder_generator->check_for_404_error($data['foldername']) == false){
+            $errors['timeviewto'] = get_string('viewtodatevalidation', 'data');
+        }
     }
 }

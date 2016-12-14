@@ -29,11 +29,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_collaborativefolders\folder_generator;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/setuplib.php');
 require_once($CFG->libdir.'/oauthlib.php');
-require_once($CFG->dirroot.'/mod/collaborativefolders/locallib.php');
 
 /* Moodle core API */
 
@@ -82,8 +83,8 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
-    $helper = new mylocallib();
-    $helper->make_folder($collaborativefolders->foldername, 'make');
+    $helper = new folder_generator();
+    $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
     $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->foldername);
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
@@ -112,8 +113,8 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $result = $DB->update_record('collaborativefolders', $collaborativefolders);
 
-    $helper = new mylocallib();
-    $helper->make_folder($collaborativefolders->foldername, 'make');
+    $helper = new folder_generator();
+    $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
     $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->foldername);
 
     collaborativefolders_grade_item_update($collaborativefolders);
@@ -168,8 +169,8 @@ function collaborativefolders_delete_instance($id) {
     if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     }
-    $helper = new mylocallib();
-    $helper->make_folder($collaborativefolders->foldername, 'delete');
+    $helper = new folder_generator();
+    $helper->make_folder($collaborativefolders->foldername, 'delete', $collaborativefolders->id);
 
     // Delete any dependent records here.
 

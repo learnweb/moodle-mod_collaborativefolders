@@ -30,8 +30,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-
-require_once($CFG->dirroot.'/mod/collaborativefolders/handleform.php');
+use mod_collaborativefolders\handleform;
 
 class mod_collaborativefolders_renderer extends plugin_renderer_base{
 

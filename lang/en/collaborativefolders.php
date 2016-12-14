@@ -57,4 +57,6 @@ identifier ist most likely: ziv_kennung@uni-muenster.de';
 $string['cancelform'] = 'You canceled the form.';
 $string['failedtoaddfolder'] = 'Your request failed.';
 $string['successtoaddfolder'] = 'The Folder was sucessfull added to your account.';
+$string['choosedifferentfoldername'] = 'Please choose another foldername.';
+
 
