@@ -33,5 +33,7 @@ $plugin->release = 'v0.0';
 $plugin->requires = 2014051200;
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->cron = 0;
-$plugin->dependencies = array();
+$plugin->dependencies = array(
+    'tool_oauth2sciebo' => ANY_VERSION
+);
 

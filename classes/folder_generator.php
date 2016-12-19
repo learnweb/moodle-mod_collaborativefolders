@@ -82,15 +82,17 @@ class folder_generator{
         $webdavpath = rtrim('/' . ltrim('remote.php/webdav/', '/ '), '/ ');
 
         if ($intention == 'make') {
+            $mywebdavclient->mkcol($webdavpath . '/' . $id);
             // if($mywebdavclient->get($webdavpath . '/' . $foldername, $buffer) == 404) {
-            $mywebdavclient->mkcol($webdavpath . '/' . $foldername);
+            $mywebdavclient->mkcol($webdavpath . '/' . $id . '/' . $foldername);
+//            '/' . $id
             // } else {
             // $DB->get_record('course_modules',array())
             // notice(get_string('failedtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
             // }
         }
         if ($intention == 'delete') {
-            $mywebdavclient->delete($webdavpath . '/' . $foldername);
+            $mywebdavclient->delete($webdavpath . '/' . $id . '/' . $foldername);
         }
         $mywebdavclient->debug = false;
         $mywebdavclient->close();
