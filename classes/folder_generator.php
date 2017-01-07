@@ -83,13 +83,8 @@ class folder_generator{
 
         if ($intention == 'make') {
             $mywebdavclient->mkcol($webdavpath . '/' . $id);
-            // if($mywebdavclient->get($webdavpath . '/' . $foldername, $buffer) == 404) {
             $mywebdavclient->mkcol($webdavpath . '/' . $id . '/' . $foldername);
-//            '/' . $id
-            // } else {
-            // $DB->get_record('course_modules',array())
-            // notice(get_string('failedtoaddfolder', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
-            // }
+
         }
         if ($intention == 'delete') {
             $mywebdavclient->delete($webdavpath . '/' . $id . '/' . $foldername);
