@@ -28,6 +28,7 @@
 namespace mod_collaborativefolders;
 
 use moodle_url;
+use tool_oauth2sciebo\sciebo_client;
 use webdav_client;
 
 defined('MOODLE_INTERNAL') || die();
@@ -152,7 +153,7 @@ class folder_generator{
     }
 
     private function make_webdavclient() {
-        $mywebdavclient = new webdav_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
+        $mywebdavclient = new sciebo_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
             '', 'basic', 'ssl://');
         $mywebdavclient->port = 443;
         $mywebdavclient->path = 'remote.php/webdav/';
