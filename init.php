@@ -27,7 +27,7 @@
 require('../../config.php');
 require('../../lib/adminlib.php');
 
-admin_externalpage_setup('modcollab');
+admin_externalpage_setup('collab');
 
 echo $OUTPUT->header();
 
