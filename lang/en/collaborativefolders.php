@@ -28,6 +28,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// TODO: Be more specific.
+$string['decription'] = 'Description in form of a warning.';
+$string['loggedin'] = 'Description in form of a warning.';
+
 $string['modulename'] = 'collaborativefolders';
 $string['modulenameplural'] = 'collaborativefolders';
 $string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
