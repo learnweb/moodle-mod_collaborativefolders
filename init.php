@@ -38,12 +38,17 @@ $returnurl = new moodle_url('/mod/collaborativefolders/init.php', [
 
 $sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
 
-$url = $sciebo->get_login_url();
+echo get_string('description', 'mod_collaboratovefolders');
 
-echo html_writer::link($url, 'Test Link', array('target' => '_blank'));
+if (empty(get_config('mod_collaborativefolders', 'token'))) {
 
-$sciebo->is_logged_in();
+    $url = $sciebo->get_login_url();
+    echo html_writer::link($url, 'Login', array('target' => '_blank'));
+    $sciebo->is_logged_in();
+    set_config('token', $sciebo->get_accesstoken()->token, 'mod_collaborativefolders');
+} else {
 
-echo $sciebo->get_accesstoken()->token;
+    // Add logout option here. Will be done later today.
+}
 
 echo $OUTPUT->footer();
