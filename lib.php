@@ -78,14 +78,36 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     global $DB;
 
     $collaborativefolders->timecreated = time();
-
-    // You may have to add extra stuff in here.
-
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
     $helper = new folder_generator();
-    $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
-    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
+    echo print_r($mform->get_data());
+
+    if($fromform = $mform->get_data()) {
+        $thisdata = $mform->get_data();
+        $allgroups = $DB->get_records('groups');
+        $groups = array();
+        foreach ($allgroups as $group){
+            $identifierstring = $group->id;
+            print_r($identifierstring);
+            print_r($thisdata->name);
+
+            if ($thisdata->$identifierstring == 1) {
+                $groups['id'] = $group;
+            }
+        }
+        echo print_r($groups);
+        if (!empty($groups)) {
+            foreach ($groups as $relevantgroup) {
+                $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id . $relevantgroup->id);
+                $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . $relevantgroup->id . '/' . $collaborativefolders->foldername);
+            }
+
+        } else {
+            $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
+            $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
+        }
+    }
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 

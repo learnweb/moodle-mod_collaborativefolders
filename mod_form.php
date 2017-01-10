@@ -74,18 +74,11 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         }
         $renderer = $PAGE->get_renderer('mod_collaborativefolders');
         $mform->addElement('header', 'groupmodus', get_string('createforall', 'collaborativefolders'));
-
+        $mform->addElement('checkbox', 'Groupmode', 'Enable Groupmode');
         $arrayofgroups = $this->get_relevant_fields();
-        $tableofallgroups = $renderer->render_table_of_existing_groups($arrayofgroups);
-        $htmltableofgroups = html_writer::table($tableofallgroups);
-        $mform->addElement('static', 'table', $htmltableofgroups);
-
-        // TODO    More specific when link should be shared with groups
-        /*$mform->addElement('header', 'groupmodus', get_string('fieldsetgroups', 'collaborativefolders'));
-
-        foreach($arrayofgroups as $group) {
-            $mform->addElement('static', 'table', $group['name']);
-        */
+        foreach ($arrayofgroups as $id => $group){
+            $mform->addElement('advcheckbox', $group['id'] , $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
+        }
 
         // TODO do we need Grades for colaborative Folders?
         $this->standard_grading_coursemodule_elements();
@@ -101,6 +94,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // TODO for Performance reasons only get neccessary record
         return $DB->get_records('groups');
     }
+
     public function get_relevant_fields() {
         $allgroups = $this->get_all_groups();
         $relevantinformation = array();
@@ -113,6 +107,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         return $relevantinformation;
 
     }
+
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         $foldergenerator = new folder_generator();

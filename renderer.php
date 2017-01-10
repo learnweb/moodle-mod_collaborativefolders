@@ -34,17 +34,6 @@ use mod_collaborativefolders\handleform;
 
 class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
-    public function render_table_of_existing_groups($myarray) {
-
-        $table = new html_table();
-        $table->head = array(get_string('existinggroups', 'mod_collaborativefolders'), 'id', 'Number of Participants');
-        $table->attributes['class'] = 'admintable deprovisionuser generaltable';
-        $table->data = array();
-        foreach ($myarray as $key => $group) {
-            $table->data[$key] = $group;
-        }
-        return $table;
-    }
     public function render_column_for_existing_groups($onegroup) {
         $table = new html_table();
         $table->attributes['class'] = 'admintable deprovisionuser generaltable';

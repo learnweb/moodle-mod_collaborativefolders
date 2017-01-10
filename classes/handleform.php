@@ -40,6 +40,7 @@ class handleform {
          if ($fromform = $mform->get_data()) {
             // In this case you process validated data. $mform->get_data() returns data posted in form.
             $thisdata = $mform->get_data();
+
             $scieboidentifier = $thisdata->name;
             $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $modid));
 
