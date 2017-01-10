@@ -26,6 +26,10 @@
 defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
 
 // Settings for the OAuth 2.0 and WebDAV clients are managed on an external page.
-$ADMIN->add('modcollab', new admin_externalpage('modcollab',
+
+$modcollabfolders = new admin_category('modcollab', new lang_string('pluginname', 'mod_collaborativefolders'), $module->is_enabled() === false);
+$ADMIN->add('modsettings', $modcollabfolders);
+$external = new admin_externalpage('collab',
         'Collaborative Folders',
-        new moodle_url('/mod/collaborativefolders/init.php')));
+        new moodle_url('/mod/collaborativefolders/init.php'));
+$ADMIN->add('modcollab', $external);
