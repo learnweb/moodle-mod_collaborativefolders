@@ -27,9 +27,27 @@ defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
 
 // Settings for the OAuth 2.0 and WebDAV clients are managed on an external page.
 
-$modcollabfolders = new admin_category('modcollab', new lang_string('pluginname', 'mod_collaborativefolders'), $module->is_enabled() === false);
-$ADMIN->add('modsettings', $modcollabfolders);
-$external = new admin_externalpage('collab',
-        'Collaborative Folders',
-        new moodle_url('/mod/collaborativefolders/init.php'));
-$ADMIN->add('modcollab', $external);
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading('collaborativefolders', get_string('generalconfig', 'chat'),
+        get_string('description', 'collaborativefolders')));
+    $returnurl = new moodle_url('admin/settings.php?section=modsettingcollaborativefolders', [
+        'callback'  => 'yes',
+        'sesskey'   => sesskey(),
+    ]);
+
+    $sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
+
+        if (empty(get_config('mod_collaborativefolders', 'token'))) {
+
+            $url = $sciebo->get_login_url();
+            $settings->add(new admin_setting_heading('collaborativefolders', 'Link',
+                html_writer::link($url, 'Login', array('target' => '_blank'))));
+            $sciebo->is_logged_in();
+            $token = $sciebo->get_accesstoken();
+            set_config('token', $token->token, 'mod_collaborativefolders');
+        } else {
+            $settings->add(new admin_setting_heading('collaborativefolders', 'Already Logged in',
+                get_string('adminloggedininfo', 'collaborativefolders')));
+        // Add logout option here. Will be done later today.
+        }
+}
