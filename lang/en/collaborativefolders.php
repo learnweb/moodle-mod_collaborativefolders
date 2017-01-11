@@ -29,9 +29,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 // TODO: Be more specific.
-$string['description'] = 'Description in form of a warning.';
+$string['description'] = 'The Account you register will be used to save the data of all collaborativefolders. Depending on the size 
+of your Moodle-instance you should consider the amount of storage the user has.';
+$string['adminloggedininfo'] = 'You already logged in with a account. You are not able to change the account since this would result in 
+numerous problems. The only way to change the account is to uninstall the Plugin and therefore delete all existing instances.';
 $string['loggedin'] = 'Description in form of a warning.';
-
 $string['modulename'] = 'collaborativefolders';
 $string['modulenameplural'] = 'collaborativefolders';
 $string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
