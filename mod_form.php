@@ -111,8 +111,8 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         $foldergenerator = new folder_generator();
-        if ($foldergenerator->check_for_404_error($data['foldername']) == false) {
+        /*if ($foldergenerator->check_for_404_error($data['foldername']) == false) {
             $errors['timeviewto'] = get_string('viewtodatevalidation', 'data');
-        }
+        }*/
     }
 }
