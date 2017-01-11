@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('collaborativefolders', get_string('generalconfig', 'chat'),
         get_string('description', 'collaborativefolders')));
-    $returnurl = new moodle_url('admin/settings.php?section=modsettingcollaborativefolders', [
+    $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
         'callback'  => 'yes',
         'sesskey'   => sesskey(),
     ]);
@@ -40,7 +40,7 @@ if ($ADMIN->fulltree) {
         if (empty(get_config('mod_collaborativefolders', 'token'))) {
 
             $url = $sciebo->get_login_url();
-            $settings->add(new admin_setting_heading('collaborativefolders', 'Link',
+            $settings->add(new admin_setting_heading('LinkGenerator', 'Link',
                 html_writer::link($url, 'Login', array('target' => '_blank'))));
             $sciebo->is_logged_in();
             $token = $sciebo->get_accesstoken();
