@@ -85,7 +85,7 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $helper = new folder_generator();
     $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
-    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
+//    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
