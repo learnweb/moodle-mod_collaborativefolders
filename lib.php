@@ -89,8 +89,6 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
         $groups = array();
         foreach ($allgroups as $group){
             $identifierstring = $group->id;
-            print_r($identifierstring);
-            print_r($thisdata->name);
 
             if ($thisdata->$identifierstring == 1) {
                 $groups['id'] = $group;
