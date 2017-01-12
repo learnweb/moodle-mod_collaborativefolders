@@ -115,7 +115,7 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $helper = new folder_generator();
     $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
-    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
+//    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
 
     collaborativefolders_grade_item_update($collaborativefolders);
 
