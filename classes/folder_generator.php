@@ -86,6 +86,8 @@ class folder_generator{
     public function make_folder($foldername, $intention, $id) {
         global $DB;
 
+        $token = get_config('mod_collaborativefolders', 'token');
+
         if (!$this->sciebo->dav->open()) {
             return false;
         }
@@ -94,12 +96,12 @@ class folder_generator{
             $path = $webdavpath . '/' . $id;
             $namepath = $webdavpath . '/' . $id . '/' . $foldername;
             $token = get_config('mod_collaborativefolders', 'token');
-            $this->sciebo->make_folder($token, $path, $namepath);
+            $this->sciebo->make_folder($token, $foldername, $id);
 
 
         }
         if ($intention == 'delete') {
-//            $mywebdavclient->delete($webdavpath . '/' . $id . '/' . $foldername);
+            $this->sciebo->delete_folder($token, $foldername, $id);
         }
 
        /* $mywebdavclient = $this->make_webdavclient();
