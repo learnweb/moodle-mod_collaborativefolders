@@ -29,6 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // TODO: Be more specific.
+$string['adminloggedininfo'] = 'You are already logged in.';
 $string['description'] = 'The Account you register will be used to save the data of all collaborativefolders. Depending on the size 
 of your Moodle-instance you should consider the amount of storage the user has.';
 $string['adminloggedininfo'] = 'You already logged in with a account. You are not able to change the account since this would result in 
