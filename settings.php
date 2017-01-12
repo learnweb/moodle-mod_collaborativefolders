@@ -48,6 +48,7 @@ if ($ADMIN->fulltree) {
 
         $sciebo->set_access_token(null);
 
+        // Token only gets set, when the user is logged in. Otherwise he couldnt log in.
         if ($sciebo->is_logged_in()) {
             $token = serialize($sciebo->get_accesstoken());
             set_config('token', $token, 'mod_collaborativefolders');
