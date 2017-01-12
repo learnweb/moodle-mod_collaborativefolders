@@ -89,12 +89,11 @@ class folder_generator{
         if (!$this->sciebo->dav->open()) {
             return false;
         }
-        $webdavpath = rtrim('/' . ltrim('remote.php/webdav/', '/ '), '/ ');
+        $webdavpath = rtrim('/' . ltrim('owncloud9.2/remote.php/webdav/', '/ '), '/ ');
         if ($intention == 'make') {
             $path = $webdavpath . '/' . $id;
             $namepath = $webdavpath . '/' . $id . '/' . $foldername;
             $token = get_config('mod_collaborativefolders', 'token');
-            print_r($token . $namepath);
             $this->sciebo->make_folder($token, $path, $namepath);
 
 
