@@ -100,7 +100,7 @@ class folder_generator{
         }
 
         // WebDAV path is generated from the required admin settings for the ownCloud Server.
-        $webdavpath =  get_config('tool_oauth2sciebo', 'path');
+        $webdavpath = '/' . get_config('tool_oauth2sciebo', 'path');
 
         if ($intention == 'make') {
 
