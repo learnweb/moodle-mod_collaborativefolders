@@ -28,8 +28,11 @@ defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
 // Settings for the OAuth 2.0 and WebDAV clients are managed on an external page.
 
 if ($ADMIN->fulltree) {
+
     $settings->add(new admin_setting_heading('collaborativefolders', get_string('generalconfig', 'chat'),
-        get_string('description', 'collaborativefolders')));
+        'Some other text.'));
+
+    // A OAuth 2.0 and WebDAV client is needed in order to login to ownCloud.
     $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
         'callback'  => 'yes',
         'sesskey'   => sesskey(),
@@ -37,17 +40,29 @@ if ($ADMIN->fulltree) {
 
     $sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
 
-        if (empty(get_config('mod_collaborativefolders', 'token'))) {
+    if (empty(get_config('mod_collaborativefolders', 'token'))) {
 
-            $url = $sciebo->get_login_url();
-            $settings->add(new admin_setting_heading('LinkGenerator', 'Link',
+        $url = $sciebo->get_login_url();
+        $settings->add(new admin_setting_heading('LinkGenerator', 'Link',
                 html_writer::link($url, 'Login', array('target' => '_blank'))));
-            $sciebo->is_logged_in();
-            $token = $sciebo->get_accesstoken();
-            set_config('token', $token->token, 'mod_collaborativefolders');
-        } else {
-            $settings->add(new admin_setting_heading('collaborativefolders', 'Already Logged in',
-                get_string('adminloggedininfo', 'collaborativefolders')));
-        // Add logout option here. Will be done later today.
+
+        $sciebo->set_access_token(null);
+
+        if ($sciebo->is_logged_in()) {
+            $token = serialize($sciebo->get_accesstoken());
+            set_config('token', $token, 'mod_collaborativefolders');
         }
+
+    } else {
+
+        // Delete comments if you want to log out. Only for debugging.
+        //set_config('token', '', 'mod_collaborativefolders');
+        //$sciebo->set_access_token(null);
+        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
+        echo var_dump($token);
+
+        $settings->add(new admin_setting_heading('collaborativefolders', 'Already Logged in',
+                'Some text'));
+
+    }
 }
