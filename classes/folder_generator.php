@@ -103,14 +103,6 @@ class folder_generator{
         if ($intention == 'delete') {
             $this->sciebo->delete_folder($token, $foldername, $id);
         }
-
-       /* $mywebdavclient = $this->make_webdavclient();
-
-        if ($intention == 'delete') {
-            $mywebdavclient->delete($webdavpath . '/' . $id . '/' . $foldername);
-        }
-        $mywebdavclient->debug = false;
-        $mywebdavclient->close();*/
     }
 
     public function get_link($url) {
