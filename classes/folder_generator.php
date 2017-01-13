@@ -38,7 +38,10 @@ require_once($CFG->dirroot.'/repository/sciebo/lib.php');
 require_once($CFG->dirroot.'/lib/setuplib.php');
 
 class folder_generator{
+
+    /** @var \tool_oauth2sciebo\sciebo client instance for server access. */
     private $sciebo;
+
     public function __construct () {
         $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
             'callback'  => 'yes',
@@ -81,11 +84,19 @@ class folder_generator{
             notice($xml->meta->message, new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
         }
         return $xml;
-
     }
+
+    /**
+     * Method for creation and deletion of folders for collaborative work.
+     * @param $foldername string specific name of the groupfolder.
+     * @param $intention string 'make' for creating and 'delete' for deletion.
+     * @param $id int identifier of the parent group.
+     * @return bool false if an error occurred.
+     */
     public function make_folder($foldername, $intention, $id) {
         global $DB;
 
+        // Fetch the Token from the DB and store it within the client.
         $token = unserialize(get_config('mod_collaborativefolders', 'token'));
         $this->sciebo->set_access_token($token);
 
@@ -106,7 +117,15 @@ class folder_generator{
 
             $directory = $webdavpath . $id;
             $name = $webdavpath . $id . '/' . $foldername;
-            $this->sciebo->make_folder($directory, $name);
+
+            // If one of the folders could not be created, false is returned.
+            if (($this->sciebo->make_folder($directory)) != 201) {
+                return false;
+            }
+            if (($this->sciebo->make_folder($name)) != 201) {
+                // TODO: Delete the parent folder in this case. Could be possible with a recursive call.
+                return false;
+            }
 
         } else if ($intention == 'delete') {
 
