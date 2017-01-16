@@ -21,17 +21,14 @@
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-use mod_collaborativefolders\folder_generator;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot.'/repository/sciebo/lib.php');
-require_once($CFG->libdir.'/webdavlib.php');
 require_once($CFG->dirroot.'/lib/setuplib.php');
 
 /**
@@ -43,45 +40,36 @@ require_once($CFG->dirroot.'/lib/setuplib.php');
  */
 class mod_collaborativefolders_mod_form extends moodleform_mod {
 
-    /**
-     * Defines forms elements
-     */
     public function definition() {
-        global $CFG, $PAGE, $COURSE;
+        global $CFG;
 
         $mform = $this->_form;
 
-        // Adding the "general" fieldset, where all the common settings are showed.
+        // Adding the "general" fieldset, where all the common settings are shown.
         $mform->addElement('header', 'general', get_string('general', 'form'));
-
-        // Adding the standard "name" field.
+        // Name of the folder, which is chosen by the teacher. A folder with the same name will be created in ownCloud.
         $mform->addElement('text', 'name', get_string('collaborativefoldersname', 'collaborativefolders'), array('size' => '64'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEANHTML);
-        }
+        $mform->setType('name', PARAM_RAW_TRIMMED);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
+        // Name of this instance.
         $mform->addElement('text', 'foldername', get_string('fieldsetgroups', 'collaborativefolders'), array('size' => '64'));
         $mform->setType('foldername', PARAM_RAW_TRIMMED);
         $mform->addRule('foldername', null, 'required', null, 'client');
-        if ($CFG->branch >= 29) {
-            $this->standard_intro_elements();
-        } else {
-            $this->add_intro_editor();
-        }
-        $renderer = $PAGE->get_renderer('mod_collaborativefolders');
-        $mform->addElement('header', 'groupmodus', get_string('createforall', 'collaborativefolders'));
-        $mform->addElement('checkbox', 'Groupmode', 'Enable Groupmode');
-        $arrayofgroups = $this->get_relevant_fields();
-        foreach ($arrayofgroups as $id => $group){
-            $mform->addElement('advcheckbox', $group['id'] , $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
-        }
 
-        // TODO do we need Grades for colaborative Folders?
-        $this->standard_grading_coursemodule_elements();
+        // Adding checkboxes for the groups, whom additional folders shall be created for.
+        $mform->addElement('header', 'group', get_string('createforall', 'collaborativefolders'));
+        $mform->addElement('checkbox', 'groupmode', 'Enable groupmode');
+
+        // All relevant group fields in the DB are fetched and a specific checkbox is added for each.
+        $arrayofgroups = $this->get_group_fields();
+
+        // Those checkboxes are only activated, if the groupmode is checked.
+        foreach ($arrayofgroups as $id => $group){
+            $mform->addElement('advcheckbox', $group['id'], $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
+            $mform->disabledIf($group['id'], 'groupmode');
+        }
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
@@ -89,14 +77,15 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
-    public function get_all_groups() {
-        global $DB;
-        // TODO for Performance reasons only get neccessary record
-        return $DB->get_records('groups');
-    }
 
-    public function get_relevant_fields() {
-        $allgroups = $this->get_all_groups();
+    /**
+     * Helper function for fetching group information from the active course.
+     * @return array course group fields.
+     */
+    private function get_group_fields() {
+        global $DB;
+
+        $allgroups = $DB->get_records('groups');
         $relevantinformation = array();
         foreach ($allgroups as $key => $group) {
             $relevantinformation[$key]['name'] = $group->name;
@@ -104,15 +93,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
             $numberofparticipants = count(groups_get_members($group->id));
             $relevantinformation[$key]['numberofparticipants'] = $numberofparticipants;
         }
+
         return $relevantinformation;
-
-    }
-
-    public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-        $foldergenerator = new folder_generator();
-        /*if ($foldergenerator->check_for_404_error($data['foldername']) == false) {
-            $errors['timeviewto'] = get_string('viewtodatevalidation', 'data');
-        }*/
     }
 }
