@@ -59,5 +59,5 @@ $string['failedtoaddfolder'] = 'Your request failed.';
 $string['successtoaddfolder'] = 'The Folder was sucessfull added to your account.';
 $string['choosedifferentfoldername'] = 'Please choose another foldername.';
 $string['authorize'] = 'Add to personal account';
-
+$string['notallowed'] = 'Sadly your are currently not allowed to view this content. Quiet likely you are not a member of a group for this Module.';
 
