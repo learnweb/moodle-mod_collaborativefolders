@@ -47,16 +47,20 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
-    public function render_view_page($externalurl, $cmid, $isntanceid) {
+    public function render_view_page($externalurl, $cmid, $isntanceid, $availability) {
         global $OUTPUT;
         $output = '';
-        $output .= $OUTPUT->heading('Link to collaborative Folder');
-        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($externalurl . '&download', 'hier')));
-        $output .= html_writer::div(' ');
-        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($externalurl, 'hier')));
-        $formhandler = new handleform();
-        $myform = $formhandler->handle_my_form($cmid, $isntanceid);
-        $output .= html_writer::div($myform->display(), 'myform');
+        if ($availability == true) {
+            $output .= $OUTPUT->heading('Link to collaborative Folder');
+            $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($externalurl . '&download', 'hier')));
+            $output .= html_writer::div(' ');
+            $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($externalurl, 'hier')));
+            $formhandler = new handleform();
+            $myform = $formhandler->handle_my_form($cmid, $isntanceid);
+            $output .= html_writer::div($myform->display(), 'myform');
+        } else {
+            $output .= html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
+        }
         return $output;
     }
 

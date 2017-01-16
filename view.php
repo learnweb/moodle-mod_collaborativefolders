@@ -39,45 +39,42 @@ require_login($course, true, $cm);
 
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
 
+$userid = $USER->id;
+$arrayofgroups = groups_get_user_groups($course->id, $userid);
+$groupmode = $DB->get_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
+
+$shouldsee = false;
+if (!empty($groupmode) && !empty($arrayofgroups[0])) {
+    foreach ($groupmode as $modgroup) {
+        foreach ($arrayofgroups[0] as $key => $membergroup) {
+            if ($modgroup->id == $membergroup) {
+                $shouldsee = true;
+                break;
+            }
+        }
+        if ($shouldsee == true) {
+            break;
+        }
+    }
+}
+
+if (empty($groupmode)) {
+    $shouldsee = true;
+}
+
+$PAGE->set_title(format_string($collaborativefolders->name));
+$PAGE->set_heading(format_string($course->fullname));
+
+$renderer = $PAGE->get_renderer('mod_collaborativefolders');
+echo $renderer->create_header();
+
+$myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->id));
+$availability = $shouldsee;
+echo $renderer->render_view_page($collaborativefolders->externalurl, $cm->id, $collaborativefolders->id, $availability);
+
 $formhandler = new handleform();
 $myform = $formhandler->handle_my_form($cm->id, $collaborativefolders->id);
-
-// TODO does not work yet : Coding error detected, it must be fixed by a programmer: The course_module_viewed event must define objectid and object table.
-
-/*$event = \mod_collaborativefolders\event\course_module_viewed::create(array(
-        'objectid' => 18,
-        'context' => context_module::instance(123),
-    ));
-/*    $event->add_record_snapshot('course', $PAGE->course);
-    $event->add_record_snapshot($PAGE->cm->modname, $collaborativefolders);*/
-    /*$event->trigger();*/
-
-// Print the page header.
-
-    $PAGE->set_title(format_string($collaborativefolders->name));
-    $PAGE->set_heading(format_string($course->fullname));
-// $PAGE->set_cacheable(false);
-
-    /*
-     * Other things you may want to set - remove if not needed.
-     * $PAGE->set_cacheable(false);
-     * $PAGE->set_focuscontrol('some-html-id');
-     * $PAGE->add_body_class('collaborativefolders-'.$somevar);
-     */
-    $renderer = $PAGE->get_renderer('mod_collaborativefolders');
-    echo $renderer->create_header();
-    // Output starts here.
-
-
-    // Conditions to show the intro can change to look for own settings or whatever.
- /*   if ($collaborativefolders->intro) {
-        echo $OUTPUT->box(format_module_intro('collaborativefolders', $collaborativefolders, $cm->id), 'generalbox mod_introbox', 'collaborativefoldersintro');
-    }*/
-
-    $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->id));
-    echo $renderer->render_view_page($collaborativefolders->externalurl, $cm->id, $collaborativefolders->id);
-
 // Finish the page.
-    echo $renderer->create_footer();
+echo $renderer->create_footer();
 
 
