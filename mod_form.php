@@ -77,7 +77,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addElement('checkbox', 'Groupmode', 'Enable Groupmode');
         $arrayofgroups = $this->get_relevant_fields();
         foreach ($arrayofgroups as $id => $group){
-            $mform->addElement('advcheckbox', $group['id'] , $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
+            $mform->addElement('advcheckbox', '' . $group['id'] , $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
         }
 
         // TODO do we need Grades for colaborative Folders?

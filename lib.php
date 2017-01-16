@@ -86,15 +86,17 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     if($fromform = $mform->get_data()) {
         $thisdata = $mform->get_data();
         $allgroups = $DB->get_records('groups');
-        $groups = array();
+//        $groups = array();
         foreach ($allgroups as $group){
-            $identifierstring = $group->id;
-
-            if ($thisdata->$identifierstring == 1) {
+            $identifierstring = '' . $group->id;
+            $arraydata = get_object_vars($thisdata);
+            if ($arraydata[$identifierstring] == '1') {
+                $databaserecord['modid'] = $collaborativefolders->id ;
+                $databaserecord['groupid'] = $group->id;
+                $DB->insert_record('collaborativefolders_group', $databaserecord);
                 $groups['id'] = $group;
             }
         }
-        echo print_r($groups);
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
                 $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id . $relevantgroup->id);
