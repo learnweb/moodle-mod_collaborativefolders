@@ -64,7 +64,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
-        $mform->addElement('text', 'foldername', get_string('fieldsetgroups', 'collaborativefolders'));
+        $mform->addElement('text', 'foldername', get_string('fieldsetgroups', 'collaborativefolders'), array('size' => '64'));
         $mform->setType('foldername', PARAM_RAW_TRIMMED);
         $mform->addRule('foldername', null, 'required', null, 'client');
         if ($CFG->branch >= 29) {
