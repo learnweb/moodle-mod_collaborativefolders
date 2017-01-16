@@ -126,7 +126,7 @@ class folder_generator{
                 // TODO: Delete the parent folder in this case. Could be possible with a recursive call.
                 return false;
             }
-
+        }
         else if ($intention == 'delete') {
 
             $path = $webdavpath . '/' . $id . '/' . $foldername;
