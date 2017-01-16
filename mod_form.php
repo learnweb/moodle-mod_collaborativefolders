@@ -35,7 +35,8 @@ require_once($CFG->dirroot.'/lib/setuplib.php');
  * Module instance settings form
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_collaborativefolders_mod_form extends moodleform_mod {
@@ -60,7 +61,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 
         // Adding checkboxes for the groups, whom additional folders shall be created for.
         $mform->addElement('header', 'group', get_string('createforall', 'collaborativefolders'));
-        $mform->addElement('checkbox', 'groupmode', 'Enable groupmode');
+        $mform->addElement('checkbox', 'mode', 'Enable groupmode');
 
         // All relevant group fields in the DB are fetched and a specific checkbox is added for each.
         $arrayofgroups = $this->get_group_fields();
@@ -68,7 +69,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Those checkboxes are only activated, if the groupmode is checked.
         foreach ($arrayofgroups as $id => $group){
             $mform->addElement('advcheckbox', $group['id'], $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
-            $mform->disabledIf($group['id'], 'groupmode');
+            $mform->disabledIf($group['id'], 'mode');
         }
 
         // Add standard elements, common to all modules.

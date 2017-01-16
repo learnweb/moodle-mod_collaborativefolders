@@ -21,17 +21,17 @@
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_collaborativefolders;
 
-global $CFG;
-use moodleform;
-
-require_once("$CFG->libdir/formslib.php");
-
 defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+
+use moodleform;
 
 class enrol_yourself_form extends moodleform {
 

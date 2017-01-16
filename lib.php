@@ -29,7 +29,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_collaborativefolders\folder_generator;
+use mod_collaborativefolders\owncloud_access;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -83,7 +83,7 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
-    $helper = new folder_generator();
+    $helper = new owncloud_access();
     $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
 //    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
 
@@ -113,7 +113,7 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $result = $DB->update_record('collaborativefolders', $collaborativefolders);
 
-    $helper = new folder_generator();
+    $helper = new owncloud_access();
     $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
 //    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
 
@@ -169,7 +169,7 @@ function collaborativefolders_delete_instance($id) {
     if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     }
-    $helper = new folder_generator();
+    $helper = new owncloud_access();
     $helper->make_folder($collaborativefolders->foldername, 'delete', $collaborativefolders->id);
 
     // Delete any dependent records here.

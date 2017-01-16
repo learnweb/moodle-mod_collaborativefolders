@@ -23,19 +23,18 @@
  */
 namespace mod_collaborativefolders;
 
-use mod_collaborativefolders\enrol_yourself_form;
-use mod_collaborativefolders\folder_generator;
+//use mod_collaborativefolders\enrol_yourself_form;
+//use mod_collaborativefolders\folder_generator;
 
-class handleform {
+class enrol_handler {
 
     public function handle_my_form($id, $modid) {
         global $DB;
         $mform = new enrol_yourself_form($id, $modid);
 
+        // Handle form cancel operation, if cancel button is present on form.
         if ($mform->is_cancelled()) {
-            // notice has exit in it
             notice(get_string('cancelform', 'mod_collaborativefolders'), new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
-            // Handle form cancel operation, if cancel button is present on form
         }
          if ($fromform = $mform->get_data()) {
             // In this case you process validated data. $mform->get_data() returns data posted in form.
@@ -48,15 +47,7 @@ class handleform {
             $foldergenerator->add_to_personal_account($collaborativefolders->id . '/' . $collaborativefolders->foldername, $scieboidentifier, $id);
 
         }
-//            $mform->set_data($toform);
-            //displays the form
-//            $mform->display();}
 
-        // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
-        // or on the first display of the form.
-
-        // Set default data (if any)
-        // displays the form
         return $mform;
     }
 

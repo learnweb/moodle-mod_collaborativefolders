@@ -21,7 +21,8 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 WWU
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,10 +35,10 @@ use webdav_client;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot.'/repository/sciebo/lib.php');
+
 require_once($CFG->dirroot.'/lib/setuplib.php');
 
-class folder_generator{
+class owncloud_access {
 
     /** @var \tool_oauth2sciebo\sciebo client instance for server access. */
     private $sciebo;
@@ -182,27 +183,4 @@ class folder_generator{
 //        // in the namespace of the concerning window (e.g. http://localhost/owncloud/...).
 //        return $pref . 'uni-muenster.sciebo.de' . '/public.php?service=files&t=' . $fileid;
     }
-
-    /**
-     * @param $path
-     * @return bool true when 404 error is returned
-     */
-    /*public function check_for_404_error($foldername) {
-        $mywebdavclient = $this->make_webdavclient();
-        $webdavpath = rtrim('/' . ltrim('remote.php/webdav/', '/ '), '/ ');
-        $result = $mywebdavclient->get($webdavpath . '/' . $foldername, $buffer);
-        if ($result == 404) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private function make_webdavclient() {
-        $mywebdavclient = new sciebo_client('uni-muenster.sciebo.de', 'collaborativefolder.pbox@uni-muenster.de',
-            '', 'basic', 'ssl://');
-        $mywebdavclient->port = 443;
-        $mywebdavclient->path = 'remote.php/webdav/';
-        return $mywebdavclient;
-    }*/
 }
