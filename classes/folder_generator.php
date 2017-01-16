@@ -86,22 +86,36 @@ class folder_generator{
     public function make_folder($foldername, $intention, $id) {
         global $DB;
 
-        $token = get_config('mod_collaborativefolders', 'token');
+        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
+        $this->sciebo->set_access_token($token);
+
+        // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
+        // Further failure resolution has to be provided in near future.
+        if (!$this->sciebo->is_logged_in()) {
+            return false;
+        }
 
         if (!$this->sciebo->dav->open()) {
             return false;
         }
-        $webdavpath = rtrim('/' . ltrim('owncloud9.2/remote.php/webdav/', '/ '), '/ ');
+
+        // WebDAV path is generated from the required admin settings for the ownCloud Server.
+        $webdavpath = '/' . get_config('tool_oauth2sciebo', 'path');
+
         if ($intention == 'make') {
-            $path = $webdavpath . '/' . $id;
-            $namepath = $webdavpath . '/' . $id . '/' . $foldername;
-            $token = get_config('mod_collaborativefolders', 'token');
-            $this->sciebo->make_folder($token, $foldername, $id);
 
-
+            $directory = $webdavpath . $id;
+            $name = $webdavpath . $id . '/' . $foldername;
+            $this->sciebo->make_folder($directory, $name);
         }
-        if ($intention == 'delete') {
-            $this->sciebo->delete_folder($token, $foldername, $id);
+
+        else if ($intention == 'delete') {
+
+            $path = $webdavpath . '/' . $id . '/' . $foldername;
+            $this->sciebo->delete_folder($path);
+
+        } else {
+            return false;
         }
     }
 
