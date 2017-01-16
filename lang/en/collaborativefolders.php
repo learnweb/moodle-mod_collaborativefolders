@@ -48,7 +48,7 @@ $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
 $string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
-$string['createforall'] = 'Creates shares for individual group';
+$string['createforall'] = 'Creates Share for single groups';
 $string['existinggroups'] = 'Existing Groups';
 $string['externalurl'] = 'Link the Place the shared Folder';
 $string['textview.php'] = 'Im folgenden finden sie Ihren Link zu dem Ordner für kollaboratives Arbeiten:';
@@ -65,6 +65,5 @@ $string['cancelform'] = 'You canceled the form.';
 $string['failedtoaddfolder'] = 'Your request failed.';
 $string['successtoaddfolder'] = 'The Folder was sucessfull added to your account.';
 $string['choosedifferentfoldername'] = 'Please choose another foldername.';
-$string['authorize'] = 'Add to personal account';
 
 
