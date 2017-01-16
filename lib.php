@@ -86,7 +86,7 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     if($fromform = $mform->get_data()) {
         $thisdata = $mform->get_data();
         $allgroups = $DB->get_records('groups');
-//        $groups = array();
+        $groups = array();
         foreach ($allgroups as $group){
             $identifierstring = '' . $group->id;
             $arraydata = get_object_vars($thisdata);
@@ -97,15 +97,17 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
                 $groups['id'] = $group;
             }
         }
+        $path = $collaborativefolders->id;
+        $helper->make_folder('make', $path);
+        $collaborativefolders->externalurl = $helper->get_link($path);
+
+
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
-                $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id . $relevantgroup->id);
-                $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . $relevantgroup->id . '/' . $collaborativefolders->foldername);
+                $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
+                $helper->make_folder('make', $path);
+                $collaborativefolders->externalurl = $helper->get_link($path);
             }
-
-        } else {
-            $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
-            $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
         }
     }
 

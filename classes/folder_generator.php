@@ -75,7 +75,7 @@ class folder_generator{
         return $xml;
 
     }
-    public function make_folder($foldername, $intention, $id) {
+    public function make_folder($intention, $path) {
         global $DB;
         $mywebdavclient = $this->make_webdavclient();
 
@@ -83,12 +83,12 @@ class folder_generator{
         $webdavpath = rtrim('/' . ltrim('remote.php/webdav/', '/ '), '/ ');
 
         if ($intention == 'make') {
-            $mywebdavclient->mkcol($webdavpath . '/' . $id);
-            $mywebdavclient->mkcol($webdavpath . '/' . $id . '/' . $foldername);
+
+            $mywebdavclient->mkcol($webdavpath . '/' . $path);
 
         }
         if ($intention == 'delete') {
-            $mywebdavclient->delete($webdavpath . '/' . $id . '/' . $foldername);
+            $mywebdavclient->delete($webdavpath . '/' . $path);
         }
         $mywebdavclient->debug = false;
         $mywebdavclient->close();
