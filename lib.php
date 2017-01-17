@@ -25,7 +25,8 @@
  * Moodle is performing actions across all modules.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -78,14 +79,37 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     global $DB;
 
     $collaborativefolders->timecreated = time();
-
-    // You may have to add extra stuff in here.
-
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
     $helper = new owncloud_access();
-    $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
-//    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
+
+    if($fromform = $mform->get_data()) {
+        $thisdata = $mform->get_data();
+        $allgroups = $DB->get_records('groups');
+        $groups = array();
+        foreach ($allgroups as $group){
+            $identifierstring = '' . $group->id;
+            $arraydata = get_object_vars($thisdata);
+            if ($arraydata[$identifierstring] == '1') {
+                $databaserecord['modid'] = $collaborativefolders->id ;
+                $databaserecord['groupid'] = $group->id;
+                $DB->insert_record('collaborativefolders_group', $databaserecord);
+                $groups['id'] = $group;
+            }
+        }
+        $path = $collaborativefolders->id;
+        $helper->make_folder('make', $path);
+        $collaborativefolders->externalurl = $helper->get_link($path);
+
+
+        if (!empty($groups)) {
+            foreach ($groups as $relevantgroup) {
+                $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
+                $helper->make_folder('make', $path);
+                $collaborativefolders->externalurl = $helper->get_link($path);
+            }
+        }
+    }
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
@@ -115,7 +139,7 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $helper = new owncloud_access();
     $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
-//    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
+    $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
 
     collaborativefolders_grade_item_update($collaborativefolders);
 

@@ -28,13 +28,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// TODO: Be more specific.
-$string['adminloggedininfo'] = 'You are already logged in.';
-$string['description'] = 'The Account you register will be used to save the data of all collaborativefolders. Depending on the size 
-of your Moodle-instance you should consider the amount of storage the user has.';
-$string['adminloggedininfo'] = 'You already logged in with a account. You are not able to change the account since this would result in 
-numerous problems. The only way to change the account is to uninstall the Plugin and therefore delete all existing instances.';
-$string['loggedin'] = 'Description in form of a warning.';
 $string['modulename'] = 'collaborativefolders';
 $string['modulenameplural'] = 'collaborativefolders';
 $string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
@@ -48,7 +41,7 @@ $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
 $string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
-$string['createforall'] = 'Creates Share for single groups';
+$string['createforall'] = 'Creates shares for individual group';
 $string['existinggroups'] = 'Existing Groups';
 $string['externalurl'] = 'Link the Place the shared Folder';
 $string['textview.php'] = 'Im folgenden finden sie Ihren Link zu dem Ordner für kollaboratives Arbeiten:';
@@ -65,5 +58,6 @@ $string['cancelform'] = 'You canceled the form.';
 $string['failedtoaddfolder'] = 'Your request failed.';
 $string['successtoaddfolder'] = 'The Folder was sucessfull added to your account.';
 $string['choosedifferentfoldername'] = 'Please choose another foldername.';
-
+$string['authorize'] = 'Add to personal account';
+$string['notallowed'] = 'Sadly your are currently not allowed to view this content. Quiet likely you are not a member of a group for this Module.';
 
