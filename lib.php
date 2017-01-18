@@ -113,8 +113,6 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
-    collaborativefolders_grade_item_update($collaborativefolders);
-
     return $collaborativefolders->id;
 }
 
@@ -140,8 +138,6 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
     $helper = new owncloud_access();
     $helper->make_folder($collaborativefolders->foldername, 'make', $collaborativefolders->id);
     $collaborativefolders->externalurl = $helper->get_link($collaborativefolders->id . '/' . $collaborativefolders->foldername);
-
-    collaborativefolders_grade_item_update($collaborativefolders);
 
     return $result;
 }
@@ -199,8 +195,6 @@ function collaborativefolders_delete_instance($id) {
     // Delete any dependent records here.
 
     $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
-
-    collaborativefolders_grade_item_delete($collaborativefolders);
 
     return true;
 }
@@ -312,27 +306,6 @@ function collaborativefolders_get_extra_capabilities() {
     return array();
 }
 
-/* Gradebook API */
-
-/**
- * Is a given scale used by the instance of collaborativefolders?
- *
- * This function returns if a scale is being used by one collaborativefolders
- * if it has support for grading and scales.
- *
- * @param int $collaborativefoldersid ID of an instance of this module
- * @param int $scaleid ID of the scale
- * @return bool true if the scale is used by the given collaborativefolders instance
- */
-function collaborativefolders_scale_used($collaborativefoldersid, $scaleid) {
-    global $DB;
-
-    if ($scaleid and $DB->record_exists('collaborativefolders', array('id' => $collaborativefoldersid, 'grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 /**
  * Checks if scale is being used by any instance of collaborativefolders.
@@ -343,65 +316,8 @@ function collaborativefolders_scale_used($collaborativefoldersid, $scaleid) {
  * @return boolean true if the scale is used by any collaborativefolders instance
  */
 function collaborativefolders_scale_used_anywhere($scaleid) {
-    global $DB;
-
-    if ($scaleid and $DB->record_exists('collaborativefolders', array('grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
-
-/**
- * Creates or updates grade item for the given collaborativefolders instance
- *
- * Needed by {@link grade_update_mod_grades()}.
- *
- * @param stdClass $collaborativefolders instance object with extra cmidnumber and modname property
- * @param bool $reset reset grades in the gradebook
- * @return void
- */
-function collaborativefolders_grade_item_update(stdClass $collaborativefolders, $reset=false) {
-    global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-
-    $item = array();
-    $item['itemname'] = clean_param($collaborativefolders->name, PARAM_NOTAGS);
-    $item['gradetype'] = GRADE_TYPE_VALUE;
-
-    if ($collaborativefolders->grade > 0) {
-        $item['gradetype'] = GRADE_TYPE_VALUE;
-        $item['grademax']  = $collaborativefolders->grade;
-        $item['grademin']  = 0;
-    } else if ($collaborativefolders->grade < 0) {
-        $item['gradetype'] = GRADE_TYPE_SCALE;
-        $item['scaleid']   = -$collaborativefolders->grade;
-    } else {
-        $item['gradetype'] = GRADE_TYPE_NONE;
-    }
-
-    if ($reset) {
-        $item['reset'] = true;
-    }
-
-    grade_update('mod/collaborativefolders', $collaborativefolders->course, 'mod', 'collaborativefolders',
-            $collaborativefolders->id, 0, null, $item);
-}
-
-/**
- * Delete grade item for given collaborativefolders instance
- *
- * @param stdClass $collaborativefolders instance object
- * @return grade_item
- */
-function collaborativefolders_grade_item_delete($collaborativefolders) {
-    global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-
-    return grade_update('mod/collaborativefolders', $collaborativefolders->course, 'mod', 'collaborativefolders',
-            $collaborativefolders->id, 0, null, array('deleted' => 1));
-}
-
 
 /* File API */
 
