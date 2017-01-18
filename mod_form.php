@@ -59,6 +59,12 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->setType('foldername', PARAM_RAW_TRIMMED);
         $mform->addRule('foldername', null, 'required', null, 'client');
 
+        if ($CFG->branch >= 29) {
+            $this->standard_intro_elements();
+        } else {
+            $this->add_intro_editor();
+        }
+
         // Adding checkboxes for the groups, whom additional folders shall be created for.
         $mform->addElement('header', 'group', get_string('createforall', 'collaborativefolders'));
         $mform->addElement('checkbox', 'mode', 'Enable groupmode');
