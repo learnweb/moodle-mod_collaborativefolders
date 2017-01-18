@@ -51,7 +51,7 @@ if (empty($arrayofgroups) || empty($groupmode)) {
 } else if (!empty($groupmode) && !empty($arrayofgroups[0])) {
     foreach ($groupmode as $modgroup) {
         foreach ($arrayofgroups[0] as $key => $membergroup) {
-            if ($modgroup->id == $membergroup) {
+            if ($modgroup->id == $membergroup[$key]) {
                 $shouldsee = true;
                 break;
             }
