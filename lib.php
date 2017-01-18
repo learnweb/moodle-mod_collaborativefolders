@@ -87,14 +87,14 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
         $thisdata = $mform->get_data();
         $allgroups = $DB->get_records('groups');
         $groups = array();
-        foreach ($allgroups as $group){
+        foreach ($allgroups as $key => $group){
             $identifierstring = '' . $group->id;
             $arraydata = get_object_vars($thisdata);
             if ($arraydata[$identifierstring] == '1') {
                 $databaserecord['modid'] = $collaborativefolders->id ;
                 $databaserecord['groupid'] = $group->id;
                 $DB->insert_record('collaborativefolders_group', $databaserecord);
-                $groups['id'] = $group;
+                $groups[$key] = $group;
             }
         }
         $path = $collaborativefolders->id;
