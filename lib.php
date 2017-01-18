@@ -98,14 +98,14 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
             }
         }
         $path = $collaborativefolders->id;
-        $helper->make_folder('make', '/' . $path);
+        $helper->make_folder('make', $path);
         $collaborativefolders->externalurl = $helper->get_link($path);
 
 
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
                 $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
-                $helper->make_folder('make', '/' . $path);
+                $helper->make_folder('make', $path);
                 $collaborativefolders->externalurl = $helper->get_link($path);
             }
         }
