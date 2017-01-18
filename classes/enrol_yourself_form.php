@@ -21,17 +21,17 @@
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_collaborativefolders;
 
-global $CFG;
-use moodleform;
-
-require_once("$CFG->libdir/formslib.php");
-
 defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+
+use moodleform;
 
 class enrol_yourself_form extends moodleform {
 
@@ -57,7 +57,9 @@ class enrol_yourself_form extends moodleform {
         $mform->addRule('name', get_string('maximumchars', '', 80), 'maxlength', 80, 'client');
         $mform->setDefault('name', get_string('addtosciebo', 'collaborativefolders'));
         $mform->addHelpButton('name', 'Sciebo-email', 'collaborativefolders');
-        $this->add_action_buttons(true);
+        $mform->addElement('button', 'authorize', get_string('authorize', 'collaborativefolders'));
+        $mform->addHelpButton('authorize', 'Sciebo-email', 'collaborativefolders');
+        $this->add_action_buttons(false, get_string('authorize', 'collaborativefolders'));
     }
     public function validation($data, $files) {
         return array();

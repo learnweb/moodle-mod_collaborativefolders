@@ -17,8 +17,9 @@
 /**
  * Renderer for the Web interface of deprovisionuser
  *
- * @package    tool_deprovisionuser
- * @copyright  2016 N Herrmann
+ * @package    mod_collaborativefolders
+ * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,21 +31,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-use mod_collaborativefolders\handleform;
+use mod_collaborativefolders\enrol_handler;
 
 class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
-    public function render_table_of_existing_groups($myarray) {
-
-        $table = new html_table();
-        $table->head = array(get_string('existinggroups', 'mod_collaborativefolders'), 'id', 'Number of Participants');
-        $table->attributes['class'] = 'admintable deprovisionuser generaltable';
-        $table->data = array();
-        foreach ($myarray as $key => $group) {
-            $table->data[$key] = $group;
-        }
-        return $table;
-    }
     public function render_column_for_existing_groups($onegroup) {
         $table = new html_table();
         $table->attributes['class'] = 'admintable deprovisionuser generaltable';
@@ -58,16 +48,26 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
-    public function render_view_page($externalurl, $cmid, $isntanceid) {
+    public function render_view_page($externalurl, $cmid, $isntanceid, $availability) {
         global $OUTPUT;
         $output = '';
-        $output .= $OUTPUT->heading('Link to collaborative Folder');
-        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders', html_writer::link($externalurl . '&download', 'hier')));
-        $output .= html_writer::div(' ');
-        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders', html_writer::link($externalurl, 'hier')));
-        $formhandler = new handleform();
-        $myform = $formhandler->handle_my_form($cmid, $isntanceid);
-        $output .= html_writer::div($myform->display(), 'myform');
+
+        if ($availability == true) {
+
+            $output .= $OUTPUT->heading('Link to collaborative Folder');
+            $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
+                    html_writer::link($externalurl . '&download', 'hier')));
+            $output .= html_writer::div(' ');
+            $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+                    html_writer::link($externalurl, 'hier')));
+            $formhandler = new enrol_handler();
+            $myform = $formhandler->handle_my_form($cmid, $isntanceid);
+            $output .= html_writer::div($myform->display(), 'myform');
+
+        } else {
+            $output .= html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
+        }
+
         return $output;
     }
 
