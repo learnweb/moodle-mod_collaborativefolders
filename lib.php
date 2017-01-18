@@ -402,23 +402,6 @@ function collaborativefolders_grade_item_delete($collaborativefolders) {
             $collaborativefolders->id, 0, null, array('deleted' => 1));
 }
 
-/**
- * Update collaborativefolders grades in the gradebook
- *
- * Needed by {@link grade_update_mod_grades()}.
- *
- * @param stdClass $collaborativefolders instance object with extra cmidnumber and modname property
- * @param int $userid update grade of specific user only, 0 means all participants
- */
-function collaborativefolders_update_grades(stdClass $collaborativefolders, $userid = 0) {
-    global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
-
-    // Populate array of grade objects indexed by userid.
-    $grades = array();
-
-    grade_update('mod/collaborativefolders', $collaborativefolders->course, 'mod', 'collaborativefolders', $collaborativefolders->id, 0, $grades);
-}
 
 /* File API */
 
