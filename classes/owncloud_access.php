@@ -94,7 +94,7 @@ class owncloud_access {
      * @param $id int identifier of the parent group.
      * @return bool false if an error occurred.
      */
-    public function make_folder($foldername, $intention, $id) {
+    public function make_folder($intention, $path) {
         global $DB;
 
         // Fetch the Token from the DB and store it within the client.
@@ -112,26 +112,18 @@ class owncloud_access {
         }
 
         // WebDAV path is generated from the required admin settings for the ownCloud Server.
-        $webdavpath = '/' . get_config('tool_oauth2sciebo', 'path');
+        $webdavpath = '/' . get_config('tool_oauth2sciebo', 'path') . $path;
 
         if ($intention == 'make') {
 
-            $directory = $webdavpath . $id;
-            $name = $webdavpath . $id . '/' . $foldername;
-
             // If one of the folders could not be created, false is returned.
-            if (($this->sciebo->make_folder($directory)) != 201) {
-                return false;
-            }
-            if (($this->sciebo->make_folder($name)) != 201) {
-                // TODO: Delete the parent folder in this case. Could be possible with a recursive call.
+            if (($this->sciebo->make_folder($webdavpath)) != 201) {
                 return false;
             }
 
         } else if ($intention == 'delete') {
 
-            $path = $webdavpath . '/' . $id . '/' . $foldername;
-            $this->sciebo->delete_folder($path);
+            $this->sciebo->delete_folder($webdavpath);
 
         } else {
             return false;
