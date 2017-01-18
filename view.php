@@ -26,7 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_collaborativefolders\handleform;
+use mod_collaborativefolders\enrol_handler;
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -73,7 +73,7 @@ $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->id));
 $availability = $shouldsee;
 echo $renderer->render_view_page($collaborativefolders->externalurl, $cm->id, $collaborativefolders->id, $availability);
 
-$formhandler = new handleform();
+$formhandler = new enrol_handler();
 $myform = $formhandler->handle_my_form($cm->id, $collaborativefolders->id);
 // Finish the page.
 echo $renderer->create_footer();
