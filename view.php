@@ -50,8 +50,9 @@ if (empty($arrayofgroups) || empty($groupmode)) {
     $shouldsee = true;
 } else if (!empty($groupmode) && !empty($arrayofgroups[0])) {
     foreach ($groupmode as $modgroup) {
-        foreach ($arrayofgroups[0] as $key => $membergroup) {
-            if ($modgroup->id == $membergroup[$key]) {
+        $membergroup = $arrayofgroups[0];
+        for ($i = 0; $i < count($membergroup) ; $i++) {
+            if ($modgroup->id == $membergroup[$i]) {
                 $shouldsee = true;
                 break;
             }
