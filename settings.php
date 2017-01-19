@@ -17,8 +17,8 @@
 /**
  * Settings.php for collaborativefolders activity module. Manages the login to an ownCloud account.
  *
- * TODO: Enable logout if needed.
- * TODO: Rework the login check: page has to be reloaded multiple times before the user is logged in.
+ * TODO: Find a more elegant way to show a login window with AJAX.
+ * TODO: Add language strings.
  *
  * @package    mod_collaborativefolders
  * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
@@ -30,9 +30,6 @@ defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
 
 if ($ADMIN->fulltree) {
 
-    $settings->add(new admin_setting_heading('collaborativefolders', get_string('generalconfig', 'chat'),
-        'Some other text.'));
-
     // A OAuth 2.0 and WebDAV client is needed in order to login to ownCloud.
     $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
         'callback'  => 'yes',
@@ -41,36 +38,31 @@ if ($ADMIN->fulltree) {
 
     $sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
 
-    // If no Access Token is stored, the Administrator is not logged in yet.
-    if (empty(get_config('mod_collaborativefolders', 'token'))) {
-
-        $url = $sciebo->get_login_url();
-        $settings->add(new admin_setting_heading('LinkGenerator', 'Link',
-                html_writer::link($url, 'Login', array('target' => '_blank'))));
-
+    // If the logout Button was pressed, the stored Access Token has to be deleted and a login link shown.
+    if (isset($_GET['out'])) {
+        set_config('token', null, 'mod_collaborativefolders');
         $sciebo->set_access_token(null);
 
-        // Token only gets set, when the user is logged in. Otherwise he couldnt log in.
+        $url = $sciebo->get_login_url();
+        $settings->add(new admin_setting_heading('in1', 'Login',
+                html_writer::link($url, 'Login', array('target' => '_blank'))));
+    } else {
+        // If an authorization code was retrieved or if the user already was logged in, the token gets stored
+        // globally and a logout link is shown.
         if ($sciebo->is_logged_in()) {
             // Since the token is an Object, it has to be serialized before it can be stored in the DB.
             $token = serialize($sciebo->get_accesstoken());
             set_config('token', $token, 'mod_collaborativefolders');
+
+            $url = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders',
+                    array('out' => 1));
+
+            $settings->add(new admin_setting_heading('out1', 'Logout',
+                    html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
+        } else {
+            $url = $sciebo->get_login_url();
+            $settings->add(new admin_setting_heading('in2', 'Login',
+                    html_writer::link($url, 'Login', array('target' => '_blank'))));
         }
-
-    } else {
-
-        // Delete comments if you want to log out. Only for debugging.
-
-        //set_config('token', '', 'mod_collaborativefolders');
-        //$sciebo->set_access_token(null);
-
-        // Check the set Access Token. Only for debugging.
-
-        //$token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        //echo var_dump($token);
-
-        $settings->add(new admin_setting_heading('collaborativefolders', 'Already Logged in',
-                'Some text'));
-
     }
 }

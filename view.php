@@ -44,7 +44,7 @@ $userid = $USER->id;
 $arrayofgroups = groups_get_user_groups($course->id, $userid);
 $groupmode = $DB->get_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
 
-$shouldsee = false;
+$shouldsee = true;
 
 if (empty($arrayofgroups) || empty($groupmode)) {
     $shouldsee = true;
