@@ -48,6 +48,9 @@ class owncloud_access {
         ]);
         $this->sciebo = new sciebo($returnurl);
     }
+    public function get_link(){
+
+    }
 
     /**
      * Method for share creation in ownCloud. A share for a specific user and folder is generated.

@@ -70,8 +70,7 @@ $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 echo $renderer->create_header();
 
 $myinstance = $DB->get_record('collaborativefolders', array('id' => $cm->id));
-$availability = $shouldsee;
-echo $renderer->render_view_page($collaborativefolders->externalurl, $cm->id, $collaborativefolders->id, $availability);
+echo $renderer->render_view_page($collaborativefolders->externalurl, $cm->id, $collaborativefolders->id, $shouldsee);
 
 $formhandler = new enrol_handler();
 $myform = $formhandler->handle_my_form($cm->id, $collaborativefolders->id);

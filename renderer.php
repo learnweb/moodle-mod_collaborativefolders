@@ -48,7 +48,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
-    public function render_view_page($externalurl, $cmid, $isntanceid, $availability) {
+    public function render_view_page($externalurl, $cmid, $instanceid, $availability) {
         global $OUTPUT;
         $output = '';
 
@@ -61,7 +61,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
             $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
                     html_writer::link($externalurl, 'hier')));
             $formhandler = new enrol_handler();
-            $myform = $formhandler->handle_my_form($cmid, $isntanceid);
+            $myform = $formhandler->handle_my_form($cmid, $instanceid);
             $output .= html_writer::div($myform->display(), 'myform');
 
         } else {
