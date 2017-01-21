@@ -44,21 +44,15 @@ $userid = $USER->id;
 $arrayofgroups = groups_get_user_groups($course->id, $userid);
 $groupmode = $DB->get_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
 
-$shouldsee = true;
+$shouldsee = false;
 
-if (empty($arrayofgroups) || empty($groupmode)) {
+if (empty($groupmode)) {
     $shouldsee = true;
-} else if (!empty($groupmode) && !empty($arrayofgroups[0])) {
+} else if (!empty($groupmode)) {
+
     foreach ($groupmode as $modgroup) {
-        $membergroup = $arrayofgroups[0];
-        for ($i = 0; $i < count($membergroup) ; $i++) {
-            if ($modgroup->id == $membergroup[$i]) {
-                $shouldsee = true;
-                break;
-            }
-        }
-        if ($shouldsee == true) {
-            break;
+        if (groups_is_member($modgroup->groupid, $userid)) {
+            $shouldsee = true;
         }
     }
 }
