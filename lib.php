@@ -98,14 +98,14 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
             }
         }
         $path = $collaborativefolders->id;
-        $helper->make_folder('make', $path);
+        $helper->handle_folder('make', $path);
         $collaborativefolders->externalurl = $helper->get_link($path);
 
 
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
                 $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
-                $helper->make_folder('make', $path);
+                $helper->handle_folder('make', $path);
                 $collaborativefolders->externalurl = $helper->get_link($path);
             }
         }
@@ -135,7 +135,6 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
     $oldfolder->timemodified = time();
     $oldfolder->intro = $collaborativefolders->intro;
     $oldfolder->introformat = $collaborativefolders->introformat;
-//    $oldfolder->authorization = $collaborativefolders->authorization;
 
 
     $collaborativefolders->id = $DB->update_record('collaborativefolders', $oldfolder);
@@ -157,13 +156,13 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
             }
         }
         $path = $collaborativefolders->id;
-        $helper->make_folder('make', $path);
+        $helper->handle_folder('make', $path);
         $collaborativefolders->externalurl = $helper->get_link($path);
 
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
                 $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
-                $helper->make_folder('make', $path);
+                $helper->handle_folder('make', $path);
                 $collaborativefolders->externalurl = $helper->get_link($path);
             }
         }
@@ -221,11 +220,24 @@ function collaborativefolders_delete_instance($id) {
     if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     }
+    $groupmode = $DB->get_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
     $helper = new owncloud_access();
-    $helper->make_folder($collaborativefolders->foldername, 'delete', $collaborativefolders->id);
+
+    // In Case no group mode is active the complete Folder is deleted.
+    if (empty($groupmode)) {
+        $path = $collaborativefolders->id;
+        $helper->handle_folder('delete', $path);
+    } else {
+        foreach ($groupmode as $key => $group) {
+            $path =  $collaborativefolders->id . '/' . $group->id;
+            $helper->handle_folder('delete', $path);
+        }
+        $path = $collaborativefolders->id;
+        $helper->handle_folder('delete', $path);
+    }
 
     // Delete any dependent records here.
-
+    $DB->delete_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
     $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
 
     return true;

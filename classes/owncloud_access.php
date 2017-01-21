@@ -93,7 +93,7 @@ class owncloud_access {
      * @param $id int identifier of the parent group.
      * @return bool false if an error occurred.
      */
-    public function make_folder($intention, $path) {
+    public function handle_folder($intention, $path) {
         global $DB;
 
         // Fetch the Token from the DB and store it within the client.
