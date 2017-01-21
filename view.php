@@ -49,7 +49,6 @@ $shouldsee = false;
 if (empty($groupmode)) {
     $shouldsee = true;
 } else if (!empty($groupmode)) {
-
     foreach ($groupmode as $modgroup) {
         if (groups_is_member($modgroup->groupid, $userid)) {
             $shouldsee = true;
