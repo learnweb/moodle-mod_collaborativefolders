@@ -130,8 +130,15 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 function collaborativefolders_update_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
     global $DB;
 
-    $collaborativefolders->timemodified = time();
-    $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
+
+    $oldfolder = $DB->get_record('collaborativefolders', array('id' => $collaborativefolders->instance));
+    $oldfolder->timemodified = time();
+    $oldfolder->intro = $collaborativefolders->intro;
+    $oldfolder->introformat = $collaborativefolders->introformat;
+//    $oldfolder->authorization = $collaborativefolders->authorization;
+
+
+    $collaborativefolders->id = $DB->update_record('collaborativefolders', $oldfolder);
 
     $helper = new owncloud_access();
 
