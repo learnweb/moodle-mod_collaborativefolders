@@ -64,6 +64,8 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 
         // Adding checkboxes for the groups, whom additional folders shall be created for.
         $mform->addElement('header', 'group', get_string('createforall', 'collaborativefolders'));
+        $mform->addElement('html', 'Consider that we do not support to <b>update</b> folders for groups.
+        Please create another instance if you want to change your groups settings.<p>');
         $mform->addElement('checkbox', 'mode', 'Enable groupmode');
 
         // All relevant group fields in the DB are fetched and a specific checkbox is added for each.
