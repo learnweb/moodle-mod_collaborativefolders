@@ -136,35 +136,6 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
     $collaborativefolders->id = $DB->update_record('collaborativefolders', $oldfolder);
 
-    $helper = new owncloud_access();
-
-    if ($fromform = $mform->get_data()) {
-        $thisdata = $mform->get_data();
-        $allgroups = $DB->get_records('groups');
-        $groups = array();
-        foreach ($allgroups as $key => $group) {
-            $identifierstring = '' . $group->id;
-            $arraydata = get_object_vars($thisdata);
-            if ($arraydata[$identifierstring] == '1') {
-                $databaserecord['modid'] = $collaborativefolders->id;
-                $databaserecord['groupid'] = $group->id;
-                $DB->insert_record('collaborativefolders_group', $databaserecord);
-                $groups[$key] = $group;
-            }
-        }
-        $path = $collaborativefolders->id;
-        $helper->handle_folder('make', $path);
-        $collaborativefolders->externalurl = $helper->get_link($path);
-
-        if (!empty($groups)) {
-            foreach ($groups as $relevantgroup) {
-                $path = $collaborativefolders->id . '/' . $relevantgroup->id;
-                $helper->handle_folder('make', $path);
-                $collaborativefolders->externalurl = $helper->get_link($path);
-            }
-        }
-    }
-
     $DB->update_record('collaborativefolders', $collaborativefolders);
 
     return $collaborativefolders->id;
@@ -192,11 +163,6 @@ function collaborativefolders_refresh_events($courseid = 0) {
             return true;
         }
     }
-
-    /*foreach ($collaborativefolderss as $collaborativefolders) {
-        // Create a function such as the one below to deal with updating calendar events.
-        // collaborativefolders_update_events($collaborativefolders);
-    }*/
 
     return true;
 }
