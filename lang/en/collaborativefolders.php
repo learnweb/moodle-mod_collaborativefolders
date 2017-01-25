@@ -63,4 +63,5 @@ $string['notallowed'] = 'Sadly your are currently not allowed to view this conte
 $string['strong_recommondation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization. 
 It is recommended that you change the technical user as infrequently as possible.';
 $string['introoverview'] = 'This is an overview for all groups that have a collaborativefolder.';
+$string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 

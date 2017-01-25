@@ -89,7 +89,7 @@ echo $renderer->create_header('Overview of Collaborativefolders Activity');
 $context = context_module::instance($cm->id);
 
 if(has_capability('mod/collaborativefolders:addinstance', $context)) {
-    if($groupmode != null) {
+    if ($groupmode != null) {
         $teachergroups = $DB->get_records('collaborativefolders_group', array('modid' => $instance->id), 'groupid');
         $groupinformation = array();
         foreach ($teachergroups as $key => $teachergroup) {
@@ -98,12 +98,17 @@ if(has_capability('mod/collaborativefolders:addinstance', $context)) {
             $row['name'] = $fullgroup->name;
             $row['numberofparticipants'] = $participants;
             // TODO when OC API is available.
-            $row['linktofolder'] = 'not yet implemented';
+            $row['linktofolder'] = html_writer::link('not.yet.implemented', 'not.yet.implementet');
             $groupinformation[$key] = $row;
         }
         echo $renderer->render_view_table($groupinformation);
     }
+    if ($groupmode == null) {
+        echo html_writer::div(get_string('infotextnogroups', 'mod_collaborativefolders'));
+    }
+
 }
+echo html_writer::div('<h3>' .'Acces to Folder' . '</h3>', 'header');
 // If the groupmode is active but the current user is not part of one of the chosen groups,
 // a default dialog is shown on this page.
 if (($ingroup == null) && ($groupmode != null)) {
