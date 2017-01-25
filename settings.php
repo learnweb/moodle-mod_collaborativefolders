@@ -56,14 +56,15 @@ if ($ADMIN->fulltree) {
 
             $url = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders',
                     array('out' => 1));
-
-            $settings->add(new admin_setting_heading('out1', 'Logout',
+            $settings->add(new admin_setting_heading('out1', 'Change the technical user account',
+                html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
                 html_writer::div(get_string('strong_recommondation', 'mod_collaborativefolders'), 'warning') .
                 html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
         } else {
             $url = $sciebo->get_login_url();
-            $settings->add(new admin_setting_heading('in2', 'Login',
-                    html_writer::link($url, 'Login', array('target' => '_blank'))));
+            $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
+                html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
+                html_writer::link($url, 'Login', array('target' => '_blank'))));
         }
     }
 }
