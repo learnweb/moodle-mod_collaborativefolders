@@ -70,7 +70,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $arrayofgroups = $this->get_group_fields();
 
         // Those checkboxes are only activated, if the groupmode is checked.
-        foreach ($arrayofgroups as $id => $group){
+        foreach ($arrayofgroups as $id => $group) {
             $mform->addElement('advcheckbox', $group['id'], $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
             $mform->disabledIf($group['id'], 'mode');
         }

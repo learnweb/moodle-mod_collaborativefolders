@@ -28,8 +28,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'collaborativefolders';
-$string['modulenameplural'] = 'collaborativefolders';
+$string['modulename'] = 'Collaborativefolders';
+$string['modulenameplural'] = 'Collaborativefolders';
 $string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
 $string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
 $string['collaborativefolders:submit'] = 'Submit collaborativefolders';
@@ -60,8 +60,8 @@ $string['successtoaddfolder'] = 'The Folder was sucessfull added to your account
 $string['choosedifferentfoldername'] = 'Please choose another foldername.';
 $string['authorize'] = 'Add to personal account';
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content. Quiet likely you are not a member of a group for this Module.';
-$string['strong_recommondation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization. 
-It is recommended that you change the technical user as infrequently as possible.';
+$string['strong_recommondation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.
+ It is recommended that you change the technical user as infrequently as possible.';
 $string['introoverview'] = 'This is an overview for all groups that have a collaborativefolder.';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved

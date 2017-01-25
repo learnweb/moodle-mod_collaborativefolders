@@ -83,15 +83,15 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 
     $helper = new owncloud_access();
 
-    if($fromform = $mform->get_data()) {
+    if ($fromform = $mform->get_data()) {
         $thisdata = $mform->get_data();
         $allgroups = $DB->get_records('groups');
         $groups = array();
-        foreach ($allgroups as $key => $group){
+        foreach ($allgroups as $key => $group) {
             $identifierstring = '' . $group->id;
             $arraydata = get_object_vars($thisdata);
             if ($arraydata[$identifierstring] == '1') {
-                $databaserecord['modid'] = $collaborativefolders->id ;
+                $databaserecord['modid'] = $collaborativefolders->id;
                 $databaserecord['groupid'] = $group->id;
                 $DB->insert_record('collaborativefolders_group', $databaserecord);
                 $groups[$key] = $group;
@@ -101,10 +101,9 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
         $helper->handle_folder('make', $path);
         $collaborativefolders->externalurl = $helper->get_link($path);
 
-
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
-                $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
+                $path = $collaborativefolders->id . '/' . $relevantgroup->id;
                 $helper->handle_folder('make', $path);
                 $collaborativefolders->externalurl = $helper->get_link($path);
             }
@@ -130,26 +129,24 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 function collaborativefolders_update_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
     global $DB;
 
-
     $oldfolder = $DB->get_record('collaborativefolders', array('id' => $collaborativefolders->instance));
     $oldfolder->timemodified = time();
     $oldfolder->intro = $collaborativefolders->intro;
     $oldfolder->introformat = $collaborativefolders->introformat;
 
-
     $collaborativefolders->id = $DB->update_record('collaborativefolders', $oldfolder);
 
     $helper = new owncloud_access();
 
-    if($fromform = $mform->get_data()) {
+    if ($fromform = $mform->get_data()) {
         $thisdata = $mform->get_data();
         $allgroups = $DB->get_records('groups');
         $groups = array();
-        foreach ($allgroups as $key => $group){
+        foreach ($allgroups as $key => $group) {
             $identifierstring = '' . $group->id;
             $arraydata = get_object_vars($thisdata);
             if ($arraydata[$identifierstring] == '1') {
-                $databaserecord['modid'] = $collaborativefolders->id ;
+                $databaserecord['modid'] = $collaborativefolders->id;
                 $databaserecord['groupid'] = $group->id;
                 $DB->insert_record('collaborativefolders_group', $databaserecord);
                 $groups[$key] = $group;
@@ -161,7 +158,7 @@ function collaborativefolders_update_instance(stdClass $collaborativefolders, mo
 
         if (!empty($groups)) {
             foreach ($groups as $relevantgroup) {
-                $path =  $collaborativefolders->id . '/' . $relevantgroup->id;
+                $path = $collaborativefolders->id . '/' . $relevantgroup->id;
                 $helper->handle_folder('make', $path);
                 $collaborativefolders->externalurl = $helper->get_link($path);
             }
@@ -229,7 +226,7 @@ function collaborativefolders_delete_instance($id) {
         $helper->handle_folder('delete', $path);
     } else {
         foreach ($groupmode as $key => $group) {
-            $path =  $collaborativefolders->id . '/' . $group->id;
+            $path = $collaborativefolders->id . '/' . $group->id;
             $helper->handle_folder('delete', $path);
         }
         $path = $collaborativefolders->id;

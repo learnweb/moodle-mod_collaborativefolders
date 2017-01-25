@@ -90,9 +90,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         $output = '';
         $output .= html_writer::div(get_string('introoverview', 'mod_collaborativefolders'));
         $table = new html_table();
-        $table->head = array('Groupname'=> 'Groupname' , 'Number of Participants' => 'Number of Participants', 'Link to Folder' => 'Link to Folder');
+        $table->head = array('Groupname' => 'Groupname' , 'Number of Participants' => 'Number of Participants',
+            'Link to Folder' => 'Link to Folder');
         $table->attributes['class'] = 'admintable collaborativefolder generaltable';
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             $table->data[] = $group;
         }
         $output .= html_writer::table($table);

@@ -26,7 +26,6 @@
 namespace mod_collaborativefolders;
 
 global $CFG;
-//require_once($CFG->dirroot.'/lib/setuplib.php');
 
 use moodle_url;
 use tool_oauth2sciebo\sciebo;
@@ -47,9 +46,6 @@ class owncloud_access {
             'sesskey'   => sesskey(),
         ]);
         $this->sciebo = new sciebo($returnurl);
-    }
-    public function get_link(){
-
     }
 
     /**

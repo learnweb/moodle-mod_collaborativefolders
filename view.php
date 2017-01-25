@@ -88,7 +88,7 @@ echo $renderer->create_header('Overview of Collaborativefolders Activity');
 
 $context = context_module::instance($cm->id);
 
-if(has_capability('mod/collaborativefolders:addinstance', $context)) {
+if (has_capability('mod/collaborativefolders:addinstance', $context)) {
     if ($groupmode != null) {
         $teachergroups = $DB->get_records('collaborativefolders_group', array('modid' => $instance->id), 'groupid');
         $groupinformation = array();
