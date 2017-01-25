@@ -58,7 +58,8 @@ if ($ADMIN->fulltree) {
                     array('out' => 1));
 
             $settings->add(new admin_setting_heading('out1', 'Logout',
-                    html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
+                html_writer::div(get_string('strong_recommondation', 'mod_collaborativefolders'), 'warning') .
+                html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
         } else {
             $url = $sciebo->get_login_url();
             $settings->add(new admin_setting_heading('in2', 'Login',
