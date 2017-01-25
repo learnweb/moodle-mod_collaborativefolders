@@ -84,8 +84,26 @@ if ($groupmode != null) {
 
 // Decide, what has to be shown to the user depending on multiple parameters.
 
-echo $renderer->create_header();
+echo $renderer->create_header('Overview of Collaborativefolders Activity');
 
+$context = context_module::instance($cm->id);
+
+if(has_capability('mod/collaborativefolders:addinstance', $context)) {
+    if($groupmode != null) {
+        $teachergroups = $DB->get_records('collaborativefolders_group', array('modid' => $instance->id), 'groupid');
+        $groupinformation = array();
+        foreach ($teachergroups as $key => $teachergroup) {
+            $fullgroup = groups_get_group($teachergroup->groupid);
+            $participants = count(groups_get_members($teachergroup->groupid));
+            $row['name'] = $fullgroup->name;
+            $row['numberofparticipants'] = $participants;
+            // TODO when OC API is available.
+            $row['linktofolder'] = 'not yet implemented';
+            $groupinformation[$key] = $row;
+        }
+        echo $renderer->render_view_table($groupinformation);
+    }
+}
 // If the groupmode is active but the current user is not part of one of the chosen groups,
 // a default dialog is shown on this page.
 if (($ingroup == null) && ($groupmode != null)) {

@@ -41,6 +41,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         $table->data[] = $onegroup;
         return $table;
     }
+
     public function get_link_view($link, $name) {
         $textandlink = html_writer::div(get_string('textview.php', 'mod_collaborativefolders'));
 
@@ -48,6 +49,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $textandlink;
     }
+
     public function render_view_page($externalurl, $cmid, $instanceid, $availability) {
         global $OUTPUT;
         $output = '';
@@ -71,10 +73,11 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         return $output;
     }
 
-    public function create_header() {
+    public function create_header($title = null) {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->header();
+        $output .= $OUTPUT->heading($title);
         echo $output;
     }
     public function create_footer() {
@@ -82,6 +85,18 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         $output = '';
         $output .= $OUTPUT->footer();
         echo $output;
+    }
+    public function render_view_table($groups) {
+        $output = '';
+        $output .= html_writer::div(get_string('introoverview', 'mod_collaborativefolders'));
+        $table = new html_table();
+        $table->head = array('Groupname'=> 'Groupname' , 'Number of Participants' => 'Number of Participants', 'Link to Folder' => 'Link to Folder');
+        $table->attributes['class'] = 'admintable collaborativefolder generaltable';
+        foreach($groups as $group) {
+            $table->data[] = $group;
+        }
+        $output .= html_writer::table($table);
+        return $output;
     }
 }
 
