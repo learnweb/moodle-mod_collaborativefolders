@@ -34,7 +34,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
         foreach ($data as $key => $value) {
             error_log('Group path: ' . $value);
-            if (!$oc->handle_folder('make', '/' . $value)) {
+            if (!$oc->handle_folder('make', $value)) {
                 throw new \coding_exception('Folder not created.');
             }
         }
