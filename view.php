@@ -36,7 +36,6 @@ $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' =
 require_login($course, true, $cm);
 $userid = $USER->id;
 
-// The renderer is not user to its full potential yet (for testing reasons).
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
 // Initialize an OAuth 2.0 client and an owncloud_access object for user login and share generation.
@@ -52,28 +51,15 @@ $ocs = new \mod_collaborativefolders\owncloud_access();
 // If the user already logged in into his personal account, an authorization code is now available for upgrade.
 $sciebo->callback();
 
-
-// Check whether the groupmode is on and calculate the path to the folder.
-
-// A new table has to be found, which does not get deleted, when the plugin is uninstalled.
-$instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance), '*', MUST_EXIST);
-
-$PAGE->set_title(format_string($instance->name));
-$PAGE->set_heading(format_string($course->fullname));
-
 // Checks if the groupmode is on.
-// If no group id is given to a modid, it must mean, that this instance was made without any groups.
-// Hence the groupmode must have been inactive.
-$groupmode = $DB->get_record('collaborativefolders_group', array('modid' => $instance->id), 'groupid')->groupid;
-
-$folderpath = '/' . $instance->id;
+$gm = $DB->get_records('collaborativefolders_group', array('modid' => $cm->instance), 'groupid');
+$folderpath = '/' . $id;
 $ingroup = null;
 
 // If the groupmode is active and the current user is part of one of the chosen groups,
 // his particular group id is saved and the folderpath in ownCloud extended by the group id.
-if ($groupmode != null) {
-    $groups = $DB->get_records('collaborativefolders_group', array('modid' => $instance->id));
-    foreach ($groups as $modgroup) {
+if (!empty($gm)) {
+    foreach ($gm as $modgroup) {
         if (groups_is_member($modgroup->groupid, $userid)) {
             $ingroup = $modgroup->groupid;
             $folderpath .= '/' . $ingroup;
@@ -81,86 +67,184 @@ if ($groupmode != null) {
     }
 }
 
+// Checks if the adhoc task for the folder creation was successful.
+$adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
+$created = true;
 
-// Decide, what has to be shown to the user depending on multiple parameters.
+foreach ($adhoc as $element) {
 
-echo $renderer->create_header('Overview of Collaborativefolders Activity');
+    $content = json_decode($element->customdata);
+    $cmid = $content->cmid;
 
-$context = context_module::instance($cm->id);
-
-if (has_capability('mod/collaborativefolders:addinstance', $context)) {
-    if ($groupmode != null) {
-        $teachergroups = $DB->get_records('collaborativefolders_group', array('modid' => $instance->id), 'groupid');
-        $groupinformation = array();
-        foreach ($teachergroups as $key => $teachergroup) {
-            $fullgroup = groups_get_group($teachergroup->groupid);
-            $participants = count(groups_get_members($teachergroup->groupid));
-            $row['name'] = $fullgroup->name;
-            $row['numberofparticipants'] = $participants;
-            // TODO when OC API is available.
-            $row['linktofolder'] = html_writer::link('not.yet.implemented', 'not.yet.implementet');
-            $groupinformation[$key] = $row;
-        }
-        echo $renderer->render_view_table($groupinformation);
-    }
-    if ($groupmode == null) {
-        echo html_writer::div(get_string('infotextnogroups', 'mod_collaborativefolders'));
+    if ($id == $cmid) {
+        $created = false;
     }
 
 }
-echo html_writer::div('<h3>' .'Acces to Folder' . '</h3>', 'header');
-// If the groupmode is active but the current user is not part of one of the chosen groups,
-// a default dialog is shown on this page.
-if (($ingroup == null) && ($groupmode != null)) {
-    echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
+
+// The DB entry for the current activity instance is needed for page information.
+$instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
+
+$PAGE->set_title(format_string($instance->name));
+$PAGE->set_heading(format_string($course->fullname));
+echo $renderer->create_header('Overview of Collaborativefolders Activity');
+
+// If the folders were not created successfully, an error message has to be printed.
+if (!$created) {
+
+    // Print error message.
+
 } else {
 
-    // The link to the folder is saved in the user specific settings.
-    // Thus, when the link is not set there, a share has to be created for the user
-    // and the link fetched from the server.
-    if (get_user_preferences('cf_link' . $instance->id) == null) {
+    $context = context_module::instance($cm->id);
+    // It has to be checked, if the current user is a teacher.
+    if (has_capability('mod/collaborativefolders:addinstance', $context)) {
+        // If folders were created for separate groups, those groups are shown in a table.
+        if (!empty($gm)) {
 
-        // If the user logged in via OAuth 2.0, he possess an Access Token. Hes specific username in ownCloud
-        // can then be fetched from the token and a share can be created for exactly this user.
-        if ($sciebo->is_logged_in()) {
+            $groupinformation = array();
 
-            $user = $sciebo->get_accesstoken()->token;
-            $link = $ocs->generate_share($folderpath, $user);
-            set_user_preference('cf_link' . $instance->id, $link);
+            foreach ($gm as $key => $teachergroup) {
 
-            // Display the Link.
-            global $OUTPUT;
+                $fullgroup = groups_get_group($teachergroup->groupid);
+                $participants = count(groups_get_members($teachergroup->groupid));
+                $row['name'] = $fullgroup->name;
+                $row['numberofparticipants'] = $participants;
+                $groupinformation[$key] = $row;
 
-            $output = '';
+            }
 
-            $output .= $OUTPUT->heading('Link to collaborative Folder');
-            $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                    html_writer::link($link . '&download', 'hier')));
-            $output .= html_writer::div(' ');
-            $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                    html_writer::link($link, 'hier')));
-            echo $output;
+            echo $renderer->render_view_table($groupinformation);
+        }
+
+        $allow = $instance->teacher;
+
+        // If the checkbox for teachers' access to the folders was checked, a link to the folder is generated.
+        if ($allow == '1') {
+
+            if (get_user_preferences('cf_link' . $instance->id) == null) {
+
+                if ($sciebo->is_logged_in()) {
+
+                    $folderpath = '/' . $id;
+
+                    $user = $sciebo->get_accesstoken()->user_id;
+
+                    $link = $ocs->generate_share($folderpath, $user);
+
+                    if ($link) {
+
+                        set_user_preference('cf_link ' . $instance->id, $link);
+
+                        // Display the Link.
+                        global $OUTPUT;
+
+                        $output = '';
+
+                        $output .= $OUTPUT->heading('Link to collaborative Folder');
+                        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
+                                html_writer::link($link . '&download', 'hier')));
+                        $output .= html_writer::div(' ');
+                        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+                                html_writer::link($link, 'hier')));
+                        echo $output;
+
+                    } else {
+                        // Print error message.
+                    }
+
+                } else {
+
+                    // If no Access Token was received, a login link has to be provided.
+                    $url = $sciebo->get_login_url();
+                    echo html_writer::link($url, 'Login', array('target' => '_blank'));
+
+                }
+
+            } else {
+
+                // If the link is already saved within the user preferences, if only has to be displayed.
+                $link = get_user_preferences('cf_link' . $instance->id);
+
+                $output = $OUTPUT->heading('Link to collaborative Folder');
+                $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
+                        html_writer::link($link . '&download', 'hier')));
+                $output .= html_writer::div(' ');
+                $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+                        html_writer::link($link, 'hier')));
+                echo $output;
+
+            }
 
         } else {
 
-            // If no Access Token was received, a login link has to be provided.
-            $url = $sciebo->get_login_url();
-            echo html_writer::link($url, 'Login', array('target' => '_blank'));
+            echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
 
         }
+
     } else {
 
-        // If the link is already saved within the user preferences, if only has to be displayed.
-        $link = get_user_preferences('cf_link' . $instance->id);
+        // If the current user is a student, it has to be checked whether the groumode is active and
+        // if the user is part of one of the groups.
+        if (($ingroup == null) && ($groupmode != null)) {
 
-        $output = $OUTPUT->heading('Link to collaborative Folder');
-        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                html_writer::link($link . '&download', 'hier')));
-        $output .= html_writer::div(' ');
-        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                html_writer::link($link, 'hier')));
-        echo $output;
+            echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
 
+        } else {
+
+            // If this is the case, the link to the specific folder is generated.
+            if (get_user_preferences('cf_link' . $instance->id) == null) {
+
+                if ($sciebo->is_logged_in()) {
+
+                    $user = $sciebo->get_accesstoken()->user_id;
+
+                    $link = $ocs->generate_share($folderpath, $user);
+
+                    if ($link) {
+
+                        set_user_preference('cf_link ' . $instance->id, $link);
+
+                        // Display the Link.
+                        global $OUTPUT;
+
+                        $output = '';
+
+                        $output .= $OUTPUT->heading('Link to collaborative Folder');
+                        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
+                                html_writer::link($link . '&download', 'hier')));
+                        $output .= html_writer::div(' ');
+                        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+                                html_writer::link($link, 'hier')));
+                        echo $output;
+
+                    } else {
+                        // Print error message.
+                    }
+
+                } else {
+
+                    // If no Access Token was received, a login link has to be provided.
+                    $url = $sciebo->get_login_url();
+                    echo html_writer::link($url, 'Login', array('target' => '_blank'));
+
+                }
+
+            } else {
+
+                // If the link is already saved within the user preferences, if only has to be displayed.
+                $link = get_user_preferences('cf_link' . $instance->id);
+
+                $output = $OUTPUT->heading('Link to collaborative Folder');
+                $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
+                        html_writer::link($link . '&download', 'hier')));
+                $output .= html_writer::div(' ');
+                $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+                        html_writer::link($link, 'hier')));
+                echo $output;
+
+            }
+        }
     }
 }
 

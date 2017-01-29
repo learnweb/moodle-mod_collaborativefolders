@@ -78,34 +78,20 @@ function collaborativefolders_supports($feature) {
 function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
     global $DB;
 
+    $fromform = $mform->get_data();
+    $arraydata = get_object_vars($fromform);
+    $collaborativefolders->teacher = $arraydata['teacher'];
     $collaborativefolders->timecreated = time();
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
-    $helper = new owncloud_access();
-
-    if ($fromform = $mform->get_data()) {
-        $thisdata = $mform->get_data();
+    if ($fromform) {
         $allgroups = $DB->get_records('groups');
-        $groups = array();
         foreach ($allgroups as $key => $group) {
             $identifierstring = '' . $group->id;
-            $arraydata = get_object_vars($thisdata);
             if ($arraydata[$identifierstring] == '1') {
                 $databaserecord['modid'] = $collaborativefolders->id;
                 $databaserecord['groupid'] = $group->id;
                 $DB->insert_record('collaborativefolders_group', $databaserecord);
-                $groups[$key] = $group;
-            }
-        }
-        $path = $collaborativefolders->id;
-        $helper->handle_folder('make', $path);
-        $collaborativefolders->externalurl = $helper->get_link($path);
-
-        if (!empty($groups)) {
-            foreach ($groups as $relevantgroup) {
-                $path = $collaborativefolders->id . '/' . $relevantgroup->id;
-                $helper->handle_folder('make', $path);
-                $collaborativefolders->externalurl = $helper->get_link($path);
             }
         }
     }
