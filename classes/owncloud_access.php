@@ -112,9 +112,9 @@ class owncloud_access {
 
             $code = $this->sciebo->make_folder($webdavpath);
             // If one of the folders could not be created, false is returned.
-            if (($code != 201) && ($code != 405) && ($code != null)){
-                return false;
-            }
+            //if (($code != 201) && ($code != 405) && (!empty($code))){
+                return $code;
+            //}
 
         } else if ($intention == 'delete') {
 
