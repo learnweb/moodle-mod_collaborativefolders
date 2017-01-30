@@ -38,6 +38,9 @@ class collaborativefolders_create extends \core\task\adhoc_task {
                 throw new \coding_exception('Folder ' . $value . ' not created.');
             } else {
                 mtrace('Folder: ' . $value . ', Code: ' . $code);
+                if (($code != 201) && ($code != 405)) {
+                    throw new \coding_exception('Folder ' . $value . ' not created.');
+                }
             }
         }
     }
