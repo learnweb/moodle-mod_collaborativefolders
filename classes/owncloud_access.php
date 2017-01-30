@@ -55,11 +55,8 @@ class owncloud_access {
      * @return string link to the folder.
      */
     public function generate_share($path, $userid) {
-        if (get_config('tool_oauth2sciebo', 'path') === 'http') {
-            $pref = 'http://';
-        } else {
-            $pref = 'https://';
-        }
+
+        $pref = get_config('tool_oauth2sciebo', 'path') . '://';
 
         $output = $this->sciebo->get_link($path, $userid);
 
@@ -72,7 +69,9 @@ class owncloud_access {
             $fields = explode("/s/", $xml->data[0]->url[0]);
             $fileid = $fields[1];
 
-            return $pref . get_config('tool_oauth2sciebo', 'server').'/public.php?service=files&t=' . $fileid;
+            $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+
+            return $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p . 'public.php?service=files&t=' . $fileid;
 
         } else {
             notice($xml->meta->message,
