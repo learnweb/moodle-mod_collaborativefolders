@@ -64,6 +64,7 @@ if ($ADMIN->fulltree) {
                 html_writer::div(get_string('strong_recommondation', 'mod_collaborativefolders'), 'warning') .
                 html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
         } else {
+            set_config('token', null, 'mod_collaborativefolders');
             $url = $sciebo->get_login_url();
             $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
                 html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .

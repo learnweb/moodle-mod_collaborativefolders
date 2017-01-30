@@ -56,7 +56,17 @@ class owncloud_access {
      */
     public function generate_share($path, $userid) {
 
-        $pref = get_config('tool_oauth2sciebo', 'path') . '://';
+        // Fetch the Token from the DB and store it within the client.
+        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
+        $this->sciebo->set_access_token($token);
+
+        $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+
+        // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
+        // Further failure resolution has to be provided in near future.
+        if (!$this->sciebo->is_logged_in()) {
+            return false;
+        }
 
         $output = $this->sciebo->get_link($path, $userid);
 
