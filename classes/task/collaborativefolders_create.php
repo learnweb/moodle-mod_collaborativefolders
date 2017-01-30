@@ -34,10 +34,10 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
         foreach ($data as $key => $value) {
             $code = $oc->handle_folder('make', $value);
-            if (!$code) {
+            if ($code == false) {
                 throw new \coding_exception('Folder ' . $value . ' not created.');
             } else {
-                mtrace('Folder ' . $value . ' created.');
+                mtrace('Folder: ' . $value . ', Code: ' . $code);
             }
         }
     }

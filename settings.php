@@ -49,6 +49,9 @@ if ($ADMIN->fulltree) {
     } else {
         // If an authorization code was retrieved or if the user already was logged in, the token gets stored
         // globally and a logout link is shown.
+        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
+        $sciebo->set_access_token($token);
+
         if ($sciebo->is_logged_in()) {
             // Since the token is an Object, it has to be serialized before it can be stored in the DB.
             $token = serialize($sciebo->get_accesstoken());
