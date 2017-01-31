@@ -127,7 +127,7 @@ if (!$created) {
         // If the checkbox for teachers' access to the folders was checked, a link to the folder is generated.
         if ($allow == '1') {
 
-            if (get_user_preferences('cf_link' . $instance->id) == null) {
+            if (get_user_preferences('cf_link ' . $instance->id) == null) {
 
                 if ($sciebo->is_logged_in()) {
 
@@ -167,7 +167,7 @@ if (!$created) {
             } else {
 
                 // If the link is already saved within the user preferences, if only has to be displayed.
-                $link = get_user_preferences('cf_link' . $instance->id);
+                $link = get_user_preferences('cf_link ' . $instance->id);
 
                 echo $renderer->loggedin_generate_share($link);
 
@@ -190,7 +190,7 @@ if (!$created) {
         } else {
 
             // If this is the case, the link to the specific folder is generated.
-            if (get_user_preferences('cf_link' . $instance->id) == null) {
+            if (get_user_preferences('cf_link ' . $instance->id) == null) {
 
                 if ($sciebo->is_logged_in()) {
 
@@ -227,7 +227,7 @@ if (!$created) {
             } else {
 
                 // If the link is already saved within the user preferences, if only has to be displayed.
-                $link = get_user_preferences('cf_link' . $instance->id);
+                $link = get_user_preferences('cf_link ' . $instance->id);
 
                 echo $renderer->loggedin_generate_share($link);
 
