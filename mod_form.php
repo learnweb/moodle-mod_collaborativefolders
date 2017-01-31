@@ -86,8 +86,6 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
             }
         }
 
-        $mform->addElement('checkbox', 'teacher', 'Enable the creator to have access to the folders.');
-
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
 

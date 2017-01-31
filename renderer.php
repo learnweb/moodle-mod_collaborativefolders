@@ -50,7 +50,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         return $textandlink;
     }
 
-    public function render_view_page($externalurl, $cmid, $instanceid, $availability) {
+    public function render_view_page_student_bottom($externalurl, $cmid, $instanceid, $availability) {
         global $OUTPUT;
         $output = '';
 
@@ -71,6 +71,15 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         }
 
         return $output;
+    }
+    public function logggedin_generate_share($link) {
+        global $OUTPUT;
+        $output = '';
+
+        $output .= $OUTPUT->heading('Link to collaborative Folder');
+        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+            html_writer::link($link, 'hier')));
+        echo $output;
     }
 
     public function create_header($title = null) {
