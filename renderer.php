@@ -33,45 +33,7 @@
 defined('MOODLE_INTERNAL') || die;
 use mod_collaborativefolders\enrol_handler;
 
-class mod_collaborativefolders_renderer extends plugin_renderer_base{
-
-    public function render_column_for_existing_groups($onegroup) {
-        $table = new html_table();
-        $table->attributes['class'] = 'admintable deprovisionuser generaltable';
-        $table->data[] = $onegroup;
-        return $table;
-    }
-
-    public function get_link_view($link, $name) {
-        $textandlink = html_writer::div(get_string('textview.php', 'mod_collaborativefolders'));
-
-        $textandlink .= html_writer::link($link . $name, 'folder');
-
-        return $textandlink;
-    }
-
-    public function render_view_page_student_bottom($externalurl, $cmid, $instanceid, $availability) {
-        global $OUTPUT;
-        $output = '';
-
-        if ($availability == true) {
-
-            $output .= $OUTPUT->heading('Link to collaborative Folder');
-            $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                    html_writer::link($externalurl . '&download', 'hier')));
-            $output .= html_writer::div(' ');
-            $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                    html_writer::link($externalurl, 'hier')));
-            $formhandler = new enrol_handler();
-            $myform = $formhandler->handle_my_form($cmid, $instanceid);
-            $output .= html_writer::div($myform->display(), 'myform');
-
-        } else {
-            $output .= html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
-        }
-
-        return $output;
-    }
+class mod_collaborativefolders_renderer extends plugin_renderer_base {
 
     public function get_error($problem) {
         global $OUTPUT;
@@ -85,6 +47,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         }
         return $output;
     }
+
     public function loggedin_generate_share($link) {
         global $OUTPUT;
         $output = '';
@@ -101,12 +64,14 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         $output .= $OUTPUT->heading($title);
         echo $output;
     }
+
     public function create_footer() {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->footer();
         echo $output;
     }
+
     public function render_view_table($groups) {
         $output = '';
         $output .= html_writer::div(get_string('introoverview', 'mod_collaborativefolders'));

@@ -44,7 +44,6 @@ $string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
 $string['createforall'] = 'Creates shares for individual group';
 $string['existinggroups'] = 'Existing Groups';
 $string['externalurl'] = 'Link the Place the shared Folder';
-$string['textview.php'] = 'Im folgenden finden sie Ihren Link zu dem Ordner für kollaboratives Arbeiten:';
 $string['kennung'] = 'Sciebo-Kennung:';
 $string['downloadfolder'] = 'Klicken sie {$a} um den Ordner herunterzuladen.';
 $string['accessfolder'] = 'Klicken sie {$a} um auf den Ordner zuzugreifen.';
