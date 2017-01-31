@@ -60,8 +60,6 @@ class owncloud_access {
         $token = unserialize(get_config('mod_collaborativefolders', 'token'));
         $this->sciebo->set_access_token($token);
 
-        $pref = get_config('tool_oauth2sciebo', 'type') . '://';
-
         // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
         // Further failure resolution has to be provided in near future.
         if (!$this->sciebo->is_logged_in()) {
@@ -74,20 +72,12 @@ class owncloud_access {
 
         if ($xml->meta->statuscode == 100 && $xml->meta->status == 'ok') {
 
-            notice(get_string('successtoaddfolder', 'mod_collaborativefolders'),
-                    new moodle_url('/mod/collaborativefolders/view.php'));
-            $fields = explode("/s/", $xml->data[0]->url[0]);
-            $fileid = $fields[1];
-
-            $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
-
-            return $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p . 'public.php?service=files&t=' . $fileid;
+            return true;
 
         } else {
-            notice($xml->meta->message,
-                    new moodle_url('/mod/collaborativefolders/view.php'));
 
             return false;
+
         }
     }
 
