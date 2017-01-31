@@ -72,10 +72,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
 
         return $output;
     }
-    public function logggedin_generate_share($link) {
+
+    public function loggedin_generate_share($link) {
         global $OUTPUT;
         $output = '';
-
         $output .= $OUTPUT->heading('Link to collaborative Folder');
         $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
             html_writer::link($link, 'hier')));

@@ -147,17 +147,7 @@ if (!$created) {
                         set_user_preference('cf_link ' . $instance->id, $link);
 
                         // Display the Link.
-                        global $OUTPUT;
-
-                        $output = '';
-
-                        $output .= $OUTPUT->heading('Link to collaborative Folder');
-                        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                                html_writer::link($link . '&download', 'hier')));
-                        $output .= html_writer::div(' ');
-                        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                                html_writer::link($link, 'hier')));
-                        echo $output;
+                        echo $renderer->loggedin_generate_share($link);
 
                     } else {
                         // Print error message.
@@ -176,13 +166,7 @@ if (!$created) {
                 // If the link is already saved within the user preferences, if only has to be displayed.
                 $link = get_user_preferences('cf_link' . $instance->id);
 
-                $output = $OUTPUT->heading('Link to collaborative Folder');
-                $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                        html_writer::link($link . '&download', 'hier')));
-                $output .= html_writer::div(' ');
-                $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                        html_writer::link($link, 'hier')));
-                echo $output;
+                echo $renderer->loggedin_generate_share($link);
 
             }
 
@@ -216,17 +200,7 @@ if (!$created) {
                         set_user_preference('cf_link ' . $instance->id, $link);
 
                         // Display the Link.
-                        global $OUTPUT;
-
-                        $output = '';
-
-                        $output .= $OUTPUT->heading('Link to collaborative Folder');
-                        $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                                html_writer::link($link . '&download', 'hier')));
-                        $output .= html_writer::div(' ');
-                        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                                html_writer::link($link, 'hier')));
-                        echo $output;
+                        echo $renderer->loggedin_generate_share($link);
 
                     } else {
                         // Print error message.
@@ -245,13 +219,7 @@ if (!$created) {
                 // If the link is already saved within the user preferences, if only has to be displayed.
                 $link = get_user_preferences('cf_link' . $instance->id);
 
-                $output = $OUTPUT->heading('Link to collaborative Folder');
-                $output .= html_writer::div(get_string('downloadfolder', 'mod_collaborativefolders',
-                        html_writer::link($link . '&download', 'hier')));
-                $output .= html_writer::div(' ');
-                $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                        html_writer::link($link, 'hier')));
-                echo $output;
+                echo $renderer->loggedin_generate_share($link);
 
             }
         }
