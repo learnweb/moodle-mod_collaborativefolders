@@ -42,22 +42,7 @@ $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
 $string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
 $string['createforall'] = 'Creates shares for individual group';
-$string['existinggroups'] = 'Existing Groups';
-$string['externalurl'] = 'Link the Place the shared Folder';
-$string['kennung'] = 'Sciebo-Kennung:';
-$string['downloadfolder'] = 'Klicken sie {$a} um den Ordner herunterzuladen.';
 $string['accessfolder'] = 'Klicken sie {$a} um auf den Ordner zuzugreifen.';
-$string['enrol'] = 'Enrol yourself here';
-$string['Canceled'] = 'You canceled the Form';
-$string['addtosciebo'] = 'sciebo@identifier.de';
-$string['Sciebo-email'] = 'Sciebo Identifier';
-$string['Sciebo-email_help'] = 'Your Sciebo E-Mail is not neccessary your Moodle identifier. In the University of Muenster your
-identifier ist most likely: ziv_kennung@uni-muenster.de';
-$string['cancelform'] = 'You canceled the form.';
-$string['failedtoaddfolder'] = 'Your request failed.';
-$string['successtoaddfolder'] = 'The Folder was sucessfull added to your account.';
-$string['choosedifferentfoldername'] = 'Please choose another foldername.';
-$string['authorize'] = 'Add to personal account';
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content. Quiet likely you are not a member of a group for this Module.';
 $string['strong_recommondation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';

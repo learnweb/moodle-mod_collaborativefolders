@@ -113,16 +113,12 @@ if (!$created) {
                 $participants = count(groups_get_members($teachergroup->groupid));
                 $row['name'] = $fullgroup->name;
                 $row['numberofparticipants'] = $participants;
-                $pref = get_config('tool_oauth2sciebo', 'type') . '://';
-                $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
-                $folderpath = '/' . $id;
-                $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p . 'index.php/apps/files/?dir=' . $folderpath;
-                $row['link'] = html_writer::link($link . '/' . $fullgroup->id, $fullgroup->name);
                 $groupinformation[$key] = $row;
 
             }
 
             echo $renderer->render_view_table($groupinformation);
+            
         }
 
         $allow = $instance->teacher;
