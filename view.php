@@ -69,6 +69,7 @@ if (!empty($gm)) {
 
 // Checks if the adhoc task for the folder creation was successful.
 $adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
+// TODO: Single Create for every Folder?
 $created = true;
 
 foreach ($adhoc as $element) {
@@ -93,9 +94,7 @@ echo $renderer->create_header('Overview of Collaborativefolders Activity');
 if (!$created) {
 
     $output = '';
-
     $output .= html_writer::div(get_string('foldercouldnotbecreated', 'mod_collaborativefolders'));
-
     echo $output;
 
 } else {
@@ -114,6 +113,11 @@ if (!$created) {
                 $participants = count(groups_get_members($teachergroup->groupid));
                 $row['name'] = $fullgroup->name;
                 $row['numberofparticipants'] = $participants;
+                $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+                $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+                $folderpath = '/' . $id;
+                $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p . 'index.php/apps/files/?dir=' . $folderpath;
+                $row['link'] = html_writer::link($link . '/' . $fullgroup->id, $fullgroup->name);
                 $groupinformation[$key] = $row;
 
             }
@@ -182,7 +186,7 @@ if (!$created) {
 
         // If the current user is a student, it has to be checked whether the groumode is active and
         // if the user is part of one of the groups.
-        if (($ingroup == null) && ($groupmode != null)) {
+        if (($ingroup == null) && ($gm != null)) {
 
             echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
 
