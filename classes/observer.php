@@ -61,7 +61,6 @@ class observer {
             $creator = new collaborativefolders_create();
             $creator->set_custom_data($paths);
             \core\task\manager::queue_adhoc_task($creator);
-
         }
     }
 }
