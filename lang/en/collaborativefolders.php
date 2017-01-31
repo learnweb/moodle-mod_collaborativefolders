@@ -66,4 +66,4 @@ $string['introoverview'] = 'This is an overview for all groups that have a colla
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved
 in the storage space of the technical user. Therefore please consider the available memory of the user.';
-
+$string['foldercouldnotbecreated'] = 'The Folder was not yet created. If this message remains in the next days please contact the administrator.';

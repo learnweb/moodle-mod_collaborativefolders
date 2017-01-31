@@ -92,7 +92,11 @@ echo $renderer->create_header('Overview of Collaborativefolders Activity');
 // If the folders were not created successfully, an error message has to be printed.
 if (!$created) {
 
-    // Print error message.
+    $output = '';
+
+    $output .= html_writer::div(get_string('foldercouldnotbecreated', 'mod_collaborativefolders'));
+
+    echo $output;
 
 } else {
 
