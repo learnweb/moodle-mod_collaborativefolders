@@ -150,7 +150,8 @@ if (!$created) {
                         echo $renderer->loggedin_generate_share($link);
 
                     } else {
-                        // Print error message.
+                        $problem = 'status';
+                        echo $renderer->get_error($problem);
                     }
 
                 } else {
@@ -203,7 +204,7 @@ if (!$created) {
                         echo $renderer->loggedin_generate_share($link);
 
                     } else {
-                        // Print error message.
+                        $renderer->get_error('status');
                     }
 
                 } else {

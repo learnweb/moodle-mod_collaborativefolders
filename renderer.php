@@ -73,13 +73,25 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base{
         return $output;
     }
 
+    public function get_error($problem) {
+        global $OUTPUT;
+        $output = '';
+        switch ($problem) {
+            case 'status' :
+                $output .= get_string('statuserror', 'mod_collaborativefolders');
+                break;
+            default :
+                $output .= get_string('unknownerror', 'mod_collaborativefolders');
+        }
+        return $output;
+    }
     public function loggedin_generate_share($link) {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->heading('Link to collaborative Folder');
         $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
             html_writer::link($link, 'hier')));
-        echo $output;
+        return $output;
     }
 
     public function create_header($title = null) {

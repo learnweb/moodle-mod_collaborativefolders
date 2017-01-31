@@ -113,7 +113,6 @@ class owncloud_access {
             $code = $this->sciebo->make_folder($webdavpath);
             return $code;
 
-
         } else if ($intention == 'delete') {
 
             $this->sciebo->delete_folder($webdavpath);
