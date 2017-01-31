@@ -63,6 +63,7 @@ if (!empty($gm)) {
         if (groups_is_member($modgroup->groupid, $userid)) {
             $ingroup = $modgroup->groupid;
             $folderpath .= '/' . $ingroup;
+            break;
         }
     }
 }
