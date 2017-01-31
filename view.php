@@ -146,7 +146,8 @@ if (!$created) {
 
                         $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
 
-                        $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p . 'index.php/apps/files/?dir=' . $folderpath;
+                        $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                'index.php/apps/files/?dir=' . $folderpath;
 
                         set_user_preference('cf_link ' . $instance->id, $link);
 
@@ -198,9 +199,16 @@ if (!$created) {
 
                     $user = $sciebo->get_accesstoken()->user_id;
 
-                    $link = $ocs->generate_share($folderpath, $user);
+                    $status = $ocs->generate_share($folderpath, $user);
 
-                    if ($link) {
+                    if ($status) {
+
+                        $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+
+                        $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+
+                        $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                'index.php/apps/files/?dir=' . $folderpath;
 
                         set_user_preference('cf_link ' . $instance->id, $link);
 
