@@ -55,6 +55,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
         // Name of this instance.
+        $mform->addElement('advcheckbox', 'teacher', 'Enable the creator to have access to the folders.', '', '', array(0, 1));
 
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
