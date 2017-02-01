@@ -195,7 +195,11 @@ if (!$created) {
                 if ($sciebo->is_logged_in()) {
 
                     $user = $sciebo->get_accesstoken()->user_id;
-                    $folderpath = $id . '/' . $ingroup;
+                    if ($ingroup != 0) {
+                        $folderpath = $id . '/' . $ingroup;
+                    } else {
+                        $folderpath = $id;
+                    }
                     $status = $ocs->generate_share($folderpath, $user);
 
                     if ($status) {
@@ -204,8 +208,13 @@ if (!$created) {
 
                         $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
 
-                        $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
-                                'index.php/apps/files/?dir=' . $folderpath;
+                        if($ingroup != 0) {
+                            $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                'index.php/apps/files/?dir=' . $ingroup;
+                        } else {
+                            $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                'index.php/apps/files/?dir=' . $id;
+                        }
 
                         set_user_preference('cf_link ' . $instance->id, $link);
 
