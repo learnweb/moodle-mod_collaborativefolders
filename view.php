@@ -195,7 +195,7 @@ if (!$created) {
                 if ($sciebo->is_logged_in()) {
 
                     $user = $sciebo->get_accesstoken()->user_id;
-
+                    $folderpath = $id . '/' . $ingroup;
                     $status = $ocs->generate_share($folderpath, $user);
 
                     if ($status) {
