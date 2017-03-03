@@ -38,6 +38,11 @@ $userid = $USER->id;
 
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
+// Test for groupmode.
+$grm = groups_get_activity_groupmode($cm);
+$grp = groups_get_activity_group($cm);
+$alowed = groups_get_activity_allowed_groups($cm);
+
 // Initialize an OAuth 2.0 client and an owncloud_access object for user login and share generation.
 $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
         'id' => $cm->id,
