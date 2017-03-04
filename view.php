@@ -28,20 +28,20 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+require(__DIR__ . '/name_form.php');
 
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
+$reset = optional_param('reset', null, PARAM_RAW_TRIMMED);
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
 require_login($course, true, $cm);
 $userid = $USER->id;
+$instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
+
 
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
-// Test for groupmode.
-$grm = groups_get_activity_groupmode($cm);
-$grp = groups_get_activity_group($cm);
-$alowed = groups_get_activity_allowed_groups($cm);
 
 // Initialize an OAuth 2.0 client and an owncloud_access object for user login and share generation.
 $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
@@ -56,26 +56,50 @@ $ocs = new \mod_collaborativefolders\owncloud_access();
 // If the user already logged in into his personal account, an authorization code is now available for upgrade.
 $sciebo->callback();
 
+
 // Checks if the groupmode is on.
-$gm = $DB->get_records('collaborativefolders_group', array('modid' => $cm->instance), 'groupid');
+$gm = false;
 $folderpath = '/' . $id;
 $ingroup = null;
 
-// If the groupmode is active and the current user is part of one of the chosen groups,
-// his particular group id is saved and the folderpath in ownCloud extended by the group id.
-if (!empty($gm)) {
-    foreach ($gm as $modgroup) {
-        if (groups_is_member($modgroup->groupid, $userid)) {
-            $ingroup = $modgroup->groupid;
-            $folderpath .= '/' . $ingroup;
-            break;
-        }
+if(groups_get_activity_groupmode($cm) != 0) {
+    $gm = true;
+    $ingroup = groups_get_activity_group($cm);
+
+    // If the groupmode is used and the current user is not a teacher, the folderpath is
+    // extended by the group ID of the student.
+    if ($ingroup != 0) {
+
+        $folderpath .= '/' . $ingroup;
+
     }
 }
 
+if ($reset != null) {
+
+    set_user_preference('cf_link ' . $instance->id . ' name', null);
+
+}
+
+$actionurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id);
+
+// Get form data and check whether the submit button has been pressed.
+$mform = new mod_collaborativefolders_name_form($actionurl, array(
+        'namefield' => 'Beispiel'
+));
+
+if ($fromform = $mform->get_data()) {
+    if (isset($fromform->enter)) {
+
+        // If a name has been submitted, it gets stored in the user preferences.
+        set_user_preference('cf_link ' . $instance->id . ' name', $fromform->namefield);
+
+    }
+}
+
+
 // Checks if the adhoc task for the folder creation was successful.
 $adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
-// TODO: Single Create for every Folder?
 $created = true;
 
 foreach ($adhoc as $element) {
@@ -88,9 +112,6 @@ foreach ($adhoc as $element) {
     }
 
 }
-
-// The DB entry for the current activity instance is needed for page information.
-$instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
 
 $PAGE->set_title(format_string($instance->name));
 $PAGE->set_heading(format_string($course->fullname));
@@ -106,37 +127,53 @@ if (!$created) {
 } else {
 
     $context = context_module::instance($cm->id);
+
     // It has to be checked, if the current user is a teacher.
-    if (has_capability('mod/collaborativefolders:addinstance', $context)) {
-        // If folders were created for separate groups, those groups are shown in a table.
-        if (!empty($gm)) {
+    if (has_capability('mod/collaborativefolders:addinstance', $context) && $gm) {
 
-            $groupinformation = array();
+        // TODO: Renderer operates here... theoretically. (3)
+        // Show table of all participating groups.
 
-            foreach ($gm as $key => $teachergroup) {
+    }
 
-                $fullgroup = groups_get_group($teachergroup->groupid);
-                $participants = count(groups_get_members($teachergroup->groupid));
-                $row['name'] = $fullgroup->name;
-                $row['numberofparticipants'] = $participants;
-                $groupinformation[$key] = $row;
+    $allow = $instance->teacher;
 
-            }
+    $access = has_capability('mod/collaborativefolders:addinstance', $context) && $allow == '1';
 
-            echo $renderer->render_view_table($groupinformation);
-            
-        }
+    // If the current user is a teacher who has access to the folder OR a student from the participating
+    // grouping(s), he/she gains access to the folder.
+    if ($access xor !has_capability('mod/collaborativefolders:addinstance', $context)) {
 
-        $allow = $instance->teacher;
+        // If the link is already stored, display it. Otherwise proceed.
+        if (get_user_preferences('cf_link ' . $instance->id) == null) {
 
-        // If the checkbox for teachers' access to the folders was checked, a link to the folder is generated.
-        if ($allow == '1') {
+            // Since the user shall be able to choose an individual name for the folder, is has to be checked
+            // if a name has been entered.
+            if (get_user_preferences('cf_link ' . $instance->id . ' name') == null) {
 
-            if (get_user_preferences('cf_link ' . $instance->id) == null) {
+                // If not, the concerning form is displayed.
+                $mform->display();
 
+            } else {
+
+
+                // TODO: Display name and give the option for rename. (2)
+                $output = '';
+                $output .= html_writer::div('The name is: ' . get_user_preferences('cf_link ' . $instance->id . ' name'));
+
+                $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
+                        'reset' => 'true'
+                ]);
+
+                $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
+                        html_writer::link($reseturl, 'RESET')));
+                echo $output;
+
+
+                // The OAuth 2.0 client authentication will be handled differently, since every user
+                // will have his/her own Access Token.
+                // TODO: Replace authentication mechanism. (4)
                 if ($sciebo->is_logged_in()) {
-
-                    $folderpath = '/' . $id;
 
                     $user = $sciebo->get_accesstoken()->user_id;
 
@@ -144,78 +181,17 @@ if (!$created) {
 
                     if ($status) {
 
+                        // After the share the folder has to be renamed within the user's directory.
+                        $sciebo->move($folderpath, '/' . get_user_preferences('cf_link ' . $instance->id . ' name'), false);
+
+                        // After the folder having been renamed, a specific link has been generated, which is to
+                        // be stored for each user individually.
                         $pref = get_config('tool_oauth2sciebo', 'type') . '://';
 
                         $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
 
                         $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
-                                'index.php/apps/files/?dir=' . $folderpath;
-
-                        set_user_preference('cf_link ' . $instance->id, $link);
-
-                        // Display the Link.
-                        echo $renderer->loggedin_generate_share($link);
-
-                    } else {
-                        $problem = 'status';
-                        echo $renderer->get_error($problem);
-                    }
-
-                } else {
-
-                    // If no Access Token was received, a login link has to be provided.
-                    $url = $sciebo->get_login_url();
-                    echo html_writer::link($url, 'Login', array('target' => '_blank'));
-
-                }
-
-            } else {
-
-                // If the link is already saved within the user preferences, if only has to be displayed.
-                $link = get_user_preferences('cf_link ' . $instance->id);
-
-                echo $renderer->loggedin_generate_share($link);
-
-            }
-
-        } else {
-
-            echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
-
-        }
-
-    } else {
-
-        // If the current user is a student, it has to be checked whether the groumode is active and
-        // if the user is part of one of the groups.
-        if (($ingroup == null) && ($gm != null)) {
-
-            echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
-
-        } else {
-
-            // If this is the case, the link to the specific folder is generated.
-            if (get_user_preferences('cf_link ' . $instance->id) == null) {
-
-                if ($sciebo->is_logged_in()) {
-
-                    $user = $sciebo->get_accesstoken()->user_id;
-
-                    $status = $ocs->generate_share($folderpath, $user);
-
-                    if ($status) {
-
-                        $pref = get_config('tool_oauth2sciebo', 'type') . '://';
-
-                        $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
-
-                        if($ingroup != null) {
-                            $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
-                                'index.php/apps/files/?dir=' . '/' . $ingroup;
-                        } else {
-                            $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
-                                'index.php/apps/files/?dir=' . '/' . $id;
-                        }
+                                'index.php/apps/files/?dir=' . '/' . get_user_preferences('cf_link ' . $instance->id . ' name');
 
                         set_user_preference('cf_link ' . $instance->id, $link);
 
@@ -233,16 +209,20 @@ if (!$created) {
                     echo html_writer::link($url, 'Login', array('target' => '_blank'));
 
                 }
-
-            } else {
-
-                // If the link is already saved within the user preferences, if only has to be displayed.
-                $link = get_user_preferences('cf_link ' . $instance->id);
-
-                echo $renderer->loggedin_generate_share($link);
-
             }
+
+        } else {
+
+            // If the link is already saved within the user preferences, it only has to be displayed.
+            $link = get_user_preferences('cf_link ' . $instance->id);
+
+            echo $renderer->loggedin_generate_share($link);
+
         }
+    } else {
+
+        echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
+
     }
 }
 
