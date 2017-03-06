@@ -62,7 +62,7 @@ $sciebo->callback();
 
 // Checks if the groupmode is on.
 $gm = false;
-$folderpath = '/' . $id;
+$folderpath = $id;
 $ingroup = null;
 
 if(groups_get_activity_groupmode($cm) != 0) {
@@ -180,26 +180,29 @@ if (!$created) {
 
                     $user = $sciebo->get_accesstoken()->user_id;
 
-                    $status = $ocs->generate_share($folderpath, $user);
+                    $status = $ocs->generate_share('/' . $folderpath, $user);
 
                     if ($status) {
 
                         // After the share the folder has to be renamed within the user's directory.
-                        $sciebo->move($folderpath, '/' . get_user_preferences('cf_link ' . $instance->id . ' name'), false);
+                        $renamed = $sciebo->move($folderpath, get_user_preferences('cf_link ' . $instance->id . ' name'), false);
 
-                        // After the folder having been renamed, a specific link has been generated, which is to
-                        // be stored for each user individually.
-                        $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+                        if ($renamed) {
 
-                        $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+                            // After the folder having been renamed, a specific link has been generated, which is to
+                            // be stored for each user individually.
+                            $pref = get_config('tool_oauth2sciebo', 'type') . '://';
 
-                        $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
-                                'index.php/apps/files/?dir=' . '/' . get_user_preferences('cf_link ' . $instance->id . ' name');
+                            $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
 
-                        set_user_preference('cf_link ' . $instance->id, $link);
+                            $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                    'index.php/apps/files/?dir=' . '/' . get_user_preferences('cf_link ' . $instance->id . ' name');
 
-                        // Display the Link.
-                        echo $renderer->loggedin_generate_share($link);
+                            set_user_preference('cf_link ' . $instance->id, $link);
+
+                            // Display the Link.
+                            echo $renderer->loggedin_generate_share($link);
+                        }
 
                     } else {
                         $renderer->get_error('status');
