@@ -46,16 +46,21 @@ class observer {
             $paths = array();
             $paths['cmid'] = $cmid;
 
-            $gm = $DB->get_records('collaborativefolders_group', array('modid' => $other['instanceid']), 'groupid');
+            list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
 
-            if (!empty($gm)) {
+            if (groups_get_activity_groupmode($cm) != 0) {
 
-                foreach ($gm as $group) {
+                $grid = $cm->groupingid;
 
-                    $path = $cmid . '/' . $group->groupid;
-                    $paths[$group->groupid] = $path;
+                $groups = groups_get_all_groups($course->id, 0, $grid);
+
+                foreach ($groups as $group) {
+
+                    $path = $cmid . '/' . $group->id;
+                    $paths[$group->id] = $path;
 
                 }
+
             }
 
             $creator = new collaborativefolders_create();

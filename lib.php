@@ -52,9 +52,11 @@ function collaborativefolders_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:
             return true;
-        case FEATURE_SHOW_DESCRIPTION:
+        case FEATURE_GROUPINGS:
             return true;
-        case FEATURE_GRADE_HAS_GRADE:
+        case FEATURE_GROUPS:
+            return true;
+        case FEATURE_SHOW_DESCRIPTION:
             return true;
         case FEATURE_BACKUP_MOODLE2:
             return true;
@@ -83,18 +85,6 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     $collaborativefolders->teacher = $arraydata['teacher'];
     $collaborativefolders->timecreated = time();
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
-
-    if ($fromform) {
-        $allgroups = $DB->get_records('groups');
-        foreach ($allgroups as $key => $group) {
-            $identifierstring = '' . $group->id;
-            if ($arraydata[$identifierstring] == '1') {
-                $databaserecord['modid'] = $collaborativefolders->id;
-                $databaserecord['groupid'] = $group->id;
-                $DB->insert_record('collaborativefolders_group', $databaserecord);
-            }
-        }
-    }
 
     $DB->update_record('collaborativefolders', $collaborativefolders);
 

@@ -40,6 +40,9 @@ $userid = $USER->id;
 $instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
 
 
+$groups = groups_get_all_groups($course->id, 0, $grid);
+
+
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
 
