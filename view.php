@@ -33,18 +33,18 @@ require(__DIR__ . '/name_form.php');
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
 $reset = optional_param('reset', null, PARAM_RAW_TRIMMED);
+$logout = optional_param('logout', null, PARAM_RAW_TRIMMED);
+$generate = optional_param('generate', null, PARAM_RAW_TRIMMED);
+
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
 require_login($course, true, $cm);
+
 $userid = $USER->id;
 $instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
 
 
-$groups = groups_get_all_groups($course->id, 0, $grid);
-
-
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
-
 
 // Initialize an OAuth 2.0 client and an owncloud_access object for user login and share generation.
 $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
@@ -56,9 +56,22 @@ $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
 $sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
 $ocs = new \mod_collaborativefolders\owncloud_access();
 
-// If the user already logged in into his personal account, an authorization code is now available for upgrade.
-$sciebo->callback();
+$user_token = unserialize(get_user_preferences('oC_token'));
+$sciebo->set_access_token($user_token);
 
+if (!$sciebo->is_logged_in()) {
+
+    set_user_preference('oC_token', null);
+    $sciebo->callback();
+
+}
+
+if ($sciebo->is_logged_in()) {
+
+    $tok = serialize($sciebo->get_accesstoken());
+    set_user_preference('oC_token', $tok);
+
+}
 
 // Checks if the groupmode is on.
 $gm = false;
@@ -81,6 +94,13 @@ if(groups_get_activity_groupmode($cm) != 0) {
 if ($reset != null) {
 
     set_user_preference('cf_link ' . $instance->id . ' name', null);
+
+}
+
+if ($logout != null) {
+
+    $sciebo->log_out();
+    set_user_preference('oC_token', null);
 
 }
 
@@ -134,8 +154,9 @@ if (!$created) {
     // It has to be checked, if the current user is a teacher.
     if (has_capability('mod/collaborativefolders:addinstance', $context) && $gm) {
 
-        // TODO: Renderer operates here... theoretically. (3)
-        // Show table of all participating groups.
+        $grid = $cm->groupingid;
+        $groups = groups_get_all_groups($course->id, 0, $grid);
+        $renderer->render_view_table($groups);
 
     }
 
@@ -159,53 +180,77 @@ if (!$created) {
 
             } else {
 
+                if ($generate == null) {
 
-                // TODO: Display name and give the option for rename. (2)
-                $output = '';
-                $output .= html_writer::div('The name is: ' . get_user_preferences('cf_link ' . $instance->id . ' name'));
+                    $name = get_user_preferences('cf_link ' . $instance->id . ' name');
+                    $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
+                            'reset' => 'true'
+                    ]);
 
-                $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
-                        'reset' => 'true'
-                ]);
+                    echo $renderer->print_name_and_reset($name, $reseturl);
 
-                $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-                        html_writer::link($reseturl, 'RESET')));
-                echo $output;
+                }
 
 
-                // The OAuth 2.0 client authentication will be handled differently, since every user
-                // will have his/her own Access Token.
-                // TODO: Replace authentication mechanism. (4)
                 if ($sciebo->is_logged_in()) {
 
-                    $user = $sciebo->get_accesstoken()->user_id;
+                    if ($generate != null) {
 
-                    $status = $ocs->generate_share('/' . $folderpath, $user);
+                        $user = $sciebo->get_accesstoken()->user_id;
 
-                    if ($status) {
+                        $status = $ocs->generate_share('/' . $folderpath, $user);
 
-                        // After the share the folder has to be renamed within the user's directory.
-                        $renamed = $sciebo->move($folderpath, get_user_preferences('cf_link ' . $instance->id . ' name'), false);
+                        if ($status) {
 
-                        if ($renamed) {
+                            if ($gm && !has_capability('mod/collaborativefolders:addinstance', $context)) {
 
-                            // After the folder having been renamed, a specific link has been generated, which is to
-                            // be stored for each user individually.
-                            $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+                                $folderpath = $ingroup;
 
-                            $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+                            }
 
-                            $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
-                                    'index.php/apps/files/?dir=' . '/' . get_user_preferences('cf_link ' . $instance->id . ' name');
+                            $renamed = false;
 
-                            set_user_preference('cf_link ' . $instance->id, $link);
+                            if ($sciebo->dav->open()) {
+                                $renamed = $sciebo->move($folderpath,
+                                        get_user_preferences('cf_link ' . $instance->id . ' name'), false);
+                            }
 
-                            // Display the Link.
-                            echo $renderer->loggedin_generate_share($link);
+                            if ($renamed == 201) {
+
+                                // After the folder having been renamed, a specific link has been generated, which is to
+                                // be stored for each user individually.
+                                $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+
+                                $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+
+                                $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                        'index.php/apps/files/?dir=' . '/' .
+                                        get_user_preferences('cf_link ' . $instance->id . ' name');
+
+                                set_user_preference('cf_link ' . $instance->id, $link);
+
+                                // Display the Link.
+                                echo $renderer->print_link($link, 'access');
+
+                            } else {
+                                $renderer->get_error('status');
+                            }
+                        } else {
+                            $renderer->get_error('status');
                         }
 
                     } else {
-                        $renderer->get_error('status');
+
+                        // LOGOUT
+                        $logouturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
+                                'logout' => true));
+                        echo $renderer->print_link($logouturl, 'logout');
+
+                        // GENERATE
+                        $genurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
+                                'generate' => true));
+                        echo $renderer->print_link($genurl, 'generate');
+
                     }
 
                 } else {
@@ -213,7 +258,6 @@ if (!$created) {
                     // If no Access Token was received, a login link has to be provided.
                     $url = $sciebo->get_login_url();
                     echo html_writer::link($url, 'Login', array('target' => '_blank'));
-
                 }
             }
 
@@ -222,7 +266,7 @@ if (!$created) {
             // If the link is already saved within the user preferences, it only has to be displayed.
             $link = get_user_preferences('cf_link ' . $instance->id);
 
-            echo $renderer->loggedin_generate_share($link);
+            echo $renderer->print_link($link, 'access');
 
         }
     } else {

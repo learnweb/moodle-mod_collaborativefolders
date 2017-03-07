@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 class owncloud_access {
 
     /** @var \tool_oauth2sciebo\sciebo client instance for server access. */
-    private $sciebo;
+    public $sciebo;
 
     /**
      * owncloud_access constructor. The OAuth 2.0 client is initialized within it.
@@ -70,7 +70,7 @@ class owncloud_access {
 
         $xml = simplexml_load_string($output);
 
-        if ($xml->meta->statuscode == 100 && $xml->meta->status == 'ok') {
+        if (($xml->meta->statuscode == 100 && $xml->meta->status == 'ok') || $xml->meta->statuscode == 403) {
 
             return true;
 

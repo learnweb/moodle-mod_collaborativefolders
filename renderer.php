@@ -48,15 +48,6 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    public function loggedin_generate_share($link) {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->heading('Link to collaborative Folder');
-        $output .= html_writer::div(get_string('accessfolder', 'mod_collaborativefolders',
-            html_writer::link($link, 'hier')));
-        return $output;
-    }
-
     public function create_header($title = null) {
         global $OUTPUT;
         $output = '';
@@ -82,6 +73,25 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
             $table->data[] = $group;
         }
         $output .= html_writer::table($table);
+        return $output;
+    }
+
+    public function print_link($url, $action) {
+        global $OUTPUT;
+        $output = '';
+        $output .= $OUTPUT->heading(get_string($action.'_heading', 'mod_collaborativefolders'), 4);
+        $output .= html_writer::div(get_string($action, 'mod_collaborativefolders',
+                html_writer::link($url, 'Link')));
+        return $output;
+    }
+
+    public function print_name_and_reset($name, $url) {
+        global $OUTPUT;
+        $output = '';
+        $output .= $OUTPUT->heading(get_string('generate_heading', 'mod_collaborativefolders'), 4);
+        $output .= html_writer::div(get_string('folder_name', 'mod_collaborativefolders', $name));
+        $output .= html_writer::div(get_string('reset', 'mod_collaborativefolders',
+                html_writer::link($url, 'here')));
         return $output;
     }
 }

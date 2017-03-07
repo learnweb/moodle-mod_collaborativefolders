@@ -42,8 +42,8 @@ $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
 $string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
 $string['createforall'] = 'Creates shares for individual group';
-$string['accessfolder'] = 'Klicken sie {$a} um auf den Ordner zuzugreifen.';
-$string['notallowed'] = 'Sadly your are currently not allowed to view this content. Quiet likely you are not a member of a group for this Module.';
+$string['access'] = 'Click {$a} to access the folder.';
+$string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
 $string['strong_recommondation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';
 $string['introoverview'] = 'This is an overview for all groups that have a collaborativefolder.';
@@ -53,3 +53,16 @@ in the storage space of the technical user. Therefore please consider the availa
 $string['foldercouldnotbecreated'] = 'The Folder was not yet created. If this message remains in the next days please contact the administrator.';
 $string['statuserror'] = 'The Folder was already shared with you.';
 $string['unknownerror'] = 'An unknown error occured.';
+
+$string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use the following link: {$a}';
+$string['generate'] = 'To generate a link to the collaborative folder, please use the following link: {$a}';
+$string['accessfolder_heading'] = 'Access to the collaborative folder';
+$string['logout_heading'] = 'Logout from ownCloud';
+$string['generate_heading'] = 'Generate Link to folder';
+$string['access_heading'] = 'Access to the folder';
+
+$string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
+$string['edit_groups'] = 'Please consider, that the groupsettings for this activity cannot be changed after its creation.';
+
+$string['reset'] = 'You may reset your chosen foldername {$a}.';
+$string['folder_name'] = 'Your chosen foldername is {$a}.';

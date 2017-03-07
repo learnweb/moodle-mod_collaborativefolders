@@ -48,14 +48,16 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
 
         // Adding the "general" fieldset, where all the common settings are shown.
         $mform->addElement('header', 'general', get_string('general', 'form'));
-        // Name of the folder, which is chosen by the teacher. A folder with the same name will be created in ownCloud.
+
+        // Name of the activity, which is chosen by the teacher.
         $mform->addElement('text', 'name', get_string('collaborativefoldersname', 'collaborativefolders'), array('size' => '64'));
         $mform->setType('name', PARAM_RAW_TRIMMED);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
-        // Name of this instance.
-        $mform->addElement('advcheckbox', 'teacher', 'Enable the creator to have access to the folders.', '', '', array(0, 1));
+
+        // Checkbox, which indicates whether the course's should habe access to the folder.
+        $mform->addElement('advcheckbox', 'teacher', get_string('teacher_mode', 'mod_collaborativefolders'), '', '', array(0, 1));
 
         if ($CFG->branch >= 29) {
             $this->standard_intro_elements();
@@ -63,52 +65,13 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
-        // Adding checkboxes for the groups, whom additional folders shall be created for.
-        $mform->addElement('header', 'group', get_string('createforall', 'collaborativefolders'));
-        $mform->addElement('html', 'Consider that we do not support to <b>update</b> folders for groups.
-        Please create another instance if you want to change your groups settings.<p>');
-        $mform->addElement('checkbox', 'mode', 'Enable groupmode');
-
-        // All relevant group fields in the DB are fetched and a specific checkbox is added for each.
-        $arrayofgroups = $this->get_group_fields();
-        if ($this->_instance != null) {
-            $update = 1;
-        } else {
-            $update = 0;
-        }
-        // Those checkboxes are only activated, if the groupmode is checked.
-        foreach ($arrayofgroups as $id => $group) {
-            $mform->addElement('advcheckbox', $group['id'], $group['name'], ' Number of participants: ' . $group['numberofparticipants'], array(), array(0, 1));
-            if ($update == 0) {
-                $mform->disabledIf($group['id'], 'mode');
-            } else {
-                $mform->disabledIf($group['id'], $update);
-            }
-        }
+        // Reminder for groupsettings.
+        $mform->addElement('html', '<div><h5><b>'. get_string('edit_groups', 'mod_collaborativefolders') .'</b></h5></div>');
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
 
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
-    }
-
-    /**
-     * Helper function for fetching group information from the active course.
-     * @return array course group fields.
-     */
-    private function get_group_fields() {
-        global $DB;
-
-        $allgroups = $DB->get_records('groups');
-        $relevantinformation = array();
-        foreach ($allgroups as $key => $group) {
-            $relevantinformation[$key]['name'] = $group->name;
-            $relevantinformation[$key]['id'] = $group->id;
-            $numberofparticipants = count(groups_get_members($group->id));
-            $relevantinformation[$key]['numberofparticipants'] = $numberofparticipants;
-        }
-
-        return $relevantinformation;
     }
 }

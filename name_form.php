@@ -38,7 +38,7 @@ class mod_collaborativefolders_name_form extends moodleform {
         // Name field.
         $mform->addElement('text', 'namefield', get_string('clientid', 'tool_oauth2sciebo'), array('size' => '64'));
         $mform->addRule('namefield', get_string('required'), 'required', null, 'client');
-        $mform->addRule('namefield', get_string('err_alphanumeric'), 'alphanumeric', null, 'client');
+        $mform->addRule('namefield', get_string('err_alphanumeric', 'form'), 'alphanumeric', null, 'client');
         $mform->setDefault('namefield', $this->_customdata['namefield']);
         $mform->setType('namefield', PARAM_ALPHANUM);
 
