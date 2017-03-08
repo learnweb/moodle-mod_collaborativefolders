@@ -156,28 +156,11 @@ function collaborativefolders_refresh_events($courseid = 0) {
 function collaborativefolders_delete_instance($id) {
     global $DB;
 
-    if (! $collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
+    if (!$collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
-    }
-    $groupmode = $DB->get_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
-    $helper = new owncloud_access();
-
-    // In Case no group mode is active the complete Folder is deleted.
-    if (empty($groupmode)) {
-        $path = $collaborativefolders->id;
-        $helper->handle_folder('delete', $path);
     } else {
-        foreach ($groupmode as $key => $group) {
-            $path = $collaborativefolders->id . '/' . $group->id;
-            $helper->handle_folder('delete', $path);
-        }
-        $path = $collaborativefolders->id;
-        $helper->handle_folder('delete', $path);
+        $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
     }
-
-    // Delete any dependent records here.
-    $DB->delete_records('collaborativefolders_group', array('modid' => $collaborativefolders->id));
-    $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
 
     return true;
 }
