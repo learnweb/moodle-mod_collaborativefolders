@@ -101,7 +101,7 @@ class owncloud_access {
             return false;
         }
 
-        if (!$this->sciebo->dav->open()) {
+        if (!$this->sciebo->open()) {
             return false;
         }
 

@@ -66,3 +66,6 @@ $string['edit_groups'] = 'Please consider, that the groupsettings for this activ
 
 $string['reset'] = 'You may reset your chosen foldername {$a}.';
 $string['folder_name'] = 'Your chosen foldername is {$a}.';
+
+$string['naming_folder'] = 'Choose a folder name';
+$string['namefield'] = 'Name';

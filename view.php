@@ -210,7 +210,7 @@ if (!$created) {
 
                             $renamed = false;
 
-                            if ($sciebo->dav->open()) {
+                            if ($sciebo->open()) {
                                 $renamed = $sciebo->move($folderpath,
                                         get_user_preferences('cf_link ' . $instance->id . ' name'), false);
                             }

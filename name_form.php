@@ -31,12 +31,11 @@ class mod_collaborativefolders_name_form extends moodleform {
 
     public function definition() {
         global $CFG;
-
         $mform = $this->_form;
 
-        $mform->addElement('header', 'name', get_string('oauthlegend', 'tool_oauth2sciebo'));
+        $mform->addElement('header', 'name', get_string('naming_folder', 'mod_collaborativefolders'));
         // Name field.
-        $mform->addElement('text', 'namefield', get_string('clientid', 'tool_oauth2sciebo'), array('size' => '64'));
+        $mform->addElement('text', 'namefield', get_string('namefield', 'mod_collaborativefolders'), array('size' => '64'));
         $mform->addRule('namefield', get_string('required'), 'required', null, 'client');
         $mform->addRule('namefield', get_string('err_alphanumeric', 'form'), 'alphanumeric', null, 'client');
         $mform->setDefault('namefield', $this->_customdata['namefield']);
