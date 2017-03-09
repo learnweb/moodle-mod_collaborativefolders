@@ -62,7 +62,7 @@ $string['namefield'] = 'Name';
 $string['reset'] = 'You may reset your chosen foldername {$a}.';
 
 // Global technical user.
-$string['strong_recommondation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.
+$string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved
 in the storage space of the technical user. Therefore please consider the available memory of the user.';

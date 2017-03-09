@@ -217,7 +217,7 @@ if (!$created) {
 
                                 // After the folder having been renamed, a specific link has been generated, which is to
                                 // be stored for each user individually.
-                                $pref = get_config('tool_oauth2owncloud', 'type') . '://';
+                                $pref = get_config('tool_oauth2owncloud', 'protocol') . '://';
 
                                 $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2owncloud', 'path'));
 
