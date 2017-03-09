@@ -14,28 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 /**
- *
+ * Helper class, which performs ownCloud access functions for collaborative folders.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_collaborativefolders;
 
-global $CFG;
-
 use moodle_url;
-use tool_oauth2sciebo\sciebo;
+use tool_oauth2owncloud\owncloud;
 
 defined('MOODLE_INTERNAL') || die();
 
 class owncloud_access {
 
-    /** @var \tool_oauth2sciebo\sciebo client instance for server access. */
-    public $sciebo;
+    /** @var \tool_oauth2owncloud\owncloud client instance for server access. */
+    public $owncloud;
 
     /**
      * owncloud_access constructor. The OAuth 2.0 client is initialized within it.
@@ -45,28 +44,28 @@ class owncloud_access {
             'callback'  => 'yes',
             'sesskey'   => sesskey(),
         ]);
-        $this->sciebo = new sciebo($returnurl);
+        $this->owncloud = new owncloud($returnurl);
     }
 
     /**
      * Method for share creation in ownCloud. A share for a specific user and folder is generated.
+     *
      * @param $path string path to the folder.
      * @param $userid string username in ownCloud.
      * @return string link to the folder.
      */
     public function generate_share($path, $userid) {
-
         // Fetch the Token from the DB and store it within the client.
         $token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        $this->sciebo->set_access_token($token);
+        $this->owncloud->set_access_token($token);
 
         // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
         // Further failure resolution has to be provided in near future.
-        if (!$this->sciebo->is_logged_in()) {
+        if (!$this->owncloud->is_logged_in()) {
             return false;
         }
 
-        $output = $this->sciebo->get_link($path, $userid);
+        $output = $this->owncloud->get_link($path, $userid);
 
         $xml = simplexml_load_string($output);
 
@@ -83,39 +82,38 @@ class owncloud_access {
 
     /**
      * Method for creation and deletion of folders for collaborative work.
-     * @param $foldername string specific name of the groupfolder.
+     *
+     * @param $path string specific path of the groupfolder.
      * @param $intention string 'make' for creating and 'delete' for deletion.
-     * @param $id int identifier of the parent group.
      * @return bool false if an error occurred.
      */
     public function handle_folder($intention, $path) {
-        global $DB;
-
         // Fetch the Token from the DB and store it within the client.
         $token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        $this->sciebo->set_access_token($token);
+        $this->owncloud->set_access_token($token);
 
         // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
         // Further failure resolution has to be provided in near future.
-        if (!$this->sciebo->is_logged_in()) {
+        if (!$this->owncloud->is_logged_in()) {
             return false;
         }
 
-        if (!$this->sciebo->open()) {
+        if (!$this->owncloud->open()) {
             return false;
         }
 
         // WebDAV path is generated from the required admin settings for the ownCloud Server.
-        $webdavpath = '/' . get_config('tool_oauth2sciebo', 'path') . $path;
+        $webdavpath = '/' . get_config('tool_oauth2owncloud', 'path') . $path;
 
         if ($intention == 'make') {
 
-            $code = $this->sciebo->make_folder($webdavpath);
+            $code = $this->owncloud->make_folder($webdavpath);
             return $code;
 
         } else if ($intention == 'delete') {
 
-            $this->sciebo->delete_folder($webdavpath);
+            $code = $this->owncloud->delete_folder($webdavpath);
+            return $code;
 
         } else {
             return false;

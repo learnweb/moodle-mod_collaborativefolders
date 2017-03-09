@@ -17,11 +17,8 @@
 /**
  * Settings.php for collaborativefolders activity module. Manages the login to an ownCloud account.
  *
- * TODO: Find a more elegant way to show a login window with AJAX.
- * TODO: Add language strings.
- *
  * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,36 +33,36 @@ if ($ADMIN->fulltree) {
         'sesskey'   => sesskey(),
     ]);
 
-    $sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
+    $owncloud = new \tool_oauth2owncloud\owncloud($returnurl);
 
     // If the logout Button was pressed, the stored Access Token has to be deleted and a login link shown.
     if (isset($_GET['out'])) {
         set_config('token', null, 'mod_collaborativefolders');
-        $sciebo->set_access_token(null);
+        $owncloud->set_access_token(null);
 
-        $url = $sciebo->get_login_url();
+        $url = $owncloud->get_login_url();
         $settings->add(new admin_setting_heading('in1', 'Login',
                 html_writer::link($url, 'Login', array('target' => '_blank'))));
     } else {
         // If an authorization code was retrieved or if the user already was logged in, the token gets stored
         // globally and a logout link is shown.
         $token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        $sciebo->set_access_token($token);
+        $owncloud->set_access_token($token);
 
-        if ($sciebo->is_logged_in()) {
+        if ($owncloud->is_logged_in()) {
             // Since the token is an Object, it has to be serialized before it can be stored in the DB.
-            $token = serialize($sciebo->get_accesstoken());
+            $token = serialize($owncloud->get_accesstoken());
             set_config('token', $token, 'mod_collaborativefolders');
 
             $url = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders',
                     array('out' => 1));
             $settings->add(new admin_setting_heading('out1', 'Change the technical user account',
                 html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
-                html_writer::div(get_string('strong_recommondation', 'mod_collaborativefolders'), 'warning') .
+                html_writer::div(get_string('strong_recommendation', 'mod_collaborativefolders'), 'warning') .
                 html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
         } else {
             set_config('token', null, 'mod_collaborativefolders');
-            $url = $sciebo->get_login_url();
+            $url = $owncloud->get_login_url();
             $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
                 html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
                 html_writer::link($url, 'Login', array('target' => '_blank'))));

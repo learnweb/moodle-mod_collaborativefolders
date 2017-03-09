@@ -18,7 +18,7 @@
  * Observers for the collaborative folders plugin.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

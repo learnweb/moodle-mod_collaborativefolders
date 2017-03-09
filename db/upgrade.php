@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file keeps track of upgrades to the collaborativefolders module
+ * This file keeps track of upgrades to the collaborativefolders module.
  *
  * Sometimes, changes between versions involve alterations to database
  * structures and other major things that may break installations. The upgrade
@@ -25,14 +25,15 @@
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Execute collaborativefolders upgrade from the given old version
+ * Execute collaborativefolders upgrade from the given old version.
  *
  * @param int $oldversion
  * @return bool

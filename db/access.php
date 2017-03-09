@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the collaborativefolders module
+ * Capability definitions for the collaborativefolders module.
  *
  * The capabilities are loaded into the database table when the module is
  * installed or updated. Whenever the capability definitions are updated,
@@ -40,13 +40,13 @@
  * The variable name for the capability definitions array is $capabilities
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Your Name <your@email.address>
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-// Modify capabilities as needed and remove this comment.
 $capabilities = array(
     'mod/collaborativefolders:addinstance' => array(
         'riskbitmask' => RISK_XSS,

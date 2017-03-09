@@ -15,21 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for the Web interface of deprovisionuser
+ * Renderer for the Web interface of collaborativefolders module.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Class of the tool_deprovisionuser renderer.
+ * Class of the mod_collaborativefolders renderer.
  *
- * @package    tool_deprovisionuser
- * @copyright  2016 Nina Herrmann
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die;
 use mod_collaborativefolders\enrol_handler;
 
@@ -95,4 +97,3 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $output;
     }
 }
-

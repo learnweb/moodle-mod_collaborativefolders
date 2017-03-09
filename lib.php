@@ -15,17 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions and constants for module collaborativefolders
- *
- * All the core Moodle functions, neeeded to allow the module to work
- * integrated in Moodle should be placed here.
- *
- * All the collaborativefolders specific functions, needed to implement all the module
- * logic, should go to locallib.php. This will help to save some memory when
- * Moodle is performing actions across all modules.
+ * Library of interface functions and constants for module collaborativefolders.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -144,7 +137,7 @@ function collaborativefolders_refresh_events($courseid = 0) {
 }
 
 /**
- * Removes an instance of the collaborativefolders from the database
+ * Removes an instance of the collaborativefolders from the database.
  *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance

@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of collaborativefolders.
+ * Prints a particular instance of collaborativefolders. What is shown depends
+ * on the current user.
  *
  * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -43,29 +44,29 @@ $instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance)
 
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
-// Initialize an OAuth 2.0 client and an owncloud_access object for user login and share generation.
+// Initialize an OAuth 2.0  owncloud client and an owncloud_access object for user login and share generation.
 $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
         'id' => $cm->id,
         'callback'  => 'yes',
         'sesskey'   => sesskey(),
 ]);
 
-$sciebo = new \tool_oauth2sciebo\sciebo($returnurl);
+$owncloud = new \tool_oauth2owncloud\owncloud($returnurl);
 $ocs = new \mod_collaborativefolders\owncloud_access();
 
 $user_token = unserialize(get_user_preferences('oC_token'));
-$sciebo->set_access_token($user_token);
+$owncloud->set_access_token($user_token);
 
-if (!$sciebo->is_logged_in()) {
+if (!$owncloud->is_logged_in()) {
 
     set_user_preference('oC_token', null);
-    $sciebo->callback();
+    $owncloud->callback();
 
 }
 
-if ($sciebo->is_logged_in()) {
+if ($owncloud->is_logged_in()) {
 
-    $tok = serialize($sciebo->get_accesstoken());
+    $tok = serialize($owncloud->get_accesstoken());
     set_user_preference('oC_token', $tok);
 
 }
@@ -96,7 +97,7 @@ if ($reset != null) {
 
 if ($logout != null) {
 
-    $sciebo->log_out();
+    $owncloud->log_out();
     set_user_preference('oC_token', null);
 
 }
@@ -189,11 +190,11 @@ if (!$created) {
                 }
 
 
-                if ($sciebo->is_logged_in()) {
+                if ($owncloud->is_logged_in()) {
 
                     if ($generate != null) {
 
-                        $user = $sciebo->get_accesstoken()->user_id;
+                        $user = $owncloud->get_accesstoken()->user_id;
 
                         $status = $ocs->generate_share('/' . $folderpath, $user);
 
@@ -207,8 +208,8 @@ if (!$created) {
 
                             $renamed = false;
 
-                            if ($sciebo->open()) {
-                                $renamed = $sciebo->move($folderpath,
+                            if ($owncloud->open()) {
+                                $renamed = $owncloud->move($folderpath,
                                         get_user_preferences('cf_link ' . $instance->id . ' name'), false);
                             }
 
@@ -216,11 +217,11 @@ if (!$created) {
 
                                 // After the folder having been renamed, a specific link has been generated, which is to
                                 // be stored for each user individually.
-                                $pref = get_config('tool_oauth2sciebo', 'type') . '://';
+                                $pref = get_config('tool_oauth2owncloud', 'type') . '://';
 
-                                $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2sciebo', 'path'));
+                                $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2owncloud', 'path'));
 
-                                $link = $pref . get_config('tool_oauth2sciebo', 'server') . '/' . $p .
+                                $link = $pref . get_config('tool_oauth2owncloud', 'server') . '/' . $p .
                                         'index.php/apps/files/?dir=' . '/' .
                                         get_user_preferences('cf_link ' . $instance->id . ' name');
 
@@ -253,7 +254,7 @@ if (!$created) {
                 } else {
 
                     // If no Access Token was received, a login link has to be provided.
-                    $url = $sciebo->get_login_url();
+                    $url = $owncloud->get_login_url();
                     echo html_writer::link($url, 'Login', array('target' => '_blank'));
                 }
             }
