@@ -55,28 +55,19 @@ class owncloud_access {
      * @return string link to the folder.
      */
     public function generate_share($path, $userid) {
-        // Fetch the Token from the DB and store it within the client.
-        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        $this->owncloud->set_access_token($token);
-
-        // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
-        // Further failure resolution has to be provided in near future.
-        if (!$this->owncloud->is_logged_in()) {
+        // First, the technical user's Access Token needs to checked.
+        // If it is invalid, no access to ownCloud can be granted.
+        if (!$this->owncloud->check_login('mod_collaborativefolders')) {
             return false;
         }
 
-        $output = $this->owncloud->get_link($path, $userid);
+        $response = $this->owncloud->get_link($path, $userid);
 
-        $xml = simplexml_load_string($output);
-
-        if (($xml->meta->statuscode == 100 && $xml->meta->status == 'ok') || $xml->meta->statuscode == 403) {
-
+        // Only if the link was created or already shared with the specific user, true is returned.
+        if (($response['code'] == 100 && $response['status'] == 'ok') || $response['code'] == 403) {
             return true;
-
         } else {
-
             return false;
-
         }
     }
 
@@ -88,16 +79,14 @@ class owncloud_access {
      * @return bool false if an error occurred.
      */
     public function handle_folder($intention, $path) {
-        // Fetch the Token from the DB and store it within the client.
-        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        $this->owncloud->set_access_token($token);
-
-        // If the Token is not accepted or cannot be fetched from the ownCloud Server, false is returned.
-        // Further failure resolution has to be provided in near future.
-        if (!$this->owncloud->is_logged_in()) {
+        // First, the technical user's Access Token needs to checked.
+        // If it is invalid, no access to ownCloud can be granted.
+        if (!$this->owncloud->check_login('mod_collaborativefolders')) {
             return false;
         }
 
+        // If no socket could be opened, no connection to the ownCloud server is available
+        // via WebDAV.
         if (!$this->owncloud->open()) {
             return false;
         }
@@ -116,6 +105,7 @@ class owncloud_access {
             return $code;
 
         } else {
+            // No other operations, except make and delete, are allowed.
             return false;
         }
     }

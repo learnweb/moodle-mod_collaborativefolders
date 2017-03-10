@@ -30,47 +30,47 @@ require(__DIR__ . '/name_form.php');
 
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
+list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
+$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
+
+// Indicators for name reset, logout from current ownCloud user and link generation.
 $reset = optional_param('reset', null, PARAM_RAW_TRIMMED);
 $logout = optional_param('logout', null, PARAM_RAW_TRIMMED);
 $generate = optional_param('generate', null, PARAM_RAW_TRIMMED);
 
-list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
-$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
+// User needs to be logged in to proceed.
 require_login($course, true, $cm);
 
-$userid = $USER->id;
 $instance = $DB->get_record('collaborativefolders', array('id' => $cm->instance));
-
 
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
+//-------------------------------------------------
+
 // Initialize an OAuth 2.0  owncloud client and an owncloud_access object for user login and share generation.
-$returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
+/*$returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
         'id' => $cm->id,
+        'callback'  => 'yes',
+        'sesskey'   => sesskey(),
+]);*/
+$returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
         'callback'  => 'yes',
         'sesskey'   => sesskey(),
 ]);
 
+// This is user
 $owncloud = new \tool_oauth2owncloud\owncloud($returnurl);
 $ocs = new \mod_collaborativefolders\owncloud_access();
 
 $user_token = unserialize(get_user_preferences('oC_token'));
 $owncloud->set_access_token($user_token);
 
-if (!$owncloud->is_logged_in()) {
+// Prüfe Login vom Nutzer.
+$owncloud->check_login();
 
-    set_user_preference('oC_token', null);
-    $owncloud->callback();
 
-}
 
-if ($owncloud->is_logged_in()) {
-
-    $tok = serialize($owncloud->get_accesstoken());
-    set_user_preference('oC_token', $tok);
-
-}
-
+//-------------------------------------------------
 // Checks if the groupmode is on.
 $gm = false;
 $folderpath = $id;
@@ -89,9 +89,11 @@ if(groups_get_activity_groupmode($cm) != 0) {
     }
 }
 
+
+//-------------------------------------------------
 if ($reset != null) {
 
-    set_user_preference('cf_link ' . $instance->id . ' name', null);
+    set_user_preference('cf_link ' . $id . ' name', null);
 
 }
 
@@ -101,6 +103,8 @@ if ($logout != null) {
     set_user_preference('oC_token', null);
 
 }
+
+//-------------------------------------------------
 
 $actionurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id);
 
@@ -113,11 +117,12 @@ if ($fromform = $mform->get_data()) {
     if (isset($fromform->enter)) {
 
         // If a name has been submitted, it gets stored in the user preferences.
-        set_user_preference('cf_link ' . $instance->id . ' name', $fromform->namefield);
+        set_user_preference('cf_link ' . $id . ' name', $fromform->namefield);
 
     }
 }
 
+//-------------------------------------------------
 
 // Checks if the adhoc task for the folder creation was successful.
 $adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
@@ -134,9 +139,13 @@ foreach ($adhoc as $element) {
 
 }
 
+//-------------------------------------------------
+
 $PAGE->set_title(format_string($instance->name));
 $PAGE->set_heading(format_string($course->fullname));
 echo $renderer->create_header('Overview of Collaborativefolders Activity');
+
+//-------------------------------------------------
 
 // If the folders were not created successfully, an error message has to be printed.
 if (!$created) {
@@ -167,11 +176,11 @@ if (!$created) {
     if ($access xor !has_capability('mod/collaborativefolders:addinstance', $context)) {
 
         // If the link is already stored, display it. Otherwise proceed.
-        if (get_user_preferences('cf_link ' . $instance->id) == null) {
+        if (get_user_preferences('cf_link ' . $id) == null) {
 
             // Since the user shall be able to choose an individual name for the folder, is has to be checked
             // if a name has been entered.
-            if (get_user_preferences('cf_link ' . $instance->id . ' name') == null) {
+            if (get_user_preferences('cf_link ' . $id . ' name') == null) {
 
                 // If not, the concerning form is displayed.
                 $mform->display();
@@ -180,7 +189,7 @@ if (!$created) {
 
                 if ($generate == null) {
 
-                    $name = get_user_preferences('cf_link ' . $instance->id . ' name');
+                    $name = get_user_preferences('cf_link ' . $id . ' name');
                     $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
                             'reset' => 'true'
                     ]);
@@ -210,7 +219,7 @@ if (!$created) {
 
                             if ($owncloud->open()) {
                                 $renamed = $owncloud->move($folderpath,
-                                        get_user_preferences('cf_link ' . $instance->id . ' name'), false);
+                                        get_user_preferences('cf_link ' . $id . ' name'), false);
                             }
 
                             if ($renamed == 201) {
@@ -223,9 +232,9 @@ if (!$created) {
 
                                 $link = $pref . get_config('tool_oauth2owncloud', 'server') . '/' . $p .
                                         'index.php/apps/files/?dir=' . '/' .
-                                        get_user_preferences('cf_link ' . $instance->id . ' name');
+                                        get_user_preferences('cf_link ' . $id . ' name');
 
-                                set_user_preference('cf_link ' . $instance->id, $link);
+                                set_user_preference('cf_link ' . $id, $link);
 
                                 // Display the Link.
                                 echo $renderer->print_link($link, 'access');
@@ -262,7 +271,7 @@ if (!$created) {
         } else {
 
             // If the link is already saved within the user preferences, it only has to be displayed.
-            $link = get_user_preferences('cf_link ' . $instance->id);
+            $link = get_user_preferences('cf_link ' . $id);
 
             echo $renderer->print_link($link, 'access');
 

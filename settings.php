@@ -37,35 +37,38 @@ if ($ADMIN->fulltree) {
 
     // If the logout Button was pressed, the stored Access Token has to be deleted and a login link shown.
     if (isset($_GET['out'])) {
+
         set_config('token', null, 'mod_collaborativefolders');
         $owncloud->set_access_token(null);
 
         $url = $owncloud->get_login_url();
         $settings->add(new admin_setting_heading('in1', 'Login',
                 html_writer::link($url, 'Login', array('target' => '_blank'))));
-    } else {
-        // If an authorization code was retrieved or if the user already was logged in, the token gets stored
-        // globally and a logout link is shown.
-        $token = unserialize(get_config('mod_collaborativefolders', 'token'));
-        $owncloud->set_access_token($token);
 
-        if ($owncloud->is_logged_in()) {
-            // Since the token is an Object, it has to be serialized before it can be stored in the DB.
-            $token = serialize($owncloud->get_accesstoken());
-            set_config('token', $token, 'mod_collaborativefolders');
+    } else {
+
+        // If the technical user already has an Access Token or an upgradeable Authorization Code,
+        // the token is stored a logout link shown.
+        if ($owncloud->check_login('mod_collaborativefolders')) {
 
             $url = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders',
                     array('out' => 1));
+
+            // Link for and warning about the logout of the technical user.
             $settings->add(new admin_setting_heading('out1', 'Change the technical user account',
-                html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
-                html_writer::div(get_string('strong_recommendation', 'mod_collaborativefolders'), 'warning') .
-                html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
+                    html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
+                    html_writer::div(get_string('strong_recommendation', 'mod_collaborativefolders'), 'warning') .
+                    html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
+
         } else {
+
+            // Otherwise, a login link is shown.
             set_config('token', null, 'mod_collaborativefolders');
             $url = $owncloud->get_login_url();
             $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
-                html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
-                html_writer::link($url, 'Login', array('target' => '_blank'))));
+                    html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
+                    html_writer::link($url, 'Login', array('target' => '_blank'))));
+
         }
     }
 }

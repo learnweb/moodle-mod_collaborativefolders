@@ -23,17 +23,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_collaborativefolders\owncloud_access;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/setuplib.php');
-require_once($CFG->libdir.'/oauthlib.php');
-
-/* Moodle core API */
 
 /**
- * Returns the information on whether the module supports a feature
+ * Returns the information on whether the module supports a feature.
  *
  * See {@link plugin_supports()} for more info.
  *
@@ -78,8 +73,6 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
     $collaborativefolders->teacher = $arraydata['teacher'];
     $collaborativefolders->timecreated = time();
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
-
-    $DB->update_record('collaborativefolders', $collaborativefolders);
 
     return $collaborativefolders->id;
 }
