@@ -88,8 +88,8 @@ class owncloud_access {
             return false;
         }
 
-        // WebDAV path is generated from the required admin settings for the ownCloud Server.
-        $webdavpath = '/' . get_config('tool_oauth2owncloud', 'path') . $path;
+        // WebDAV path is handed over.
+        $webdavpath = '/' . $path;
 
         if ($intention == 'make') {
 

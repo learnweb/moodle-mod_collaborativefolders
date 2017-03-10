@@ -61,7 +61,7 @@ $ocs = new \mod_collaborativefolders\owncloud_access($returnurl);
 
 // Checks if the groupmode is active. Does not differentiate between VISIBLE and SEPERATE.
 $gm = false;
-$folderpath = $id;
+$folderpath = '/' . $id;
 $ingroup = null;
 
 if(groups_get_activity_groupmode($cm) != 0) {
@@ -124,7 +124,7 @@ foreach ($adhoc as $element) {
 }
 
 
-$PAGE->set_title(format_string($instance->name));
+$PAGE->set_title(format_string($cm->name));
 $PAGE->set_heading(format_string($course->fullname));
 echo $renderer->create_header('Overview of Collaborativefolders Activity');
 
@@ -192,7 +192,7 @@ if (!$created) {
                         $user = $ocs->owncloud->get_accesstoken()->user_id;
                         // Thereafter, a share for this specific user can be created with the technical user and
                         // his Access Token.
-                        $status = $ocs->generate_share('/' . $folderpath, $user);
+                        $status = $ocs->generate_share($folderpath, $user);
 
                         // If the process was successful, try to rename the folder.
                         if ($status) {
@@ -200,7 +200,7 @@ if (!$created) {
                             // The folderpath needs to be adjusted to the path of the shared folder.
                             // E.g. 1/2 becomes 2, bacause only 2 was shared with the user.
                             if ($gm && !has_capability('mod/collaborativefolders:addinstance', $context)) {
-                                $folderpath = $ingroup;
+                                $folderpath = '/' . $ingroup;
                             }
 
                             $renamed = false;
@@ -209,7 +209,7 @@ if (!$created) {
                             if ($ocs->owncloud->open()) {
                                 // After the socket's opening, the WebDAV MOVE method has to be performed in
                                 // order to rename the folder.
-                                $renamed = $ocs->owncloud->move($folderpath,
+                                $renamed = $ocs->owncloud->move($folderpath, '/' .
                                         get_user_preferences('cf_link ' . $id . ' name'), false);
                             }
 
