@@ -26,7 +26,6 @@
 
 namespace mod_collaborativefolders;
 
-use moodle_url;
 use tool_oauth2owncloud\owncloud;
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,12 +37,10 @@ class owncloud_access {
 
     /**
      * owncloud_access constructor. The OAuth 2.0 client is initialized within it.
+     *
+     * @param $returnurl
      */
-    public function __construct () {
-        $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
-            'callback'  => 'yes',
-            'sesskey'   => sesskey(),
-        ]);
+    public function __construct ($returnurl) {
         $this->owncloud = new owncloud($returnurl);
     }
 

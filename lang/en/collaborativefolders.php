@@ -32,24 +32,16 @@ $string['modulename_help'] = 'Use the collaborativefolders module to create fold
 $string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
 $string['collaborativefolders:submit'] = 'Submit collaborativefolders';
 $string['collaborativefolders:view'] = 'View collaborativefolders';
-
-// Are they used?
-$string['collaborativefoldersfieldset'] = 'Custom example fieldset';
 $string['collaborativefoldersname'] = 'Name for Folder in Moodle:';
-$string['collaborativefoldersname_help'] = 'This is the content of the help tooltip associated with the collaborativefoldersname field. Markdown syntax is supported.';
 $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
-$string['fieldsetgroups'] = 'Name for Folder in Sciebo:';
-$string['createforall'] = 'Creates shares for individual group';
 
 // View.php.
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
 $string['introoverview'] = 'This is an overview for all groups that have a collaborativefolder.';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 $string['foldercouldnotbecreated'] = 'The Folder was not yet created. If this message remains in the next days please contact the administrator.';
-$string['statuserror'] = 'The Folder was already shared with you.';
-$string['unknownerror'] = 'An unknown error occured.';
 $string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use the following link: {$a}';
 $string['logout_heading'] = 'Logout from ownCloud';
 $string['generate'] = 'To generate a link to the collaborative folder, please use the following link: {$a}';
@@ -60,6 +52,9 @@ $string['folder_name'] = 'Your chosen foldername is {$a}.';
 $string['naming_folder'] = 'Choose a folder name';
 $string['namefield'] = 'Name';
 $string['reset'] = 'You may reset your chosen foldername {$a}.';
+$string['retry'] = 'The concerning folder could not be {$a}. Please logout from your ownCloud account and try again later.';
+$string['code'] = 'Error code: {$a}';
+$string['error'] = 'An error occured';
 
 // Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.

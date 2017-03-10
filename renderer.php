@@ -37,16 +37,12 @@ use mod_collaborativefolders\enrol_handler;
 
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
 
-    public function get_error($problem) {
+    public function print_error($text, $code) {
         global $OUTPUT;
         $output = '';
-        switch ($problem) {
-            case 'status' :
-                $output .= get_string('statuserror', 'mod_collaborativefolders');
-                break;
-            default :
-                $output .= get_string('unknownerror', 'mod_collaborativefolders');
-        }
+        $output .= $OUTPUT->heading(get_string('error', 'mod_collaborativefolders'), 4);
+        $output .= html_writer::div(get_string('retry', 'mod_collaborativefolders', $text));
+        $output .= html_writer::div(get_string('code', 'mod_collaborativefolders', $code));
         return $output;
     }
 

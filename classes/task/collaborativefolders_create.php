@@ -25,11 +25,17 @@
 
 namespace mod_collaborativefolders\task;
 use mod_collaborativefolders\owncloud_access;
+use moodle_url;
 
 class collaborativefolders_create extends \core\task\adhoc_task {
 
     public function execute() {
-        $oc = new owncloud_access();
+        $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
+                'callback'  => 'yes',
+                'sesskey'   => sesskey(),
+        ]);
+
+        $oc = new owncloud_access($returnurl);
         $data = $this->get_custom_data();
 
         foreach ($data as $key => $value) {
