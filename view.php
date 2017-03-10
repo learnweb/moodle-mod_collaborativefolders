@@ -230,6 +230,16 @@ if (!$created) {
                                 // Display the Link.
                                 echo $renderer->print_link($link, 'access');
 
+                                // Event data is gathered.
+                                $params = array(
+                                        'context' => context_module::instance($cm->id),
+                                        'objectid' => $cm->instance
+                                );
+
+                                // And the link_generated event is triggered.
+                                $generated_event = \mod_collaborativefolders\event\link_generated::create($params);
+                                $generated_event->trigger();
+
                             } else {
                                 // MOVE was unsuccessful.
                                 echo $renderer->print_error('renamed', $renamed);
@@ -272,5 +282,13 @@ if (!$created) {
         echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
     }
 }
+
+$params = array(
+        'context' => context_module::instance($cm->id),
+        'objectid' => $cm->instance
+);
+
+$cm_viewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
+$cm_viewed->trigger();
 
 echo $renderer->create_footer();

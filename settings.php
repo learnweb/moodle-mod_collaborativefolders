@@ -45,6 +45,9 @@ if ($ADMIN->fulltree) {
         $settings->add(new admin_setting_heading('in1', 'Login',
                 html_writer::link($url, 'Login', array('target' => '_blank'))));
 
+        $logout_event = \mod_collaborativefolders\event\technical_user_loggedin::create();
+        $logout_event->trigger();
+
     } else {
 
         // If the technical user already has an Access Token or an upgradeable Authorization Code,
