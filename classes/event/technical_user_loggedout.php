@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class technical_user_loggedin extends  \core\event\base {
+class technical_user_loggedout extends  \core\event\base {
 
     /**
      * Init method.
@@ -43,9 +43,35 @@ class technical_user_loggedin extends  \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = '';
+        $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = '';
     }
 
+    /**
+     * Returns description of what happened.
+     *
+     * @return string
+     */
+    public function get_description() {
+        return "The technical user of collaborativefolders logged out.";
+    }
+
+    /**
+     * Return localised event name.
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('eventloggedout', 'mod_collaborativefolders');
+    }
+
+    /**
+     * Get URL related to the action
+     *
+     * @return \moodle_url
+     */
+    public function get_url() {
+        return new \moodle_url('/admin/settings.php?section=modsettingcollaborativefolders');
+    }
 }

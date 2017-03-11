@@ -33,6 +33,7 @@ $string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
 $string['collaborativefolders:submit'] = 'Submit collaborativefolders';
 $string['collaborativefolders:view'] = 'View collaborativefolders';
 $string['collaborativefoldersname'] = 'Name for Folder in Moodle:';
+$string['collaborativefoldersname_help'] = 'Enter a new, which will be displayed for this collaborativefolders instance.';
 $string['collaborativefolders'] = 'collaborativefolders';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
@@ -65,3 +66,8 @@ in the storage space of the technical user. Therefore please consider the availa
 // Adding an instance (mod_form).
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
 $string['edit_groups'] = 'Please consider, that the groupsettings for this activity cannot be changed after its creation.';
+
+// Events.
+$string['eventfolderscreated'] = 'The ad hoc task successfully created all necessary folders for an collaborativefolders instance.';
+$string['eventlinkgenerated'] = 'A user specific link to a collaborative folder was created successfully.';
+$string['eventloggedout'] = 'The technical user of collaborativefolders logged out.';

@@ -266,7 +266,7 @@ if (!$created) {
 
                     // If no Access Token was received, a login link has to be provided.
                     $url = $ocs->owncloud->get_login_url();
-                    echo html_writer::link($url, 'Login', array('target' => '_blank'));
+                    echo html_writer::link($url, 'Login', array('target' => '_blank',  'rel' => 'noopener noreferrer'));
                 }
             }
 

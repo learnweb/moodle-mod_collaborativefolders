@@ -24,9 +24,16 @@
  */
 
 namespace mod_collaborativefolders\task;
+
+defined('MOODLE_INTERNAL') || die;
+
+use core\session\exception;
 use mod_collaborativefolders\event\folders_created;
 use mod_collaborativefolders\owncloud_access;
 use moodle_url;
+
+require_once('/var/www/html/moodle/lib/modinfolib.php');
+require_once('/var/www/html/moodle/lib/accesslib.php');
 
 class collaborativefolders_create extends \core\task\adhoc_task {
 
@@ -50,15 +57,5 @@ class collaborativefolders_create extends \core\task\adhoc_task {
                 }
             }
         }
-
-        /*list ($course, $cm) = get_course_and_cm_from_cmid($data['cmid'], 'collaborativefolders');
-
-        $params = array(
-                'context' => \context_module::instance($data['cmid']),
-                'objectid' => $cm->instance
-        );
-
-        $done = folders_created::create($params);
-        $done->trigger();*/
     }
 }

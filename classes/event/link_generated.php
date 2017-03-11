@@ -44,7 +44,7 @@ class link_generated extends  \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = '';
+        $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'collaborativefolders';
     }
