@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
 
+$logout = optional_param('technicallogout', null, PARAM_BOOL);
+
 if ($ADMIN->fulltree) {
 
     // A OAuth 2.0 and WebDAV client is needed in order to login to ownCloud.
@@ -36,14 +38,20 @@ if ($ADMIN->fulltree) {
     $owncloud = new \tool_oauth2owncloud\owncloud($returnurl);
 
     // If the logout Button was pressed, the stored Access Token has to be deleted and a login link shown.
-    if (isset($_GET['out'])) {
+    if ($logout != null) {
 
         set_config('token', null, 'mod_collaborativefolders');
-        $owncloud->set_access_token(null);
-
         $url = $owncloud->get_login_url();
-        $settings->add(new admin_setting_heading('in1', 'Login',
-                html_writer::link($url, 'Login', array('target' => '_blank'))));
+        $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
+                html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
+                html_writer::link($url, 'Login', array('target' => '_blank',  'rel' => 'noopener noreferrer'))));
+
+        $params = array(
+                'context' => context_system::instance()
+        );
+
+        $logout_event = \mod_collaborativefolders\event\technical_user_loggedout::create($params);
+        $logout_event->trigger();
 
     } else {
 
@@ -51,14 +59,13 @@ if ($ADMIN->fulltree) {
         // the token is stored a logout link shown.
         if ($owncloud->check_login('mod_collaborativefolders')) {
 
-            $url = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders',
-                    array('out' => 1));
+            $url = new moodle_url('/mod/collaborativefolders/technicallogout.php');
 
             // Link for and warning about the logout of the technical user.
             $settings->add(new admin_setting_heading('out1', 'Change the technical user account',
                     html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
                     html_writer::div(get_string('strong_recommendation', 'mod_collaborativefolders'), 'warning') .
-                    html_writer::link($url, 'Logout', array('onclick' => 'return confirm(\'Are you sure?\');'))));
+                    html_writer::link($url, 'Logout')));
 
         } else {
 
@@ -67,7 +74,7 @@ if ($ADMIN->fulltree) {
             $url = $owncloud->get_login_url();
             $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
                     html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
-                    html_writer::link($url, 'Login', array('target' => '_blank'))));
+                    html_writer::link($url, 'Login', array('target' => '_blank',  'rel' => 'noopener noreferrer'))));
 
         }
     }

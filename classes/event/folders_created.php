@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the view event.
+ * This event indicates, that all the folders for a collaborativefolders activity
+ * were created successfully by an ad hoc task.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
@@ -28,23 +29,50 @@ namespace mod_collaborativefolders\event;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_collaborativefolders instance viewed event class.
- *
- * If the view mode needs to be stored as well, you may need to
- * override methods get_url() and get_legacy_log_data(), too.
+ * Describes the successful folder creation event.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_viewed extends \core\event\course_module_viewed {
+class folders_created extends  \core\event\base {
 
     /**
-     * Initialize the event
+     * Init method.
+     *
+     * @return void
      */
     protected function init() {
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_OTHER;
         $this->data['objecttable'] = 'collaborativefolders';
-        parent::init();
+    }
+
+    /**
+     * Returns description of what happened.
+     *
+     * @return string
+     */
+    public function get_description() {
+        return "The folders for the collaborativefolders instance '$this->contextinstanceid' have been successfully created.";
+    }
+
+    /**
+     * Return localised event name.
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('eventfolderscreated', 'mod_collaborativefolders');
+    }
+
+    /**
+     * Get URL related to the action
+     *
+     * @return \moodle_url
+     */
+    public function get_url() {
+        return new \moodle_url('/mod/collaborativefolders/view.php', array('id' => $this->contextinstanceid));
     }
 }

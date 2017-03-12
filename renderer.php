@@ -33,7 +33,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-use mod_collaborativefolders\enrol_handler;
 
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
 
@@ -50,7 +49,9 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->header();
-        $output .= $OUTPUT->heading($title);
+        if ($title != null) {
+            $output .= $OUTPUT->heading($title);
+        }
         echo $output;
     }
 

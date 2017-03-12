@@ -23,11 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_collaborativefolders;
+
 defined('MOODLE_INTERNAL') || die();
 
 require($CFG->libdir . '/formslib.php');
 
-class mod_collaborativefolders_name_form extends moodleform {
+class name_form extends \moodleform {
 
     public function definition() {
         global $CFG;

@@ -25,8 +25,6 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
-require(__DIR__ . '/name_form.php');
 
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
@@ -96,7 +94,7 @@ if ($logout != null) {
 $actionurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id);
 
 // Get form data and check whether the submit button has been pressed.
-$mform = new mod_collaborativefolders_name_form($actionurl, array(
+$mform = new mod_collaborativefolders\name_form($actionurl, array(
         'namefield' => $cm->name
 ));
 
@@ -230,6 +228,16 @@ if (!$created) {
                                 // Display the Link.
                                 echo $renderer->print_link($link, 'access');
 
+                                // Event data is gathered.
+                                $params = array(
+                                        'context' => context_module::instance($cm->id),
+                                        'objectid' => $cm->instance
+                                );
+
+                                // And the link_generated event is triggered.
+                                $generated_event = \mod_collaborativefolders\event\link_generated::create($params);
+                                $generated_event->trigger();
+
                             } else {
                                 // MOVE was unsuccessful.
                                 echo $renderer->print_error('renamed', $renamed);
@@ -256,7 +264,7 @@ if (!$created) {
 
                     // If no Access Token was received, a login link has to be provided.
                     $url = $ocs->owncloud->get_login_url();
-                    echo html_writer::link($url, 'Login', array('target' => '_blank'));
+                    echo html_writer::link($url, 'Login', array('target' => '_blank',  'rel' => 'noopener noreferrer'));
                 }
             }
 
@@ -272,5 +280,13 @@ if (!$created) {
         echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
     }
 }
+
+$params = array(
+        'context' => context_module::instance($cm->id),
+        'objectid' => $cm->instance
+);
+
+$cm_viewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
+$cm_viewed->trigger();
 
 echo $renderer->create_footer();

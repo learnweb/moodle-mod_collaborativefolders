@@ -33,7 +33,9 @@ $string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
 $string['collaborativefolders:submit'] = 'Submit collaborativefolders';
 $string['collaborativefolders:view'] = 'View collaborativefolders';
 $string['collaborativefoldersname'] = 'Name for Folder in Moodle:';
+$string['collaborativefoldersname_help'] = 'Enter a new, which will be displayed for this collaborativefolders instance.';
 $string['collaborativefolders'] = 'collaborativefolders';
+$string['nocollaborativefolders'] = 'No instance of collaborativefolders is active in this course.';
 $string['pluginadministration'] = 'collaborativefolders administration';
 $string['pluginname'] = 'collaborativefolders';
 
@@ -57,11 +59,17 @@ $string['code'] = 'Error code: {$a}';
 $string['error'] = 'An error occured';
 
 // Global technical user.
-$string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the Activity this might lead to diverse problem with synchronization.
+$string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved
-in the storage space of the technical user. Therefore please consider the available memory of the user.';
+in the storage space of the technical user. Therefore, please consider the available memory of the user.';
+$string['areyousure'] = 'Are you sure you want to proceed?';
 
 // Adding an instance (mod_form).
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
 $string['edit_groups'] = 'Please consider, that the groupsettings for this activity cannot be changed after its creation.';
+
+// Events.
+$string['eventfolderscreated'] = 'The ad hoc task successfully created all necessary folders for an collaborativefolders instance.';
+$string['eventlinkgenerated'] = 'A user specific link to a collaborative folder was created successfully.';
+$string['eventloggedout'] = 'The technical user of collaborativefolders logged out.';
