@@ -17,10 +17,10 @@
 /**
  * Define all the backup steps that will be used by the backup_collaborativefolders_activity_task
  *
- * @package   mod_collaborativefolders
- * @category  backup
- * @copyright 2016 Your Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -28,11 +28,12 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * Define the complete collaborativefolders structure for backup, with file and id annotations
  *
- * @package   mod_collaborativefolders
- * @category  backup
- * @copyright 2016 Your Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class backup_collaborativefolders_activity_structure_step extends backup_activity_structure_step {
 
     /**

@@ -17,10 +17,10 @@
 /**
  * Provides the restore activity task class
  *
- * @package   mod_collaborativefolders
- * @category  backup
- * @copyright 2016 Your Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -32,11 +32,12 @@ require_once($CFG->dirroot . '/mod/collaborativefolders/backup/moodle2/restore_c
  *
  * Provides all the settings and steps to perform complete restore of the activity.
  *
- * @package   mod_collaborativefolders
- * @category  backup
- * @copyright 2016 Your Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class restore_collaborativefolders_activity_task extends restore_activity_task {
 
     /**
@@ -51,7 +52,8 @@ class restore_collaborativefolders_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // We have just one structure step here.
-        $this->add_step(new restore_collaborativefolders_activity_structure_step('collaborativefolders_structure', 'collaborativefolders.xml'));
+        $this->add_step(new restore_collaborativefolders_activity_structure_step('collaborativefolders_structure',
+                'collaborativefolders.xml'));
     }
 
     /**
@@ -73,8 +75,10 @@ class restore_collaborativefolders_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('COLLABORATIVEFOLDERSVIEWBYID', '/mod/collaborativefolders/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('COLLABORATIVEFOLDERSINDEX', '/mod/collaborativefolders/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('COLLABORATIVEFOLDERSVIEWBYID', '/mod/collaborativefolders/view.php?id=$1',
+                'course_module');
+        $rules[] = new restore_decode_rule('COLLABORATIVEFOLDERSINDEX', '/mod/collaborativefolders/index.php?id=$1',
+                'course');
 
         return $rules;
 

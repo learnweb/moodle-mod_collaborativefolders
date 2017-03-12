@@ -55,8 +55,8 @@ class link_generated extends  \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has successfully generated a link to a folder within the collaborativefolders instance 
-            '$this->contextinstanceid'.";
+        return "The user with id '$this->userid' has successfully generated a link to a folder within the
+         collaborativefolders instance '$this->contextinstanceid'.";
     }
 
     /**

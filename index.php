@@ -51,7 +51,8 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading($strname);
 
 if (! $collaborativefolderss = get_all_instances_in_course('collaborativefolders', $course)) {
-    notice(get_string('nocollaborativefolders', 'mod_collaborativefolders'), new moodle_url('/course/view.php', array('id' => $course->id)));
+    notice(get_string('nocollaborativefolders', 'mod_collaborativefolders'),
+            new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 $usesections = course_format_uses_sections($course->format);

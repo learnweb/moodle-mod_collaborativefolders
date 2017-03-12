@@ -50,8 +50,8 @@ if ($ADMIN->fulltree) {
                 'context' => context_system::instance()
         );
 
-        $logout_event = \mod_collaborativefolders\event\technical_user_loggedout::create($params);
-        $logout_event->trigger();
+        $logoutevent = \mod_collaborativefolders\event\technical_user_loggedout::create($params);
+        $logoutevent->trigger();
 
     } else {
 

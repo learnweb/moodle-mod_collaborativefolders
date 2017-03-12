@@ -34,7 +34,8 @@ $PAGE->set_title('Logout technical user');
 $PAGE->set_heading('Logout');
 echo $OUTPUT->header();
 
-$confirm = get_string('strong_recommendation', 'mod_collaborativefolders')."<p><b>".get_string('areyousure', 'mod_collaborativefolders')."</b></p>";
+$confirm = get_string('strong_recommendation', 'mod_collaborativefolders')."<p><b>"
+        .get_string('areyousure', 'mod_collaborativefolders')."</b></p>";
 $link = '/admin/settings.php?section=modsettingcollaborativefolders';
 $options = array('technicallogout' => 1);
 

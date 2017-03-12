@@ -17,10 +17,10 @@
 /**
  * Defines backup_collaborativefolders_activity_task class
  *
- * @package   mod_collaborativefolders
- * @category  backup
- * @copyright 2016 Your Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -30,11 +30,12 @@ require_once($CFG->dirroot . '/mod/collaborativefolders/backup/moodle2/backup_co
 /**
  * Provides the steps to perform one complete backup of the collaborativefolders instance
  *
- * @package   mod_collaborativefolders
- * @category  backup
- * @copyright 2016 Your Name <your@email.address>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class backup_collaborativefolders_activity_task extends backup_activity_task {
 
     /**
@@ -47,7 +48,8 @@ class backup_collaborativefolders_activity_task extends backup_activity_task {
      * Defines a backup step to store the instance data in the collaborativefolders.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_collaborativefolders_activity_structure_step('collaborativefolders_structure', 'collaborativefolders.xml'));
+        $this->add_step(new backup_collaborativefolders_activity_structure_step('collaborativefolders_structure',
+                'collaborativefolders.xml'));
     }
 
     /**

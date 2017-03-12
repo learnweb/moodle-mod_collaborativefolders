@@ -62,7 +62,7 @@ $gm = false;
 $folderpath = '/' . $id;
 $ingroup = null;
 
-if(groups_get_activity_groupmode($cm) != 0) {
+if (groups_get_activity_groupmode($cm) != 0) {
     $gm = true;
     $ingroup = groups_get_activity_group($cm);
 
@@ -148,7 +148,7 @@ if (!$created) {
         $renderer->render_view_table($groups);
     }
 
-    $access = has_capability('mod/collaborativefolders:addinstance', $context) && $teacher== '1';
+    $access = has_capability('mod/collaborativefolders:addinstance', $context) && $teacher == '1';
 
     // If the current user is a teacher who has access to the folder OR a student from the participating
     // grouping(s), he/she gains access to the folder.
@@ -238,8 +238,8 @@ if (!$created) {
                                     );
 
                                     // And the link_generated event is triggered.
-                                    $generated_event = \mod_collaborativefolders\event\link_generated::create($params);
-                                    $generated_event->trigger();
+                                    $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
+                                    $generatedevent->trigger();
 
                                 } else {
                                     // MOVE was unsuccessful.
@@ -290,7 +290,7 @@ $params = array(
         'objectid' => $cm->instance
 );
 
-$cm_viewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
-$cm_viewed->trigger();
+$cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
+$cmviewed->trigger();
 
 echo $renderer->create_footer();
