@@ -58,7 +58,7 @@ Die Installation ist nicht möglich, bevor das admin_tool installiert wurde.
 
 Für die Aktivität collaborative_folders wird ein technischer Nutzer der ownCloud Instanz benötigt.
 Bei diesem Nutzer werden alle Ordner die erstellt werden gespeichert. 
-Um den Nutzer festzulegen muss in `Website-Administration>Plugins>Aktivitäten>collaborativefolders`
+Um den Nutzer festzulegen muss in `Website-Administration►Plugins►Aktivitäten►collaborativefolders`
 ein technischer Nutzer mit Hilfe des OAuth2 Protokolls authentifiziert werden.
 Über einen Login Button werden Sie aufgefordert sich in ownCloud zu authentifizieren. 
 Falls Sie nicht richtig weitergeleitet werden, sind die Einstellungen im Admin tool oauth2sciebo
