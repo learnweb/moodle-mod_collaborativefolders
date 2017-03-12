@@ -25,8 +25,6 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
-require(__DIR__ . '/name_form.php');
 
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
@@ -96,7 +94,7 @@ if ($logout != null) {
 $actionurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id);
 
 // Get form data and check whether the submit button has been pressed.
-$mform = new mod_collaborativefolders_name_form($actionurl, array(
+$mform = new mod_collaborativefolders\name_form($actionurl, array(
         'namefield' => $cm->name
 ));
 
