@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the view event.
+ * Confirmation window for technical user logout.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
@@ -23,28 +23,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_collaborativefolders\event;
+require_once("../../config.php");
 
-defined('MOODLE_INTERNAL') || die();
+$url = new moodle_url('/mod/collaborativefolders/technicallogout.php');
 
-/**
- * The mod_collaborativefolders instance viewed event class.
- *
- * If the view mode needs to be stored as well, you may need to
- * override methods get_url() and get_legacy_log_data(), too.
- *
- * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class course_module_viewed extends \core\event\course_module_viewed {
+$PAGE->set_url($url);
+require_login(null, false);
+$PAGE->set_context(context_system::instance());
+$PAGE->set_title('Logout technical user');
+$PAGE->set_heading('Logout');
+echo $OUTPUT->header();
 
-    /**
-     * Initialize the event
-     */
-    protected function init() {
-        $this->data['objecttable'] = 'collaborativefolders';
-        parent::init();
-    }
-}
+$confirm = get_string('strong_recommendation', 'mod_collaborativefolders')."<p><b>".get_string('areyousure', 'mod_collaborativefolders')."</b></p>";
+$link = '/admin/settings.php?section=modsettingcollaborativefolders';
+$options = array('technicallogout' => 1);
+
+echo $OUTPUT->confirm($confirm, new moodle_url($link, $options), new moodle_url($link));
+
+echo $OUTPUT->footer();

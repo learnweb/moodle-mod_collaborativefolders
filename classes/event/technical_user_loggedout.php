@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the view event.
+ * Event for when a new technical user logs out.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
@@ -28,23 +28,50 @@ namespace mod_collaborativefolders\event;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_collaborativefolders instance viewed event class.
- *
- * If the view mode needs to be stored as well, you may need to
- * override methods get_url() and get_legacy_log_data(), too.
+ * Describes the technical user logout event.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_viewed extends \core\event\course_module_viewed {
+class technical_user_loggedout extends  \core\event\base {
 
     /**
-     * Initialize the event
+     * Init method.
+     *
+     * @return void
      */
     protected function init() {
-        $this->data['objecttable'] = 'collaborativefolders';
-        parent::init();
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_OTHER;
+        $this->data['objecttable'] = '';
+    }
+
+    /**
+     * Returns description of what happened.
+     *
+     * @return string
+     */
+    public function get_description() {
+        return "The technical user of collaborativefolders logged out.";
+    }
+
+    /**
+     * Return localised event name.
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('eventloggedout', 'mod_collaborativefolders');
+    }
+
+    /**
+     * Get URL related to the action
+     *
+     * @return \moodle_url
+     */
+    public function get_url() {
+        return new \moodle_url('/admin/settings.php?section=modsettingcollaborativefolders');
     }
 }

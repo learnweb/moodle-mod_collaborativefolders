@@ -25,8 +25,6 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
-require(__DIR__ . '/name_form.php');
 
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
@@ -96,7 +94,7 @@ if ($logout != null) {
 $actionurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id);
 
 // Get form data and check whether the submit button has been pressed.
-$mform = new mod_collaborativefolders_name_form($actionurl, array(
+$mform = new mod_collaborativefolders\name_form($actionurl, array(
         'namefield' => $cm->name
 ));
 
@@ -159,104 +157,118 @@ if (!$created) {
         // If the link is already stored, display it. Otherwise proceed.
         if (get_user_preferences('cf_link ' . $id) == null) {
 
-            // Since the user shall be able to choose an individual name for the folder, is has to be checked
-            // if a name has been entered.
-            if (get_user_preferences('cf_link ' . $id . ' name') == null) {
+            // If any client data is missing, we cannot proceed.
+            if ($ocs->owncloud->check_data()) {
 
-                // If not, the concerning form is displayed.
-                $mform->display();
+                // Since the user shall be able to choose an individual name for the folder, is has to be checked
+                // if a name has been entered.
+                if (get_user_preferences('cf_link ' . $id . ' name') == null) {
 
-            } else {
+                    // If not, the concerning form is displayed.
+                    $mform->display();
 
-                // If the generation link was not used, the user still has the possibility to view his chosen
-                // name and to reset it.
-                if ($generate == null) {
+                } else {
 
-                    $name = get_user_preferences('cf_link ' . $id . ' name');
-                    // A reset parameter has to be passed on redirection.
-                    $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
-                            'reset' => 'true'
-                    ]);
+                    // If the generation link was not used, the user still has the possibility to view his chosen
+                    // name and to reset it.
+                    if ($generate == null) {
 
-                    echo $renderer->print_name_and_reset($name, $reseturl);
-                }
+                        $name = get_user_preferences('cf_link ' . $id . ' name');
+                        // A reset parameter has to be passed on redirection.
+                        $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
+                                'reset' => 'true'
+                        ]);
 
-                // Now the login status of the user has to be checked. Therefore the owncloud_access
-                // object's owncloud object gets called without the $technical parameter.
-                if ($ocs->owncloud->check_login()) {
+                        echo $renderer->print_name_and_reset($name, $reseturl);
+                    }
 
-                    // If the user used the generation link, proceed.
-                    if ($generate != null) {
+                    // Now the login status of the user has to be checked. Therefore the owncloud_access
+                    // object's owncloud object gets called without the $technical parameter.
+                    if ($ocs->owncloud->check_login()) {
 
-                        // First, the ownCloud user ID is fetched from the current user's Access Token.
-                        $user = $ocs->owncloud->get_accesstoken()->user_id;
-                        // Thereafter, a share for this specific user can be created with the technical user and
-                        // his Access Token.
-                        $status = $ocs->generate_share($folderpath, $user);
+                        // If the user used the generation link, proceed.
+                        if ($generate != null) {
 
-                        // If the process was successful, try to rename the folder.
-                        if ($status) {
+                            // First, the ownCloud user ID is fetched from the current user's Access Token.
+                            $user = $ocs->owncloud->get_accesstoken()->user_id;
+                            // Thereafter, a share for this specific user can be created with the technical user and
+                            // his Access Token.
+                            $status = $ocs->generate_share($folderpath, $user);
 
-                            // The folderpath needs to be adjusted to the path of the shared folder.
-                            // E.g. 1/2 becomes 2, bacause only 2 was shared with the user.
-                            if ($gm && !has_capability('mod/collaborativefolders:addinstance', $context)) {
-                                $folderpath = '/' . $ingroup;
-                            }
+                            // If the process was successful, try to rename the folder.
+                            if ($status) {
 
-                            $renamed = false;
-                            // The Access Token of the user needs to be switched to the ownCloud client, first.
-                            $ocs->owncloud->check_login();
-                            if ($ocs->owncloud->open()) {
-                                // After the socket's opening, the WebDAV MOVE method has to be performed in
-                                // order to rename the folder.
-                                $renamed = $ocs->owncloud->move($folderpath, '/' .
-                                        get_user_preferences('cf_link ' . $id . ' name'), false);
-                            }
+                                // The folderpath needs to be adjusted to the path of the shared folder.
+                                // E.g. 1/2 becomes 2, bacause only 2 was shared with the user.
+                                if ($gm && !has_capability('mod/collaborativefolders:addinstance', $context)) {
+                                    $folderpath = '/' . $ingroup;
+                                }
 
-                            if ($renamed == 201) {
+                                $renamed = false;
+                                // The Access Token of the user needs to be switched to the ownCloud client, first.
+                                $ocs->owncloud->check_login();
+                                if ($ocs->owncloud->open()) {
+                                    // After the socket's opening, the WebDAV MOVE method has to be performed in
+                                    // order to rename the folder.
+                                    $renamed = $ocs->owncloud->move($folderpath, '/' .
+                                            get_user_preferences('cf_link ' . $id . ' name'), false);
+                                }
 
-                                // After the folder having been renamed, a specific link has been generated, which is to
-                                // be stored for each user individually.
-                                $pref = get_config('tool_oauth2owncloud', 'protocol') . '://';
+                                if ($renamed == 201) {
 
-                                $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2owncloud', 'path'));
+                                    // After the folder having been renamed, a specific link has been generated, which is to
+                                    // be stored for each user individually.
+                                    $pref = get_config('tool_oauth2owncloud', 'protocol') . '://';
 
-                                $link = $pref . get_config('tool_oauth2owncloud', 'server') . '/' . $p .
-                                        'index.php/apps/files/?dir=' . '/' .
-                                        get_user_preferences('cf_link ' . $id . ' name');
+                                    $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2owncloud', 'path'));
 
-                                set_user_preference('cf_link ' . $id, $link);
+                                    $link = $pref . get_config('tool_oauth2owncloud', 'server') . '/' . $p .
+                                            'index.php/apps/files/?dir=' . '/' .
+                                            get_user_preferences('cf_link ' . $id . ' name');
 
-                                // Display the Link.
-                                echo $renderer->print_link($link, 'access');
+                                    set_user_preference('cf_link ' . $id, $link);
 
+                                    // Display the Link.
+                                    echo $renderer->print_link($link, 'access');
+
+                                    // Event data is gathered.
+                                    $params = array(
+                                            'context'  => context_module::instance($cm->id),
+                                            'objectid' => $cm->instance
+                                    );
+
+                                    // And the link_generated event is triggered.
+                                    $generated_event = \mod_collaborativefolders\event\link_generated::create($params);
+                                    $generated_event->trigger();
+
+                                } else {
+                                    // MOVE was unsuccessful.
+                                    echo $renderer->print_error('renamed', $renamed);
+                                }
                             } else {
-                                // MOVE was unsuccessful.
-                                echo $renderer->print_error('renamed', $renamed);
+                                // The share was unsuccessful.
+                                $renderer->print_error('shared', $status);
                             }
+
                         } else {
-                            // The share was unsuccessful.
-                            $renderer->print_error('shared', $status);
+
+                            // Print the logout text and link.
+                            $logouturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
+                                    'logout' => true));
+                            echo $renderer->print_link($logouturl, 'logout');
+
+                            // Print the generation text and link.
+                            $genurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
+                                    'generate' => true));
+                            echo $renderer->print_link($genurl, 'generate');
                         }
 
                     } else {
 
-                        // Print the logout text and link.
-                        $logouturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
-                                'logout' => true));
-                        echo $renderer->print_link($logouturl, 'logout');
-
-                        // Print the generation text and link.
-                        $genurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
-                                'generate' => true));
-                        echo $renderer->print_link($genurl, 'generate');
+                        // If no Access Token was received, a login link has to be provided.
+                        $url = $ocs->owncloud->get_login_url();
+                        echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
                     }
-
-                } else {
-
-                    // If no Access Token was received, a login link has to be provided.
-                    $url = $ocs->owncloud->get_login_url();
-                    echo html_writer::link($url, 'Login', array('target' => '_blank'));
                 }
             }
 
@@ -272,5 +284,13 @@ if (!$created) {
         echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
     }
 }
+
+$params = array(
+        'context' => context_module::instance($cm->id),
+        'objectid' => $cm->instance
+);
+
+$cm_viewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
+$cm_viewed->trigger();
 
 echo $renderer->create_footer();
