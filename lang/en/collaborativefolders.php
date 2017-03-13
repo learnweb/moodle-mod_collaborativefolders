@@ -56,7 +56,8 @@ $string['namefield'] = 'Name';
 $string['reset'] = 'You may reset your chosen foldername {$a}.';
 $string['retry'] = 'An Error occured. Please logout from your ownCloud account and try again later.';
 $string['retry_rename'] = 'The concerning folder could not be renamed. Please logout from your ownCloud account and try again later.';
-$string['retry_shared'] = 'The concerning folder could not be shared. Please logout from your ownCloud account and try again later.';
+$string['retry_shared'] = 'The concerning folder could not be shared with you. Please check if you already have a copy of the folder.
+Otherwise logout from your ownCloud account and try again later.';
 $string['code'] = 'Error code: {$a}';
 $string['error'] = 'An error occured';
 
