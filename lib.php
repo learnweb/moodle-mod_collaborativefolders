@@ -68,10 +68,8 @@ function collaborativefolders_supports($feature) {
 function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
     global $DB;
 
-    $fromform = $mform->get_data();
-    $arraydata = get_object_vars($fromform);
-    $collaborativefolders->teacher = $arraydata['teacher'];
     $collaborativefolders->timecreated = time();
+    $collaborativefolders->timemodified = time();
     $collaborativefolders->id = $DB->insert_record('collaborativefolders', $collaborativefolders);
 
     return $collaborativefolders->id;
@@ -91,16 +89,12 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
 function collaborativefolders_update_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
     global $DB;
 
-    $oldfolder = $DB->get_record('collaborativefolders', array('id' => $collaborativefolders->instance));
-    $oldfolder->timemodified = time();
-    $oldfolder->intro = $collaborativefolders->intro;
-    $oldfolder->introformat = $collaborativefolders->introformat;
+    $collaborativefolders->timemodified = time();
+    $collaborativefolders->id = $collaborativefolders->instance;
 
-    $collaborativefolders->id = $DB->update_record('collaborativefolders', $oldfolder);
+    $update = $DB->update_record('collaborativefolders', $collaborativefolders);
 
-    $DB->update_record('collaborativefolders', $collaborativefolders);
-
-    return $collaborativefolders->id;
+    return $update;
 }
 
 /**

@@ -64,6 +64,8 @@ $string['strong_recommendation'] = 'If you log out with a technical user, althou
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved
 in the storage space of the technical user. Therefore, please consider the available memory of the user.';
 $string['areyousure'] = 'Are you sure you want to proceed?';
+$string['logouttechnicaluser'] = 'Logout the technical user';
+$string['logoutlabel'] = 'Logout';
 
 // Adding an instance (mod_form).
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
