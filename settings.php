@@ -42,9 +42,10 @@ if ($ADMIN->fulltree) {
 
         set_config('token', null, 'mod_collaborativefolders');
         $url = $owncloud->get_login_url();
-        $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
+        $settings->add(new admin_setting_heading('in2', get_string('manageheading', 'mod_collaborativefolders'),
                 html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
-                html_writer::link($url, 'Login', array('target' => '_blank',  'rel' => 'noopener noreferrer'))));
+                html_writer::link($url, get_string('loginlabel', 'mod_collaborativefolders'),
+                        array('target' => '_blank',  'rel' => 'noopener noreferrer'))));
 
         $params = array(
                 'context' => context_system::instance()
@@ -62,19 +63,20 @@ if ($ADMIN->fulltree) {
             $url = new moodle_url('/mod/collaborativefolders/technicallogout.php');
 
             // Link for and warning about the logout of the technical user.
-            $settings->add(new admin_setting_heading('out1', 'Change the technical user account',
+            $settings->add(new admin_setting_heading('out1', get_string('manageheading', 'mod_collaborativefolders'),
                     html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
                     html_writer::div(get_string('strong_recommendation', 'mod_collaborativefolders'), 'warning') .
-                    html_writer::link($url, 'Logout')));
+                    html_writer::link($url, get_string('logoutlabel', 'mod_collaborativefolders'))));
 
         } else {
 
             // Otherwise, a login link is shown.
             set_config('token', null, 'mod_collaborativefolders');
             $url = $owncloud->get_login_url();
-            $settings->add(new admin_setting_heading('in2', 'Change the technical user account',
+            $settings->add(new admin_setting_heading('in2', get_string('manageheading', 'mod_collaborativefolders'),
                     html_writer::div(get_string('informationtechnicaluser', 'mod_collaborativefolders')) .
-                    html_writer::link($url, 'Login', array('target' => '_blank',  'rel' => 'noopener noreferrer'))));
+                    html_writer::link($url, get_string('loginlabel', 'mod_collaborativefolders'),
+                            array('target' => '_blank',  'rel' => 'noopener noreferrer'))));
 
         }
     }

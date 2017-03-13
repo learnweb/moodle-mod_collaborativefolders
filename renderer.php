@@ -52,23 +52,6 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    public function create_header($title = null) {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->header();
-        if ($title != null) {
-            $output .= $OUTPUT->heading($title);
-        }
-        echo $output;
-    }
-
-    public function create_footer() {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->footer();
-        echo $output;
-    }
-
     public function render_view_table($groups) {
         $output = '';
         $output .= html_writer::div(get_string('introoverview', 'mod_collaborativefolders'));

@@ -61,8 +61,9 @@ Otherwise logout from your ownCloud account and try again later.';
 $string['code'] = 'Error code: {$a}';
 $string['error'] = 'An error occured';
 $string['save'] = 'Save name';
+$string['noviewpermission'] = 'You are currently not allowed to see that content.';
 
-        // Global technical user.
+// Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved
@@ -70,6 +71,8 @@ in the storage space of the technical user. Therefore, please consider the avail
 $string['areyousure'] = 'Are you sure you want to proceed?';
 $string['logouttechnicaluser'] = 'Logout the technical user';
 $string['logoutlabel'] = 'Logout';
+$string['loginlabel'] = 'Login';
+$string['manageheading'] = 'Manage the technical user';
 
 // Adding an instance (mod_form).
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';

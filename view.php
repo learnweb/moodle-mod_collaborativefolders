@@ -27,20 +27,32 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 // Page and parameter setup.
+//global $OUTPUT;
 $id = required_param('id', PARAM_INT);
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
 
 // Indicators for name reset, logout from current ownCloud user and link generation.
-$reset = optional_param('reset', null, PARAM_RAW_TRIMMED);
-$logout = optional_param('logout', null, PARAM_RAW_TRIMMED);
-$generate = optional_param('generate', null, PARAM_RAW_TRIMMED);
+$reset = optional_param('reset', null, PARAM_BOOL);
+$logout = optional_param('logout', null, PARAM_BOOL);
+$generate = optional_param('generate', null, PARAM_BOOL);
 
 // User needs to be logged in to proceed.
 require_login($course, true, $cm);
 
+// If the user does not have the permission to view this activity instance,
+// he gets redirected.
+$context = context_module::instance($id);
+if (!has_capability('mod/collaborativefolders:view', $context)) {
+    notice(get_string('noviewpermission', 'mod_collaborativefolders'));
+}
+
+// The instance ID of the specific course module.
+$instanceid = $cm->instance;
+$paramsteacher = array('id' => $instanceid);
+
 // Indicates, whether the teacher is allowed to have access to the folder or not.
-$teacher = $DB->get_record('collaborativefolders', array('id' => $cm->instance))->teacher;
+$teacher = $DB->get_record('collaborativefolders', $paramsteacher)->teacher;
 
 // Renderer is initialized.
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
@@ -125,7 +137,8 @@ foreach ($adhoc as $element) {
 
 $PAGE->set_title(format_string($cm->name));
 $PAGE->set_heading(format_string($course->fullname));
-echo $renderer->create_header('Overview of Collaborativefolders Activity');
+echo $OUTPUT->header();
+echo $OUTPUT->heading('Overview of Collaborativefolders Activity');
 
 
 // If the folders were not created successfully, an error message has to be printed.
@@ -292,4 +305,4 @@ $params = array(
 $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
 $cmviewed->trigger();
 
-echo $renderer->create_footer();
+echo $OUTPUT->footer();

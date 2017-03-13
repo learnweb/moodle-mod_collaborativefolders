@@ -43,10 +43,13 @@ class observer {
             // First, the module ID of collaborativefolders needs to be fetched.
             $module = $DB->get_record('modules', array('name' => 'collaborativefolders'), 'id', MUST_EXIST)->id;
 
+            // To identify the specific course module, that is needed, the module name (collaborative
+            // folder) and the instance ID of the specific module have to be passed as select statements.
+            $paramscm = array('module' => $module, 'instance' => $other['instanceid']);
+
             // And after that, the exact course module ID can be gotten from the DB, which we need
             // as an unique identifier for the foldername.
-            $cmid = $DB->get_record('course_modules', array('module' => $module, 'instance' => $other['instanceid']),
-                    'id', MUST_EXIST)->id;
+            $cmid = $DB->get_record('course_modules', $paramscm, 'id', MUST_EXIST)->id;
 
             $paths = array();
             $paths['cmid'] = $cmid;
