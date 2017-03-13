@@ -139,8 +139,6 @@ function collaborativefolders_delete_instance($id) {
     if (!$collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
         return false;
     } else {
-        $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
+        return $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
     }
-
-    return true;
 }
