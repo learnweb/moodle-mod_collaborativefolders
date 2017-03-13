@@ -31,8 +31,8 @@ use mod_collaborativefolders\event\folders_created;
 use mod_collaborativefolders\owncloud_access;
 use moodle_url;
 
-require_once('/var/www/html/moodle/lib/modinfolib.php');
-require_once('/var/www/html/moodle/lib/accesslib.php');
+require_once($CFG->libdir . '/modinfolib.php');
+require_once($CFG->libdir . '/accesslib.php');
 
 class collaborativefolders_create extends \core\task\adhoc_task {
 
