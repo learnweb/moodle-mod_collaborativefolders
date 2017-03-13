@@ -175,9 +175,7 @@ if (!$created) {
 
                         $name = get_user_preferences('cf_link ' . $id . ' name');
                         // A reset parameter has to be passed on redirection.
-                        $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, [
-                                'reset' => 'true'
-                        ]);
+                        $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id .'&reset=true');
 
                         echo $renderer->print_name_and_reset($name, $reseturl);
                     }
@@ -247,7 +245,7 @@ if (!$created) {
                                 }
                             } else {
                                 // The share was unsuccessful.
-                                $renderer->print_error('shared', $status);
+                                echo $renderer->print_error('shared', $status);
                             }
 
                         } else {
