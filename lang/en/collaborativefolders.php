@@ -26,27 +26,27 @@
 defined('MOODLE_INTERNAL') || die();
 
 // General.
-$string['modulename'] = 'Collaborativefolders';
-$string['modulenameplural'] = 'Collaborativefolders';
-$string['modulename_help'] = 'Use the collaborativefolders module to create folders for students for collaborative Work.';
-$string['collaborativefolders:addinstance'] = 'Add a new collaborativefolders';
-$string['collaborativefolders:submit'] = 'Submit collaborativefolders';
-$string['collaborativefolders:view'] = 'View collaborativefolders';
-$string['collaborativefoldersname'] = 'Name for Folder in Moodle:';
-$string['collaborativefoldersname_help'] = 'Enter a new, which will be displayed for this collaborativefolders instance.';
+$string['modulename'] = 'Collaborative Folder';
+$string['modulenameplural'] = 'Collaborative Folders';
+$string['modulename_help'] = 'Use Collaborative Folders to create folders in ownCloud for students for collaborative Work. The folder is created on a technical user\'s ownCloud account and then shared with members of the chosen groups, as soon as they like.';
+$string['collaborativefolders:addinstance'] = 'Add a new Collaborative Folder';
+$string['collaborativefolders:submit'] = '';
+$string['collaborativefolders:view'] = 'View a Collaborative Folder';
+$string['collaborativefoldersname'] = 'Name for the Collaborative Folder in Moodle:';
+$string['collaborativefoldersname_help'] = 'Enter a new name, which will be displayed for this Collaborative Folder instance.';
 $string['collaborativefolders'] = 'collaborativefolders';
-$string['nocollaborativefolders'] = 'No instance of collaborativefolders is active in this course.';
-$string['pluginadministration'] = 'collaborativefolders administration';
+$string['nocollaborativefolders'] = 'No instance of Collaborative Folders is active in this course.';
+$string['pluginadministration'] = 'Administration of Collaborative Folders';
 $string['pluginname'] = 'collaborativefolders';
 
 // View.php.
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
-$string['introoverview'] = 'This is an overview for all groups that have a collaborativefolder.';
+$string['introoverview'] = 'This is an overview for all groups that have a Collaborative Folder.';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 $string['foldercouldnotbecreated'] = 'The Folder was not yet created. If this message remains in the next days please contact the administrator.';
 $string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use this {$a}.';
 $string['logout_heading'] = 'Logout from ownCloud';
-$string['generate'] = 'To generate a link to the collaborative folder, please use this {$a}.';
+$string['generate'] = 'To generate a link to the Collaborative Folder, please use this {$a}.';
 $string['generate_heading'] = 'Generate Link to folder';
 $string['access'] = 'Click {$a} to access the folder.';
 $string['access_heading'] = 'Access to the folder';
@@ -75,5 +75,5 @@ $string['edit_groups'] = 'Please consider, that the groupsettings for this activ
 
 // Events.
 $string['eventfolderscreated'] = 'The ad hoc task successfully created all necessary folders for an collaborativefolders instance.';
-$string['eventlinkgenerated'] = 'A user specific link to a collaborative folder was created successfully.';
+$string['eventlinkgenerated'] = 'A user specific link to a Collaborative Folder was created successfully.';
 $string['eventloggedout'] = 'The technical user of collaborativefolders logged out.';

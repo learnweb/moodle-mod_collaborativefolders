@@ -29,7 +29,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot.'/lib/setuplib.php');
 
 /**
  * Module instance settings form.
@@ -59,14 +58,10 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Checkbox, which indicates whether the course's should habe access to the folder.
         $mform->addElement('advcheckbox', 'teacher', get_string('teacher_mode', 'mod_collaborativefolders'), '', '', array(0, 1));
 
-        if ($CFG->branch >= 29) {
-            $this->standard_intro_elements();
-        } else {
-            $this->add_intro_editor();
-        }
+        $this->standard_intro_elements();
 
         // Reminder for groupsettings.
-        $mform->addElement('html', '<div><h5><b>'. get_string('edit_groups', 'mod_collaborativefolders') .'</b></h5></div>');
+        $mform->addElement('warning', null, 'notifyproblem', get_string('edit_groups', 'mod_collaborativefolders'));
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();

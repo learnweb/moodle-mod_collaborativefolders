@@ -39,8 +39,5 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_collaborativefolders_upgrade($oldversion) {
-    global $DB;
-
-    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
     return true;
 }
