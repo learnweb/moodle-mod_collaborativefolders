@@ -41,8 +41,6 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 class mod_collaborativefolders_mod_form extends moodleform_mod {
 
     public function definition() {
-        global $CFG;
-
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are shown.

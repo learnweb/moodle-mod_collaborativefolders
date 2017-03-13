@@ -60,8 +60,9 @@ $string['retry_shared'] = 'The concerning folder could not be shared with you. P
 Otherwise logout from your ownCloud account and try again later.';
 $string['code'] = 'Error code: {$a}';
 $string['error'] = 'An error occured';
+$string['save'] = 'Save name';
 
-// Global technical user.
+        // Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';
 $string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved

@@ -32,7 +32,6 @@ require($CFG->libdir . '/formslib.php');
 class name_form extends \moodleform {
 
     public function definition() {
-        global $CFG;
         $mform = $this->_form;
 
         $mform->addElement('header', 'name', get_string('naming_folder', 'mod_collaborativefolders'));
@@ -40,9 +39,10 @@ class name_form extends \moodleform {
         $mform->addElement('text', 'namefield', get_string('namefield', 'mod_collaborativefolders'), array('size' => '64'));
         $mform->addRule('namefield', get_string('required'), 'required', null, 'client');
         $mform->addRule('namefield', get_string('err_alphanumeric', 'form'), 'alphanumeric', null, 'client');
+        // The default value is the name of the activity, chosen by it's creator.
         $mform->setDefault('namefield', $this->_customdata['namefield']);
         $mform->setType('namefield', PARAM_ALPHANUM);
 
-        $mform->addElement('submit', 'enter', 'Save');
+        $mform->addElement('submit', 'enter', get_string('save', 'mod_collaborativefolders'));
     }
 }

@@ -43,20 +43,21 @@ class collaborativefolders_create extends \core\task\adhoc_task {
         ]);
 
         $oc = new owncloud_access($returnurl);
-        $data = $this->get_custom_data();
+        $folderpaths = $this->get_custom_data();
 
-        foreach ($data as $key => $value) {
-            $code = $oc->handle_folder('make', $value);
+        foreach ($folderpaths as $key => $path) {
+            $code = $oc->handle_folder('make', $path);
             if ($code == false) {
-                throw new \coding_exception('Folder ' . $value . ' not created.');
+                throw new \coding_exception('Folder ' . $path . ' not created.');
             } else {
-                mtrace('Folder: ' . $value . ', Code: ' . $code);
+                mtrace('Folder: ' . $path . ', Code: ' . $code);
                 if (($code != 201) && ($code != 405)) {
-                    throw new \coding_exception('Folder ' . $value . ' not created.');
+                    throw new \coding_exception('Folder ' . $path . ' not created.');
                 }
             }
         }
 
+        // WIP: the objectid needs to be fetched. We cant use the method below.
         //list ($course, $cm) = get_course_and_cm_from_cmid($data['cmid'], 'collaborativefolders');
         $params = array(
                 'context' => \context_system::instance(),
