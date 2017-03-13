@@ -40,11 +40,35 @@ $generate = optional_param('generate', null, PARAM_BOOL);
 // User needs to be logged in to proceed.
 require_login($course, true, $cm);
 
+// The owncloud_access object will be used to access both, the technical and the current user.
+// The return URL leads back to the current page.
+$returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
+        'id' => $cm->id,
+        'callback'  => 'yes',
+        'sesskey'   => sesskey(),
+]);
+
+$ocs = new \mod_collaborativefolders\owncloud_access($returnurl);
+
 // If the user does not have the permission to view this activity instance,
 // he gets redirected.
 $context = context_module::instance($id);
 if (!has_capability('mod/collaborativefolders:view', $context)) {
     notice(get_string('noviewpermission', 'mod_collaborativefolders'));
+}
+
+// If the reset link was used, the chosen foldername is reset.
+if ($reset != null) {
+    set_user_preference('cf_link ' . $id . ' name', null);
+    redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
+}
+
+// If the user wishes to logout from his current ownCloud account, his Access Token is
+// set to null and so is the client's.
+if ($logout != null) {
+    $ocs->owncloud->log_out();
+    set_user_preference('oC_token', null);
+    redirect(qualified_me(), get_string('logoutpressed', 'mod_collaborativefolders'));
 }
 
 // The instance ID of the specific course module.
@@ -56,18 +80,6 @@ $teacher = $DB->get_record('collaborativefolders', $paramsteacher)->teacher;
 
 // Renderer is initialized.
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
-
-
-// The owncloud_access object will be used to access both, the technical and the current user.
-// The return URL leads back to the current page.
-$returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
-        'id' => $cm->id,
-        'callback'  => 'yes',
-        'sesskey'   => sesskey(),
-]);
-
-$ocs = new \mod_collaborativefolders\owncloud_access($returnurl);
-
 
 // Checks if the groupmode is active. Does not differentiate between VISIBLE and SEPERATE.
 $gm = false;
@@ -86,27 +98,8 @@ if (groups_get_activity_groupmode($cm) != 0) {
     }
 }
 
-
-// If the reset link was used, the chosen foldername is reset.
-if ($reset != null) {
-    set_user_preference('cf_link ' . $id . ' name', null);
-}
-
-// If the user wishes to logout from his current ownCloud account, his Access Token is
-// set to null and so is the client's.
-if ($logout != null) {
-
-    $ocs->owncloud->log_out();
-    set_user_preference('oC_token', null);
-}
-
-
-// The action URL for the form needs to be specified, because otherwise the CMID would be
-// missing.
-$actionurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id);
-
 // Get form data and check whether the submit button has been pressed.
-$mform = new mod_collaborativefolders\name_form($actionurl, array(
+$mform = new mod_collaborativefolders\name_form(qualified_me(), array(
         'namefield' => $cm->name
 ));
 
@@ -121,16 +114,16 @@ if ($fromform = $mform->get_data()) {
 
 // Checks if the adhoc task for the folder creation was successful.
 $adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
-$created = true;
+$folderscreated = true;
 
 foreach ($adhoc as $element) {
 
     $content = json_decode($element->customdata);
     $cmidoftask = $content->cmid;
 
-    // As long as at least one ad-hoc task exist, that has the same cm->id as the current cm the folders were not created
+    // As long as at least one ad-hoc task exist, that has the same cm->id as the current cm the folders were not created.
     if ($id == $cmidoftask) {
-        $created = false;
+        $folderscreated = false;
     }
 }
 
@@ -142,15 +135,13 @@ echo $OUTPUT->heading('Overview of Collaborativefolders Activity');
 
 
 // If the folders were not created successfully, an error message has to be printed.
-if (!$created) {
+if (!$folderscreated) {
 
     $output = '';
-    $output .= html_writer::div(get_string('foldercouldnotbecreated', 'mod_collaborativefolders'));
+    $output .= html_writer::div(get_string('foldernotcreatedyet', 'mod_collaborativefolders'));
     echo $output;
 
 } else {
-
-    $context = context_module::instance($cm->id);
 
     // It has to be checked, if the current user is a teacher.
     if (has_capability('mod/collaborativefolders:addinstance', $context) && $gm) {
@@ -189,7 +180,7 @@ if (!$created) {
 
                         $name = get_user_preferences('cf_link ' . $id . ' name');
                         // A reset parameter has to be passed on redirection.
-                        $reseturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id .'&reset=true');
+                        $reseturl = qualified_me() .'&reset=1';
 
                         echo $renderer->print_name_and_reset($name, $reseturl);
                     }
@@ -265,13 +256,11 @@ if (!$created) {
                         } else {
 
                             // Print the logout text and link.
-                            $logouturl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
-                                    'logout' => true));
+                            $logouturl = qualified_me() .'&logout=1';
                             echo $renderer->print_link($logouturl, 'logout');
 
                             // Print the generation text and link.
-                            $genurl = new moodle_url('/mod/collaborativefolders/view.php?id=' . $cm->id, array(
-                                    'generate' => true));
+                            $genurl = qualified_me() .'&generate=1';
                             echo $renderer->print_link($genurl, 'generate');
                         }
 
