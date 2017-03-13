@@ -114,9 +114,10 @@ $created = true;
 foreach ($adhoc as $element) {
 
     $content = json_decode($element->customdata);
-    $cmid = $content->cmid;
+    $cmidoftask = $content->cmid;
 
-    if ($id == $cmid) {
+    // As long as at least one ad-hoc task exist, that has the same cm->id as the current cm the folders were not created
+    if ($id == $cmidoftask) {
         $created = false;
     }
 }
