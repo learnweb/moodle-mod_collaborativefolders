@@ -40,7 +40,14 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->heading(get_string('error', 'mod_collaborativefolders'), 4);
-        $output .= html_writer::div(get_string('retry', 'mod_collaborativefolders', $text));
+        if ($text === 'rename') {
+            $output .= html_writer::div(get_string('retry_rename', 'mod_collaborativefolders'));
+        }
+        if ($text === 'shared') {
+            $output .= html_writer::div(get_string('retry_shared', 'mod_collaborativefolders'));
+        } else {
+            $output .= html_writer::div(get_string('retry', 'mod_collaborativefolders'));
+        }
         $output .= html_writer::div(get_string('code', 'mod_collaborativefolders', $code));
         return $output;
     }
