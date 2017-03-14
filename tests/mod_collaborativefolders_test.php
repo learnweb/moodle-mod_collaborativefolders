@@ -21,23 +21,15 @@
  * @copyright 2016 Projektseminar WWU
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
+
 class mod_collaborativefolders_testcase extends advanced_testcase {
 
     protected function set_up() {
-        // Recommended in Moodle docs to always include CFG.
         global $CFG;
-        $generator = $this->getDataGenerator()->get_plugin_generator('tool_deprovisionuser');
-        $data = $generator->test_create_preparation();
-        $this->resetAfterTest(true);
-        return $data;
     }
 
-    /**
-     * Function to test the locallib functions.
-     */
-    public function test_locallib() {
-    }
     /**
      * Methodes recommended by moodle to assure database and dataroot is reset.
      */
