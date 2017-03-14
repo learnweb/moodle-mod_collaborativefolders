@@ -67,13 +67,4 @@ $capabilities = array(
             'user' => CAP_ALLOW,
         )
     ),
-
-    'mod/collaborativefolders:submit' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW
-        )
-    ),
 );
