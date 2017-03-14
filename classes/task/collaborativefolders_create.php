@@ -30,13 +30,15 @@ defined('MOODLE_INTERNAL') || die;
 use mod_collaborativefolders\event\folders_created;
 use mod_collaborativefolders\owncloud_access;
 use moodle_url;
-
-require_once($CFG->libdir . '/modinfolib.php');
-require_once($CFG->libdir . '/accesslib.php');
+// Not the final exception type.
+use repository_dropbox\authentication_exception;
 
 class collaborativefolders_create extends \core\task\adhoc_task {
 
     public function execute() {
+
+        $context = \context_system::instance();
+
         $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
                 'callback'  => 'yes',
                 'sesskey'   => sesskey(),
@@ -45,24 +47,31 @@ class collaborativefolders_create extends \core\task\adhoc_task {
         $oc = new owncloud_access($returnurl);
         $folderpaths = $this->get_custom_data();
 
+        if (!$oc->owncloud->check_data()) {
+            throw new authentication_exception('The technical user of collaborativefolders is not logged in.');
+        }
+
         foreach ($folderpaths as $key => $path) {
-            $code = $oc->handle_folder('make', $path);
-            if ($code == false) {
-                throw new \coding_exception('Folder ' . $path . ' not created.');
-            } else {
-                mtrace('Folder: ' . $path . ', Code: ' . $code);
-                if (($code != 201) && ($code != 405)) {
-                    throw new \coding_exception('Folder ' . $path . ' not created.');
+            if ($key != 'instance') {
+                $code = $oc->handle_folder('make', $path);
+                if ($code == false) {
+                    throw new \coding_exception('Folder ' . $path . ' not created. The WebDAV socket could not be
+                     opened.');
+                } else {
+                    mtrace('Folder: ' . $path . ', Code: ' . $code);
+                    if (($code != 201) && ($code != 405)) {
+                        throw new \coding_exception('Folder ' . $path . ' not created. An unexpected status code
+                         was received.');
+                    }
                 }
             }
         }
 
-        // WIP: the objectid needs to be fetched. We cant use the method below.
-        //list ($course, $cm) = get_course_and_cm_from_cmid($data['cmid'], 'collaborativefolders');
         $params = array(
-                'context' => \context_system::instance(),
-                'objectid' => 10
+                'objectid' => $folderpaths->instance,
+                'context' => $context
         );
+
         $done = folders_created::create($params);
         $done->trigger();
     }

@@ -53,6 +53,7 @@ class observer {
 
             $paths = array();
             $paths['cmid'] = $cmid;
+            $paths['instance'] = $other['instanceid'];
 
             list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
 
@@ -66,9 +67,7 @@ class observer {
 
                     $path = $cmid . '/' . $group->id;
                     $paths[$group->id] = $path;
-
                 }
-
             }
 
             $creator = new collaborativefolders_create();
