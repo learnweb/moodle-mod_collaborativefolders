@@ -32,9 +32,9 @@ list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
 
 // Indicators for name reset, logout from current ownCloud user and link generation.
-$reset = optional_param('reset', null, PARAM_BOOL);
-$logout = optional_param('logout', null, PARAM_BOOL);
-$generate = optional_param('generate', null, PARAM_BOOL);
+$reset = optional_param('reset', false, PARAM_BOOL);
+$logout = optional_param('logout', false, PARAM_BOOL);
+$generate = optional_param('generate', false, PARAM_BOOL);
 
 // User needs to be logged in to proceed.
 require_login($course, true, $cm);
@@ -137,144 +137,115 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading('Overview of Collaborativefolders Activity');
 
 
-// If the folders were not created successfully, an error message has to be printed.
+
+
+
 if (!$folderscreated) {
 
     $output = '';
     $output .= html_writer::div(get_string('foldernotcreatedyet', 'mod_collaborativefolders'));
     echo $output;
+}
 
-} else {
+if ($capadd && $gm) {
 
-    // It has to be checked, if the current user is a teacher.
-    if ($capadd && $gm) {
+    $grid = $cm->groupingid;
+    $groups = groups_get_all_groups($course->id, 0, $grid);
+    $renderer->render_view_table($groups);
+}
 
-        // If the current user is a teacher, a table of all participating groups
-        // should be printed.
-        $grid = $cm->groupingid;
-        $groups = groups_get_all_groups($course->id, 0, $grid);
-        $renderer->render_view_table($groups);
+
+
+
+$access = $capadd && $teacherallowed == true;
+
+$hasaccess = ($access xor !$capadd) && $folderscreated;
+
+$privatelink = get_user_preferences('cf_link ' . $id);
+
+$haslink = $privatelink != null && $hasaccess;
+
+if ($haslink) {
+
+    echo $renderer->print_link($privatelink, 'access');
+}
+
+
+
+
+$name = get_user_preferences('cf_link ' . $id . ' name');
+
+if (!$haslink && $generate) {
+
+    if ($name == null) {
+
+        $generate = false;
     }
+    else {
 
-    $access = $capadd && $teacherallowed == true;
+        // First, the ownCloud user ID is fetched from the current user's Access Token.
+        $user = $ocs->owncloud->get_accesstoken()->user_id;
+        // Thereafter, a share for this specific user can be created with the technical user and
+        // his Access Token.
 
-    // If the current user is a teacher who has access to the folder OR a student from the participating
-    // grouping(s), he/she gains access to the folder.
-    if ($access xor !$capadd) {
+        $status = $ocs->generate_share($sharepath, $user);
+        // If the process was successful, try to rename the folder.
 
-        // If the link is already stored, display it. Otherwise proceed.
-        if (get_user_preferences('cf_link ' . $id) == null) {
+        if ($status) {
 
-            // If any client data is missing, we cannot proceed.
-            if ($ocs->owncloud->check_data()) {
+            $renamed = $ocs->rename($finalpath, $id);
 
-                // Since the user shall be able to choose an individual name for the folder, is has to be checked
-                // if a name has been entered.
-                if (get_user_preferences('cf_link ' . $id . ' name') == null) {
+            if ($renamed['status'] === true) {
 
-                    // If not, the concerning form is displayed.
-                    $mform->display();
+                // Display the Link.
+                echo $renderer->print_link($renamed['content'], 'access');
 
-                } else {
-
-                    // If the generation link was not used, the user still has the possibility to view his chosen
-                    // name and to reset it.
-                    if ($generate == null) {
-
-                        $name = get_user_preferences('cf_link ' . $id . ' name');
-                        // A reset parameter has to be passed on redirection.
-                        $reseturl = qualified_me() .'&reset=1';
-
-                        echo $renderer->print_name_and_reset($name, $reseturl);
-                    }
-
-                    // Now the login status of the user has to be checked. Therefore the owncloud_access
-                    // object's owncloud object gets called without the $technical parameter.
-                    if ($ocs->owncloud->check_login()) {
-
-                        // If the user used the generation link, proceed.
-                        if ($generate != null) {
-
-                            // First, the ownCloud user ID is fetched from the current user's Access Token.
-                            $user = $ocs->owncloud->get_accesstoken()->user_id;
-                            // Thereafter, a share for this specific user can be created with the technical user and
-                            // his Access Token.
-                            $status = $ocs->generate_share($sharepath, $user);
-
-                            // If the process was successful, try to rename the folder.
-                            if ($status) {
-
-
-                                $renamed = false;
-                                // The Access Token of the user needs to be switched to the ownCloud client, first.
-                                $ocs->owncloud->check_login();
-                                if ($ocs->owncloud->open()) {
-                                    // After the socket's opening, the WebDAV MOVE method has to be performed in
-                                    // order to rename the folder.
-                                    $renamed = $ocs->owncloud->move($finalpath, '/' .
-                                            get_user_preferences('cf_link ' . $id . ' name'), false);
-                                }
-
-                                if ($renamed == 201) {
-
-                                    // After the folder having been renamed, a specific link has been generated, which is to
-                                    // be stored for each user individually.
-                                    $link = $ocs->owncloud->get_path('private', get_user_preferences('cf_link ' . $id . ' name'));
-
-                                    set_user_preference('cf_link ' . $id, $link);
-
-                                    // Display the Link.
-                                    echo $renderer->print_link($link, 'access');
-
-                                    // Event data is gathered.
-                                    $params = array(
-                                            'context'  => $context,
-                                            'objectid' => $cm->instance
-                                    );
-
-                                    // And the link_generated event is triggered.
-                                    $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
-                                    $generatedevent->trigger();
-
-                                } else {
-                                    // MOVE was unsuccessful.
-                                    echo $renderer->print_error('renamed', $renamed);
-                                }
-                            } else {
-                                // The share was unsuccessful.
-                                echo $renderer->print_error('shared', $status);
-                            }
-
-                        } else {
-
-                            // Print the logout text and link.
-                            $logouturl = qualified_me() .'&logout=1';
-                            echo $renderer->print_link($logouturl, 'logout');
-
-                            // Print the generation text and link.
-                            $genurl = qualified_me() .'&generate=1';
-                            echo $renderer->print_link($genurl, 'generate');
-                        }
-
-                    } else {
-
-                        // If no Access Token was received, a login link has to be provided.
-                        $url = $ocs->owncloud->get_login_url();
-                        echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
-                    }
-                }
+                // Event data is gathered.
+                $params = array(
+                        'context'  => $context,
+                        'objectid' => $cm->instance
+                );
+                // And the link_generated event is triggered.
+                $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
+                $generatedevent->trigger();
             }
+            else {
 
+                // MOVE was unsuccessful.
+                echo $renderer->print_error('renamed', $renamed['content']);
+            }
         } else {
 
-            // If the link is already saved within the user preferences, it only has to be displayed.
-            $link = get_user_preferences('cf_link ' . $id);
-
-            echo $renderer->print_link($link, 'access');
+            // The share was unsuccessful.
+            echo $renderer->print_error('shared', $status);
         }
-    } else {
-        // The current user has no access to the folder.
-        echo html_writer::div(get_string('notallowed', 'mod_collaborativefolders'));
+    }
+}
+
+
+
+
+
+
+
+
+$hasname = !$generate && $name != null;
+
+if ($hasname) {
+
+    // Print name and reset.
+
+    if ($ocs->user_loggedin()) {
+
+        // Print the logout text and link.
+        $logouturl = qualified_me() .'&logout=1';
+        echo $renderer->print_link($logouturl, 'logout');
+    }
+    else {
+
+        // If no Access Token was received, a login link has to be provided.
+        $url = $ocs->owncloud->get_login_url();
+        echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
     }
 }
 
@@ -282,7 +253,6 @@ $params = array(
         'context' => $context,
         'objectid' => $cm->instance
 );
-
 $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
 $cmviewed->trigger();
 

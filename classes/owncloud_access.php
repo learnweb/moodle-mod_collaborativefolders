@@ -106,4 +106,49 @@ class owncloud_access {
             return false;
         }
     }
+
+    public function rename($pathtofolder, $cmid) {
+        $renamed = null;
+
+        $ret = array();
+
+        if (!$this->user_loggedin()) {
+            $ret['status'] = false;
+            $ret['content'] = get_string('usernotloggedin', 'mod_collaborativefolders');
+            return $ret;
+        }
+
+        $foldername = get_user_preferences('cf_link ' . $cmid . ' name');
+
+        if ($this->owncloud->open()) {
+            // After the socket's opening, the WebDAV MOVE method has to be performed in
+            // order to rename the folder.
+            $renamed = $this->owncloud->move($pathtofolder, '/' . $foldername, false);
+        }
+        else {
+            $ret['status'] = false;
+            $ret['content'] = get_string('socketerror', 'mod_collaborativefolders');
+            return $ret;
+        }
+
+        if ($renamed == 201) {
+            // After the folder having been renamed, a specific link has been generated, which is to
+            // be stored for each user individually.
+            $link = $this->owncloud->get_path('private', $foldername);
+            set_user_preference('cf_link ' . $cmid, $link);
+
+            $ret['status'] = true;
+            $ret['content'] = $link;
+            return $ret;
+        }
+        else {
+            $ret['status'] = false;
+            $ret['content'] = get_string('webdaverror', 'mod_collaborativefolders', $renamed);
+            return $ret;
+        }
+    }
+
+    public function user_loggedin() {
+        return $this->owncloud->check_login();
+    }
 }

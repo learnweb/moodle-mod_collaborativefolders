@@ -60,10 +60,12 @@ $string['retry'] = 'An Error occured. Please logout from your ownCloud account a
 $string['retry_rename'] = 'The concerning folder could not be renamed. Please logout from your ownCloud account and try again later.';
 $string['retry_shared'] = 'The concerning folder could not be shared with you. Please check if you already have a copy of the folder.
 Otherwise logout from your ownCloud account and try again later.';
-$string['code'] = 'Error code: {$a}';
+$string['code'] = 'Error message: {$a}';
 $string['error'] = 'An error occured';
 $string['save'] = 'Save name';
 $string['noviewpermission'] = 'You are currently not allowed to see that content.';
+$string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
+$string['webdaverror'] = 'WebDAV error code {$a}';
 
 // Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
