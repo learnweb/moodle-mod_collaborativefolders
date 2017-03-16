@@ -233,7 +233,11 @@ $hasname = !$generate && $name != null;
 
 if ($hasname) {
 
-    // Print name and reset.
+    $name = get_user_preferences('cf_link ' . $id . ' name');
+    // A reset parameter has to be passed on redirection.
+
+    $reseturl = qualified_me() .'&reset=1';
+    echo $renderer->print_name_and_reset($name, $reseturl);
 
     if ($ocs->user_loggedin()) {
 
@@ -247,6 +251,13 @@ if ($hasname) {
         $url = $ocs->owncloud->get_login_url();
         echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
     }
+
+    $genurl = qualified_me() .'&generate=1';
+    echo $renderer->print_link($genurl, 'generate');
+}
+else {
+
+    $mform->display();
 }
 
 $params = array(
