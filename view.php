@@ -27,7 +27,6 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 // Page and parameter setup.
-//global $OUTPUT;
 $id = required_param('id', PARAM_INT);
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cm->id)));
@@ -57,6 +56,8 @@ if (!has_capability('mod/collaborativefolders:view', $context)) {
     notice(get_string('noviewpermission', 'mod_collaborativefolders'));
 }
 
+$capadd = has_capability('mod/collaborativefolders:addinstance', $context);
+
 // If the reset link was used, the chosen foldername is reset.
 if ($reset != null) {
     set_user_preference('cf_link ' . $id . ' name', null);
@@ -76,15 +77,16 @@ $instanceid = $cm->instance;
 $paramsteacher = array('id' => $instanceid);
 
 // Indicates, whether the teacher is allowed to have access to the folder or not.
-$teacher = $DB->get_record('collaborativefolders', $paramsteacher)->teacher;
+$teacherallowed = $DB->get_record('collaborativefolders', $paramsteacher)->teacher;
 
 // Renderer is initialized.
 $renderer = $PAGE->get_renderer('mod_collaborativefolders');
 
 // Checks if the groupmode is active. Does not differentiate between VISIBLE and SEPERATE.
 $gm = false;
-$folderpath = '/' . $id;
+$sharepath = '/' . $id;
 $ingroup = null;
+$finalpath = $sharepath;
 
 if (groups_get_activity_groupmode($cm) != 0) {
     $gm = true;
@@ -94,7 +96,8 @@ if (groups_get_activity_groupmode($cm) != 0) {
     // extended by the group ID of the student.
     if ($ingroup != 0) {
 
-        $folderpath .= '/' . $ingroup;
+        $sharepath .= '/' . $ingroup;
+        $finalpath = '/' . $ingroup;
     }
 }
 
@@ -144,7 +147,7 @@ if (!$folderscreated) {
 } else {
 
     // It has to be checked, if the current user is a teacher.
-    if (has_capability('mod/collaborativefolders:addinstance', $context) && $gm) {
+    if ($capadd && $gm) {
 
         // If the current user is a teacher, a table of all participating groups
         // should be printed.
@@ -153,11 +156,11 @@ if (!$folderscreated) {
         $renderer->render_view_table($groups);
     }
 
-    $access = has_capability('mod/collaborativefolders:addinstance', $context) && $teacher == '1';
+    $access = $capadd && $teacherallowed == true;
 
     // If the current user is a teacher who has access to the folder OR a student from the participating
     // grouping(s), he/she gains access to the folder.
-    if ($access xor !has_capability('mod/collaborativefolders:addinstance', $context)) {
+    if ($access xor !$capadd) {
 
         // If the link is already stored, display it. Otherwise proceed.
         if (get_user_preferences('cf_link ' . $id) == null) {
@@ -196,16 +199,11 @@ if (!$folderscreated) {
                             $user = $ocs->owncloud->get_accesstoken()->user_id;
                             // Thereafter, a share for this specific user can be created with the technical user and
                             // his Access Token.
-                            $status = $ocs->generate_share($folderpath, $user);
+                            $status = $ocs->generate_share($sharepath, $user);
 
                             // If the process was successful, try to rename the folder.
                             if ($status) {
 
-                                // The folderpath needs to be adjusted to the path of the shared folder.
-                                // E.g. 1/2 becomes 2, bacause only 2 was shared with the user.
-                                if ($gm && !has_capability('mod/collaborativefolders:addinstance', $context)) {
-                                    $folderpath = '/' . $ingroup;
-                                }
 
                                 $renamed = false;
                                 // The Access Token of the user needs to be switched to the ownCloud client, first.
@@ -213,7 +211,7 @@ if (!$folderscreated) {
                                 if ($ocs->owncloud->open()) {
                                     // After the socket's opening, the WebDAV MOVE method has to be performed in
                                     // order to rename the folder.
-                                    $renamed = $ocs->owncloud->move($folderpath, '/' .
+                                    $renamed = $ocs->owncloud->move($finalpath, '/' .
                                             get_user_preferences('cf_link ' . $id . ' name'), false);
                                 }
 
@@ -221,13 +219,7 @@ if (!$folderscreated) {
 
                                     // After the folder having been renamed, a specific link has been generated, which is to
                                     // be stored for each user individually.
-                                    $pref = get_config('tool_oauth2owncloud', 'protocol') . '://';
-
-                                    $p = str_replace('remote.php/webdav/', '', get_config('tool_oauth2owncloud', 'path'));
-
-                                    $link = $pref . get_config('tool_oauth2owncloud', 'server') . '/' . $p .
-                                            'index.php/apps/files/?dir=' . '/' .
-                                            get_user_preferences('cf_link ' . $id . ' name');
+                                    $link = $ocs->owncloud->get_path('private', get_user_preferences('cf_link ' . $id . ' name'));
 
                                     set_user_preference('cf_link ' . $id, $link);
 
@@ -236,7 +228,7 @@ if (!$folderscreated) {
 
                                     // Event data is gathered.
                                     $params = array(
-                                            'context'  => context_module::instance($cm->id),
+                                            'context'  => $context,
                                             'objectid' => $cm->instance
                                     );
 
@@ -287,7 +279,7 @@ if (!$folderscreated) {
 }
 
 $params = array(
-        'context' => context_module::instance($cm->id),
+        'context' => $context,
         'objectid' => $cm->instance
 );
 
