@@ -151,4 +151,8 @@ class owncloud_access {
     public function user_loggedin() {
         return $this->owncloud->check_login();
     }
+
+    public function log_out_user() {
+        set_user_preference('oC_token', null);
+    }
 }

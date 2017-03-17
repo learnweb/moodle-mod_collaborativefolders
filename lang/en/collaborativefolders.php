@@ -40,6 +40,7 @@ $string['pluginadministration'] = 'Administration of Collaborative Folders';
 $string['pluginname'] = 'collaborativefolders';
 
 // View.php.
+$string['activityoverview'] = 'Overview of Collaborativefolders Activity';
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
 $string['introoverview'] = 'This is an overview for all groups that have a Collaborative Folder.';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
