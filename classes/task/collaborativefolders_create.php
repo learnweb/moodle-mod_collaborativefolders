@@ -47,7 +47,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
         $oc = new owncloud_access($returnurl);
         $folderpaths = $this->get_custom_data();
 
-        if (!$oc->owncloud->check_data()) {
+        if (!$oc->check_data()) {
             throw new authentication_exception('The technical user of collaborativefolders is not logged in.');
         }
 

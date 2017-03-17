@@ -142,9 +142,6 @@ foreach ($adhoc as $element) {
 }
 
 
-
-
-
 // Set up further page properties and print the header and heading for this page.
 $PAGE->set_title(format_string($cm->name));
 $PAGE->set_heading(format_string($course->fullname));
@@ -187,6 +184,7 @@ if ($haslink) {
     echo $renderer->print_link($privatelink, 'access');
 }
 
+
 // The name of the folder, chosen by the user.
 $name = get_user_preferences('cf_link ' . $id . ' name');
 
@@ -201,46 +199,31 @@ if ($cangenerate) {
     }
     else {
 
-        // First, the ownCloud user ID is fetched from the current user's Access Token.
-        $user = $ocs->owncloud->get_accesstoken()->user_id;
-        // Thereafter, a share for this specific user can be created with the technical user and
-        // his Access Token.
+        $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $id);
 
-        $status = $ocs->generate_share($sharepath, $user);
-        // If the process was successful, try to rename the folder.
+        if ($sharerename['status'] === true) {
+            // Display the Link.
+            echo $renderer->print_link($sharerename['content'], 'access');
 
-        if ($status) {
+            // Event data is gathered.
+            $params = array(
+                    'context'  => $context,
+                    'objectid' => $instanceid
+            );
+            // And the link_generated event is triggered.
+            $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
+            $generatedevent->trigger();
 
-            $renamed = $ocs->rename($finalpath, $id);
-
-            if ($renamed['status'] === true) {
-
-                // Display the Link.
-                echo $renderer->print_link($renamed['content'], 'access');
-
-                // Event data is gathered.
-                $params = array(
-                        'context'  => $context,
-                        'objectid' => $instanceid
-                );
-                // And the link_generated event is triggered.
-                $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
-                $generatedevent->trigger();
-            }
-            else {
-
-                // MOVE was unsuccessful.
-                echo $renderer->print_error('renamed', $renamed['content']);
-            }
         } else {
 
-            // The share was unsuccessful.
-            echo $renderer->print_error('shared', $status);
+            // Share or rename were unsuccessful.
+            echo $renderer->print_error($sharerename['type'], $sharerename['content']);
         }
     }
 }
 
-$nolink = !$generate && !$haslink;
+
+$nolink = !$generate && $hasaccess && $privatelink == null;
 
 if ($nolink) {
 
@@ -258,7 +241,7 @@ if ($nolink) {
         } else {
 
             // If no Access Token was received, a login link has to be provided.
-            $url = $ocs->owncloud->get_login_url();
+            $url = $ocs->get_login_url();
             echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
         }
 
@@ -276,7 +259,9 @@ $params = array(
         'context' => $context,
         'objectid' => $instanceid
 );
+
 $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
 $cmviewed->trigger();
+
 
 echo $OUTPUT->footer();

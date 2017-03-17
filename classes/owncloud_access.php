@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 class owncloud_access {
 
     /** @var \tool_oauth2owncloud\owncloud client instance for server access. */
-    public $owncloud;
+    private $owncloud;
 
     /**
      * owncloud_access constructor. The OAuth 2.0 client is initialized within it.
@@ -107,6 +107,13 @@ class owncloud_access {
         }
     }
 
+    /**
+     * A method, which attempts to rename a given, privately shared, folder.
+     *
+     * @param $pathtofolder string path, which leads to the folder that needs to be renamed.
+     * @param $cmid int course module ID, which is used to identify specific user preferences.
+     * @return array returns the results of the rename operation. Contains status and content of the result.
+     */
     public function rename($pathtofolder, $cmid) {
         $renamed = null;
 
@@ -148,11 +155,85 @@ class owncloud_access {
         }
     }
 
+    /**
+     * Passes the result of the check_login method from the private owncloud client.
+     *
+     * @return bool user login status.
+     */
     public function user_loggedin() {
         return $this->owncloud->check_login();
     }
 
-    public function log_out_user() {
+    /**
+     * Releases the personal Access Token of the current user and the owncloud client.
+     */
+    public function logout_user() {
         set_user_preference('oC_token', null);
+        $this->owncloud->log_out();
+    }
+
+    /**
+     * Passes the result of the get_login_url method from the private owncloud client.
+     *
+     * @return \moodle_url URL to the authentication interface in ownCloud.
+     */
+    public function get_login_url() {
+        return $this->owncloud->get_login_url();
+    }
+
+    /**
+     * Passes the result of the check_data method from the private owncloud client.
+     *
+     * @return bool false, if any configuration data is missing. Otherwise, true.
+     */
+    public function check_data() {
+        return $this->owncloud->check_data();
+    }
+
+    /**
+     * This method first shares a folder from a technical user account with the current user.
+     * Thereafter the folder is renamed to the user chosen name and the resulting private
+     * link is returned. In case something goes wrong along the way, an error message is
+     * returned.
+     *
+     * @param $sharepath string the path to the folder which has to be shared.
+     * @param $renamepath string path to the folder, which needs to be renamed.
+     * @param $cmid int the course module ID, which is used to identify specific user preferences.
+     * @return array returns an array, which contains the results of the share and rename operations.
+     */
+    public function share_and_rename($sharepath, $renamepath, $cmid) {
+        $ret = array();
+        // First, the ownCloud user ID is fetched from the current user's Access Token.
+        $user = $this->owncloud->get_accesstoken()->user_id;
+        // Thereafter, a share for this specific user can be created with the technical user and
+        // his Access Token.
+
+        $status = $this->generate_share($sharepath, $user);
+
+        // If the process was successful, try to rename the folder.
+        if ($status) {
+
+            $renamed = $this->rename($renamepath, $cmid);
+
+            if ($renamed['status'] === true) {
+
+                $ret['status'] = true;
+                $ret['content'] = $renamed['content'];
+
+                return $ret;
+            }
+            else {
+
+                $ret['status'] = false;
+                $ret['type'] = 'renamed';
+                $ret['content'] = $renamed['content'];
+            }
+        } else {
+
+            // The share was unsuccessful.
+            $ret['status'] = false;
+            $ret['type'] = 'shared';
+            $ret['content'] = $status;
+        }
     }
 }
