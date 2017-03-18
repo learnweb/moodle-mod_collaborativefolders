@@ -34,11 +34,10 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-global $OUTPUT;
-
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
 
     public function print_error($text, $code) {
+        global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->heading(get_string('error', 'mod_collaborativefolders'), 4);
         if ($text === 'rename') {

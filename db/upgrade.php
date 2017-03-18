@@ -35,9 +35,8 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Execute collaborativefolders upgrade from the given old version.
  *
- * @param int $oldversion
  * @return bool
  */
-function xmldb_collaborativefolders_upgrade($oldversion) {
+function xmldb_collaborativefolders_upgrade() {
     return true;
 }

@@ -109,11 +109,11 @@ function collaborativefolders_refresh_events($courseid = 0) {
     global $DB;
 
     if ($courseid == 0) {
-        if (!$collaborativefolderss = $DB->get_records('collaborativefolders')) {
+        if (!$DB->get_records('collaborativefolders')) {
             return true;
         }
     } else {
-        if (!$collaborativefolderss = $DB->get_records('collaborativefolders', array('course' => $courseid))) {
+        if (!$DB->get_records('collaborativefolders', array('course' => $courseid))) {
             return true;
         }
     }

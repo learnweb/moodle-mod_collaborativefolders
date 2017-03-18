@@ -208,8 +208,7 @@ if ($cangenerate) {
     if ($name == null) {
 
         $generate = false;
-    }
-    else {
+    } else {
 
         // Otherwise, try to share and rename the folder.
         $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $id);
@@ -229,8 +228,7 @@ if ($cangenerate) {
             // And the link_generated event is triggered.
             $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
             $generatedevent->trigger();
-        }
-        else {
+        } else {
 
             // Share or rename were unsuccessful.
             echo $renderer->print_error($sharerename['type'], $sharerename['content']);
@@ -259,15 +257,13 @@ if ($nogenerate) {
 
             $genurl = qualified_me() . '&generate=1';
             echo $renderer->print_link($genurl, 'generate');
-        }
-        else {
+        } else {
 
             // If no Access Token was received, a login link has to be provided.
             $url = $ocs->get_login_url();
             echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
         }
-    }
-    else {
+    } else {
 
         // Otherwise, show a form for the user to enter a name into.
         $mform->display();

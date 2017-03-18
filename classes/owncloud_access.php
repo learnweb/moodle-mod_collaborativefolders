@@ -130,11 +130,12 @@ class owncloud_access {
         $foldername = get_user_preferences('cf_link ' . $cmid . ' name');
 
         if ($this->owncloud->open()) {
+
             // After the socket's opening, the WebDAV MOVE method has to be performed in
             // order to rename the folder.
             $renamed = $this->owncloud->move($pathtofolder, '/' . $foldername, false);
-        }
-        else {
+        } else {
+
             // If the socket could not be opened, a socket error needs to be returned.
             $ret['status'] = false;
             $ret['content'] = get_string('socketerror', 'mod_collaborativefolders');
@@ -142,6 +143,7 @@ class owncloud_access {
         }
 
         if ($renamed == 201) {
+
             // After the folder having been renamed, a specific link has been generated, which is to
             // be stored for each user individually.
             $link = $this->owncloud->get_path('private', $foldername);
@@ -151,8 +153,8 @@ class owncloud_access {
             $ret['status'] = true;
             $ret['content'] = $link;
             return $ret;
-        }
-        else {
+        } else {
+
             // If the WebDAV operation failed, a error message, containing the specific response code,
             // is returned.
             $ret['status'] = false;
@@ -226,8 +228,7 @@ class owncloud_access {
                 $ret['status'] = true;
                 $ret['content'] = $renamed['content'];
                 return $ret;
-            }
-            else {
+            } else {
 
                 // Renaming operation was unsuccessful.
                 $ret['status'] = false;
