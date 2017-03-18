@@ -112,7 +112,8 @@ class owncloud_access {
      *
      * @param $pathtofolder string path, which leads to the folder that needs to be renamed.
      * @param $cmid int course module ID, which is used to identify specific user preferences.
-     * @return array returns the results of the rename operation. Contains status and content of the result.
+     * @return array contains status (true means success, false failure) and content (generated
+     *              link or error message) of the result.
      */
     public function rename($pathtofolder, $cmid) {
         $renamed = null;
@@ -120,6 +121,7 @@ class owncloud_access {
         $ret = array();
 
         if (!$this->user_loggedin()) {
+            // If the user is not logged in, a suitable error message is returned.
             $ret['status'] = false;
             $ret['content'] = get_string('usernotloggedin', 'mod_collaborativefolders');
             return $ret;
@@ -133,6 +135,7 @@ class owncloud_access {
             $renamed = $this->owncloud->move($pathtofolder, '/' . $foldername, false);
         }
         else {
+            // If the socket could not be opened, a socket error needs to be returned.
             $ret['status'] = false;
             $ret['content'] = get_string('socketerror', 'mod_collaborativefolders');
             return $ret;
@@ -144,11 +147,14 @@ class owncloud_access {
             $link = $this->owncloud->get_path('private', $foldername);
             set_user_preference('cf_link ' . $cmid, $link);
 
+            // Afterwards, the generated link is returned.
             $ret['status'] = true;
             $ret['content'] = $link;
             return $ret;
         }
         else {
+            // If the WebDAV operation failed, a error message, containing the specific response code,
+            // is returned.
             $ret['status'] = false;
             $ret['content'] = get_string('webdaverror', 'mod_collaborativefolders', $renamed);
             return $ret;
@@ -219,11 +225,11 @@ class owncloud_access {
 
                 $ret['status'] = true;
                 $ret['content'] = $renamed['content'];
-
                 return $ret;
             }
             else {
 
+                // Renaming operation was unsuccessful.
                 $ret['status'] = false;
                 $ret['type'] = 'renamed';
                 $ret['content'] = $renamed['content'];

@@ -32,6 +32,7 @@ list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
 $context = context_module::instance($id);
 $capadd = has_capability('mod/collaborativefolders:addinstance', $context);
+$capstudent = has_capability('mod/collaborativefolders:viewnotteacher', $context);
 $instanceid = $cm->instance;
 
 // Indicators for name reset, logout from current ownCloud user and link generation.
@@ -158,6 +159,15 @@ if (!$folderscreated) {
 }
 
 
+// Does the teacher have access to this activity?
+$teacheraccess = $capadd && $teacherallowed == true;
+
+// Does the current user have access to this activity, be it teacher or student?
+$hasaccess = ($teacheraccess xor $capstudent) && $folderscreated;
+
+
+// Does a table of all participating groups have to be shown? The teacher does not need to have
+// access to the Collaborative Folder to see the table.
 $showtable = $folderscreated && $capadd && $gm;
 
 // If the folders are created, the current user is a teacher and the groupmode is active,
@@ -170,12 +180,10 @@ if ($showtable) {
 }
 
 
-$teacheraccess = $capadd && $teacherallowed == true;
-
-$hasaccess = ($teacheraccess xor !$capadd) && $folderscreated;
-
+// Fetch a stored link belonging to this particular activity instance.
 $privatelink = get_user_preferences('cf_link ' . $id);
 
+// Does the user have a link to this Collaborative Folder and access to this activity?
 $haslink = $privatelink != null && $hasaccess;
 
 // If the current user already received a link to the Collaborative Folder, display it.
@@ -188,20 +196,27 @@ if ($haslink) {
 // The name of the folder, chosen by the user.
 $name = get_user_preferences('cf_link ' . $id . ' name');
 
-$cangenerate = !$haslink && $generate;
+// Does the user have access but no link has been stored yet?
+$nolink = $hasaccess && $privatelink == null;
 
-// If no link was generated yet
+// Does the user wish to generate a link and has not already stored one?
+$cangenerate = $nolink && $generate;
+
 if ($cangenerate) {
 
+    // If no personal name has been stored for the folder, no link can be generated yet.
     if ($name == null) {
 
         $generate = false;
     }
     else {
 
+        // Otherwise, try to share and rename the folder.
         $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $id);
 
+        // Check, if the sharing and renaming operations were successful.
         if ($sharerename['status'] === true) {
+
             // Display the Link.
             echo $renderer->print_link($sharerename['content'], 'access');
 
@@ -210,11 +225,12 @@ if ($cangenerate) {
                     'context'  => $context,
                     'objectid' => $instanceid
             );
+
             // And the link_generated event is triggered.
             $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
             $generatedevent->trigger();
-
-        } else {
+        }
+        else {
 
             // Share or rename were unsuccessful.
             echo $renderer->print_error($sharerename['type'], $sharerename['content']);
@@ -223,10 +239,12 @@ if ($cangenerate) {
 }
 
 
-$nolink = !$generate && $hasaccess && $privatelink == null;
+// No link has been stored yet and no order to generate one has been received.
+$nogenerate = $nolink && !$generate;
 
-if ($nolink) {
+if ($nogenerate) {
 
+    // If the user already has set a name for the folder, proceed.
     if ($name != null) {
 
         // A reset parameter has to be passed on redirection.
@@ -238,18 +256,20 @@ if ($nolink) {
             // Print the logout text and link.
             $logouturl = qualified_me() . '&logout=1';
             echo $renderer->print_link($logouturl, 'logout');
-        } else {
+
+            $genurl = qualified_me() . '&generate=1';
+            echo $renderer->print_link($genurl, 'generate');
+        }
+        else {
 
             // If no Access Token was received, a login link has to be provided.
             $url = $ocs->get_login_url();
             echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
         }
-
-        $genurl = qualified_me() . '&generate=1';
-        echo $renderer->print_link($genurl, 'generate');
     }
     else {
 
+        // Otherwise, show a form for the user to enter a name into.
         $mform->display();
     }
 }
