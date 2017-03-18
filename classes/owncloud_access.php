@@ -231,15 +231,17 @@ class owncloud_access {
 
                 // Renaming operation was unsuccessful.
                 $ret['status'] = false;
-                $ret['type'] = 'renamed';
+                $ret['type'] = 'rename';
                 $ret['content'] = $renamed['content'];
+                return $ret;
             }
         } else {
 
             // The share was unsuccessful.
             $ret['status'] = false;
-            $ret['type'] = 'shared';
-            $ret['content'] = $status;
+            $ret['type'] = 'share';
+            $ret['content'] = get_string('ocserror', 'mod_collaborativefolder');
+            return $ret;
         }
     }
 }

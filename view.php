@@ -176,7 +176,7 @@ if ($showtable) {
 
     $grid = $cm->groupingid;
     $groups = groups_get_all_groups($course->id, 0, $grid);
-    $renderer->render_view_table($groups);
+    echo $renderer->render_view_table($groups);
 }
 
 

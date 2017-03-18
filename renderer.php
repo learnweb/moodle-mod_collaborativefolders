@@ -34,16 +34,17 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+global $OUTPUT;
+
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
 
     public function print_error($text, $code) {
-        global $OUTPUT;
         $output = '';
         $output .= $OUTPUT->heading(get_string('error', 'mod_collaborativefolders'), 4);
         if ($text === 'rename') {
             $output .= html_writer::div(get_string('retry_rename', 'mod_collaborativefolders'));
         }
-        if ($text === 'shared') {
+        if ($text === 'share') {
             $output .= html_writer::div(get_string('retry_shared', 'mod_collaborativefolders'));
         } else {
             $output .= html_writer::div(get_string('retry', 'mod_collaborativefolders'));
@@ -53,13 +54,26 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     public function render_view_table($groups) {
+        global $OUTPUT;
         $output = '';
-        $output .= html_writer::div(get_string('introoverview', 'mod_collaborativefolders'));
+        $output .= $OUTPUT->heading(get_string('introoverview', 'mod_collaborativefolders'), 4);
         $table = new html_table();
-        $table->head = array('Groupname' => 'Groupname' , 'Number of Participants' => 'Number of Participants');
+        $table->head = array('groupid' => get_string('groupid', 'mod_collaborativefolders'),
+                             'groupname' => get_string('groupname', 'mod_collaborativefolders'),
+                             'members' => get_string('members', 'mod_collaborativefolders'));
+
         $table->attributes['class'] = 'admintable collaborativefolder generaltable';
+
         foreach ($groups as $group) {
-            $table->data[] = $group;
+
+            $memberlist = '';
+            $members = groups_get_members($group->id);
+
+            foreach ($members as $member) {
+                $memberlist .= $member->firstname . ' ' . $member->lastname . ', ';
+            }
+
+            $table->data[] = array($group->id, $group->name, $memberlist);
         }
         $output .= html_writer::table($table);
         return $output;
@@ -80,7 +94,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         $output .= $OUTPUT->heading(get_string('generate_heading', 'mod_collaborativefolders'), 4);
         $output .= html_writer::div(get_string('folder_name', 'mod_collaborativefolders', $name));
         $output .= html_writer::div(get_string('reset', 'mod_collaborativefolders',
-                html_writer::link($url, 'here')));
+                html_writer::link($url, get_string('here', 'mod_collaborativefolders'))));
         return $output;
     }
 }

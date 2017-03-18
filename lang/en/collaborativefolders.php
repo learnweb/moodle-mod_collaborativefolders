@@ -40,9 +40,9 @@ $string['pluginadministration'] = 'Administration of Collaborative Folders';
 $string['pluginname'] = 'collaborativefolders';
 
 // View.php.
-$string['activityoverview'] = 'Overview of Collaborativefolders Activity';
+$string['activityoverview'] = 'Overview of Collaborative Folders';
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
-$string['introoverview'] = 'This is an overview for all groups that have a Collaborative Folder.';
+$string['introoverview'] = 'Overview of all participating groups';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 $string['foldernotcreatedyet'] = 'The Folder was not yet created. If this message remains in the next days please contact the administrator.';
 $string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use this {$a}.';
@@ -57,16 +57,23 @@ $string['naming_folder'] = 'Choose a folder name';
 $string['namefield'] = 'Name';
 $string['reset'] = 'You may reset your chosen foldername {$a}.';
 $string['resetpressed'] = 'Your chosen name is set back to default.';
+$string['save'] = 'Save name';
+$string['groupid'] = 'Group ID';
+$string['groupname'] = 'Groupname';
+$string['members'] = 'Members';
+$string['here'] = 'here';
+
+// Error messages.
 $string['retry'] = 'An Error occured. Please logout from your ownCloud account and try again later.';
 $string['retry_rename'] = 'The concerning folder could not be renamed. Please logout from your ownCloud account and try again later.';
 $string['retry_shared'] = 'The concerning folder could not be shared with you. Please check if you already have a copy of the folder.
 Otherwise logout from your ownCloud account and try again later.';
 $string['code'] = 'Error message: {$a}';
-$string['error'] = 'An error occured';
-$string['save'] = 'Save name';
+$string['error'] = 'An error occurred';
 $string['noviewpermission'] = 'You are currently not allowed to see that content.';
 $string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
 $string['webdaverror'] = 'WebDAV error code {$a}';
+$string['ocserror'] = 'An error with the OCS Share API occurred.';
 
 // Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
