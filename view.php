@@ -31,7 +31,7 @@ $id = required_param('id', PARAM_INT);
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
 $context = context_module::instance($id);
-$capadd = has_capability('mod/collaborativefolders:addinstance', $context);
+$capteacher = has_capability('mod/collaborativefolders:viewteacher', $context);
 $capstudent = has_capability('mod/collaborativefolders:viewnotteacher', $context);
 $instanceid = $cm->instance;
 
@@ -45,6 +45,11 @@ $generate = optional_param('generate', false, PARAM_BOOL);
 require_login($course, true, $cm);
 
 
+// If the user does not have the permission to view this activity instance,
+// he gets redirected.
+require_capability('mod/collaborativefolders:view', $context);
+
+
 // The owncloud_access object will be used to access both, the technical and the current user.
 // The return URL leads back to the current page.
 $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
@@ -54,13 +59,6 @@ $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
 ]);
 
 $ocs = new \mod_collaborativefolders\owncloud_access($returnurl);
-
-
-// If the user does not have the permission to view this activity instance,
-// he gets redirected.
-if (!has_capability('mod/collaborativefolders:view', $context)) {
-    notice(get_string('noviewpermission', 'mod_collaborativefolders'));
-}
 
 
 // If the reset link was used, the chosen foldername is reset.
@@ -160,15 +158,15 @@ if (!$folderscreated) {
 
 
 // Does the teacher have access to this activity?
-$teacheraccess = $capadd && $teacherallowed == true;
+$teacheraccess = $capteacher && $teacherallowed == true;
 
 // Does the current user have access to this activity, be it teacher or student?
-$hasaccess = ($teacheraccess xor $capstudent) && $folderscreated;
+$hasaccess = ($teacheraccess || $capstudent) && $folderscreated;
 
 
 // Does a table of all participating groups have to be shown? The teacher does not need to have
 // access to the Collaborative Folder to see the table.
-$showtable = $folderscreated && $capadd && $gm;
+$showtable = $folderscreated && $capteacher && $gm;
 
 // If the folders are created, the current user is a teacher and the groupmode is active,
 // show a table of all participating groups.
