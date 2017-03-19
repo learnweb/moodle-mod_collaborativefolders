@@ -70,7 +70,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/collaborativefolders:viewnotteacher' => array(
+    'mod/collaborativefolders:viewstudent' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

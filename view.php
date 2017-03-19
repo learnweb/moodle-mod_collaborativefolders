@@ -32,7 +32,7 @@ list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
 $context = context_module::instance($id);
 $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context);
-$capstudent = has_capability('mod/collaborativefolders:viewnotteacher', $context);
+$capstudent = has_capability('mod/collaborativefolders:viewstudent', $context);
 $instanceid = $cm->instance;
 
 // Indicators for name reset, logout from current ownCloud user and link generation.
