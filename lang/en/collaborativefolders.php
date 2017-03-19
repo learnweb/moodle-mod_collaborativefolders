@@ -50,6 +50,7 @@ $string['logout_heading'] = 'Logout from ownCloud';
 $string['logoutpressed'] = 'You now are logged out from your ownCloud account.';
 $string['generate'] = 'To generate a link to the Collaborative Folder, please use this {$a}.';
 $string['generate_heading'] = 'Generate Link to folder';
+$string['generate_change_name'] = 'Change Folder Name';
 $string['access'] = 'Click {$a} to access the folder.';
 $string['access_heading'] = 'Access to the folder';
 $string['folder_name'] = 'Your chosen foldername is {$a}.';
