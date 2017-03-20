@@ -27,9 +27,17 @@ defined('MOODLE_INTERNAL') || die();
 class mod_collaborativefolders_testcase extends advanced_testcase {
 
     protected function set_up() {
+        // Recommended in Moodle docs to always include CFG.
         global $CFG;
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
+        $data = $generator->test_create_preparation();
+        $this->resetAfterTest(true);
+        return $data;
     }
 
+    public function test_lib() {
+
+    }
     /**
      * Methodes recommended by moodle to assure database and dataroot is reset.
      */

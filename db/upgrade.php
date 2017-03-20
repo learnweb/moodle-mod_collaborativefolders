@@ -37,6 +37,26 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @return bool
  */
-function xmldb_collaborativefolders_upgrade() {
+function xmldb_collaborativefolders_upgrade($oldversion) {
+    global $CFG, $DB;
+
+    $dbman = $DB->get_manager();
+    if ($oldversion<2017032000) {
+        $table = new xmldb_table('collaborativefolders_link');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, true, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, false, null, null);
+        $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, false, null, null);
+        $table->add_field('groupid', XMLDB_TYPE_INTEGER, '10', false, XMLDB_NOTNULL, false, null, null);
+        $table->add_field('link', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, false, null, null);
+
+        $key = new xmldb_key('primary', XMLDB_KEY_PRIMARY, array('id'), null, null);
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'), null, null);
+
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+    }
     return true;
 }
