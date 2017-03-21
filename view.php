@@ -34,6 +34,7 @@ $context = context_module::instance($id);
 $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context);
 $capstudent = has_capability('mod/collaborativefolders:viewstudent', $context);
 $instanceid = $cm->instance;
+$userid = $USER->id;
 
 // Indicators for name reset, logout from current ownCloud user and link generation.
 $reset = optional_param('reset', false, PARAM_BOOL);
@@ -63,14 +64,7 @@ $ocs = new \mod_collaborativefolders\owncloud_access($returnurl);
 
 // If the reset link was used, the chosen foldername is reset.
 if ($reset == true) {
-    $record = array();
-    $record['userid'] = $USER->id;
-    $record['cmid'] = $cm->id;
-    $record['link'] = null;
-    if ($DB->record_exists('collaborativefolders_link', array('userid' => $USER->id, 'cmid' => $cm->id))) {
-        $DB->update_record('collaborativefolders_link', $record);
-    }
-    set_user_preference('cf_link ' . $id . ' name', null);
+    $ocs->set_entry('name', $id, $userid, null);
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
 }
 
@@ -86,17 +80,8 @@ $mform = new mod_collaborativefolders\name_form(qualified_me(), array('namefield
 
 if ($fromform = $mform->get_data()) {
     if (isset($fromform->enter)) {
-        $record = array();
-        $record['userid'] = $USER->id;
-        $record['cmid'] = $cm->id;
-        $record['link'] = $fromform->namefield;
-        if ($DB->record_exists('collaborativefolders_link', array('userid' => $USER->id, 'cmid' => $cm->id))) {
-            $DB->update_record('collaborativefolders_link', $record);
-        } else {
-            $DB->insert_record('collaborativefolders_link', $record);
-        }
         // If a name has been submitted, it gets stored in the user preferences.
-        set_user_preference('cf_link ' . $id . ' name', $fromform->namefield);
+        $ocs->set_entry('name', $id, $userid, $fromform->namefield);
     }
 }
 
@@ -194,10 +179,7 @@ if ($showtable) {
 
 
 // Fetch a stored link belonging to this particular activity instance.
-if ($DB->record_exists('collaborativefolders_link', array('userid' => $USER->id, 'cmid' => $cm->id))) {
-    $newlink = $DB->get_field('collaborativefolders_link', 'link', array('userid' => $USER->id, 'cmid' => $cm->id));
-}
-$privatelink = get_user_preferences('cf_link ' . $id);
+$privatelink = $ocs->get_entry('link', $id, $userid);
 
 // Does the user have a link to this Collaborative Folder and access to this activity?
 $haslink = $privatelink != null && $hasaccess;
@@ -210,7 +192,7 @@ if ($haslink) {
 
 
 // The name of the folder, chosen by the user.
-$name = get_user_preferences('cf_link ' . $id . ' name');
+$name = $ocs->get_entry('name', $id, $userid);
 
 // Does the user have access but no link has been stored yet?
 $nolink = $hasaccess && $privatelink == null;
@@ -227,7 +209,7 @@ if ($cangenerate) {
     } else {
 
         // Otherwise, try to share and rename the folder.
-        $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $id);
+        $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $name, $id, $userid);
 
         // Check, if the sharing and renaming operations were successful.
         if ($sharerename['status'] === true) {

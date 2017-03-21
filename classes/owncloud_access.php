@@ -111,11 +111,13 @@ class owncloud_access {
      * A method, which attempts to rename a given, privately shared, folder.
      *
      * @param $pathtofolder string path, which leads to the folder that needs to be renamed.
+     * @param $newname string the name which needs to be set instead of the old.
      * @param $cmid int course module ID, which is used to identify specific user preferences.
+     * @param $userid string the ID of the current user. Needed to set the concerning table entry.
      * @return array contains status (true means success, false failure) and content (generated
      *              link or error message) of the result.
      */
-    public function rename($pathtofolder, $cmid) {
+    public function rename($pathtofolder, $newname, $cmid, $userid) {
         $renamed = null;
 
         $ret = array();
@@ -127,13 +129,11 @@ class owncloud_access {
             return $ret;
         }
 
-        $foldername = get_user_preferences('cf_link ' . $cmid . ' name');
-
         if ($this->owncloud->open()) {
 
             // After the socket's opening, the WebDAV MOVE method has to be performed in
             // order to rename the folder.
-            $renamed = $this->owncloud->move($pathtofolder, '/' . $foldername, false);
+            $renamed = $this->owncloud->move($pathtofolder, '/' . $newname, false);
         } else {
 
             // If the socket could not be opened, a socket error needs to be returned.
@@ -146,8 +146,8 @@ class owncloud_access {
 
             // After the folder having been renamed, a specific link has been generated, which is to
             // be stored for each user individually.
-            $link = $this->owncloud->get_path('private', $foldername);
-            set_user_preference('cf_link ' . $cmid, $link);
+            $link = $this->owncloud->get_path('private', $newname);
+            $this->set_entry('link', $cmid, $userid, $link);
 
             // Afterwards, the generated link is returned.
             $ret['status'] = true;
@@ -206,22 +206,24 @@ class owncloud_access {
      *
      * @param $sharepath string the path to the folder which has to be shared.
      * @param $renamepath string path to the folder, which needs to be renamed.
+     * @param $newname string new name of the folder, chosen by the user.
      * @param $cmid int the course module ID, which is used to identify specific user preferences.
+     * @param $userid string the id of the current user. Needed for rename method.
      * @return array returns an array, which contains the results of the share and rename operations.
      */
-    public function share_and_rename($sharepath, $renamepath, $cmid) {
+    public function share_and_rename($sharepath, $renamepath, $newname, $cmid, $userid) {
         $ret = array();
         // First, the ownCloud user ID is fetched from the current user's Access Token.
         $user = $this->owncloud->get_accesstoken()->user_id;
+
         // Thereafter, a share for this specific user can be created with the technical user and
         // his Access Token.
-
         $status = $this->generate_share($sharepath, $user);
 
         // If the process was successful, try to rename the folder.
         if ($status) {
 
-            $renamed = $this->rename($renamepath, $cmid);
+            $renamed = $this->rename($renamepath, $newname, $cmid, $userid);
 
             if ($renamed['status'] === true) {
 
@@ -241,8 +243,67 @@ class owncloud_access {
             // The share was unsuccessful.
             $ret['status'] = false;
             $ret['type'] = 'share';
-            $ret['content'] = get_string('ocserror', 'mod_collaborativefolder');
+            $ret['content'] = get_string('ocserror', 'mod_collaborativefolders');
             return $ret;
+        }
+    }
+
+    /**
+     * This method attempts to get a specific field from an entry in the collaborativefolders_link
+     * database table. It is used to get a stored folder name or link for a specific user and course
+     * module.
+     *
+     * @param $field string the field, which value has to be returned.
+     * @param $cmid int the course module ID. Needed to specify the concrete activity instance.
+     * @param $userid string ID of the user, which the value needs to be gotten for.
+     * @return mixed null, if the record does not exist or the field is null. Otherwise, the field's value.
+     */
+    public function get_entry($field, $cmid, $userid) {
+        global $DB;
+
+        $params = array(
+                'userid' => $userid,
+                'cmid' => $cmid
+        );
+
+        $record = $DB->get_record('collaborativefolders_link', $params);
+
+        if (!$record) {
+            return null;
+        } else {
+            return $record->$field;
+        }
+    }
+
+    /**
+     * This method is used to set a field for a specific user and course module in the collaborativefolders_link
+     * database table. If the specific record already exists, it gets updated in the concerning field. Otherwise,
+     * a new record is inserted into the table.
+     *
+     * @param $field string the specific field, which value needs to be set.
+     * @param $cmid int ID of the course module, which the value needs to be set for.
+     * @param $userid string ID of the user, which the value needs to be set for.
+     * @param $value string the specific value, which needs to be set or updated.
+     */
+    public function set_entry($field, $cmid, $userid, $value) {
+        global $DB;
+
+        $params = array(
+                'userid' => $userid,
+                'cmid' => $cmid
+        );
+
+        $record = $DB->get_record('collaborativefolders_link', $params);
+
+        $params[$field] = $value;
+        $params = (object) $params;
+
+        // If the record already exists, it gets updated. Otherwise, a new record is inserted.
+        if (!$record) {
+            $DB->insert_record('collaborativefolders_link', $params);
+        } else {
+            $params->id = $record->id;
+            $DB->update_record('collaborativefolders_link', $params);
         }
     }
 }
