@@ -26,7 +26,9 @@
 
 namespace mod_collaborativefolders;
 
+use tool_oauth2owncloud\authentication_exception;
 use tool_oauth2owncloud\owncloud;
+use tool_oauth2owncloud\socket_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -69,23 +71,27 @@ class owncloud_access {
     }
 
     /**
-     * Method for creation and deletion of folders for collaborative work.
+     * Method for creation and deletion of folders for collaborative work. It is only meant to be called by the
+     * concerning ad hoc task from collaborativefolders.
      *
      * @param $path string specific path of the groupfolder.
      * @param $intention string 'make' for creating and 'delete' for deletion.
-     * @return bool false if an error occurred.
+     * @return int status code received from the client.
+     * @throws \invalid_parameter_exception
+     * @throws authentication_exception
+     * @throws socket_exception
      */
     public function handle_folder($intention, $path) {
         // First, the technical user's Access Token needs to checked.
         // If it is invalid, no access to ownCloud can be granted.
         if (!$this->owncloud->check_login('mod_collaborativefolders')) {
-            return false;
+            throw new authentication_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
         }
 
         // If no socket could be opened, no connection to the ownCloud server is available
         // via WebDAV.
         if (!$this->owncloud->open()) {
-            return false;
+            throw new socket_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }
 
         // WebDAV path is handed over.
@@ -93,17 +99,14 @@ class owncloud_access {
 
         if ($intention == 'make') {
 
-            $code = $this->owncloud->make_folder($webdavpath);
-            return $code;
-
+            return $this->owncloud->make_folder($webdavpath);
         } else if ($intention == 'delete') {
 
-            $code = $this->owncloud->delete_folder($webdavpath);
-            return $code;
-
+            return $this->owncloud->delete_folder($webdavpath);
         } else {
+
             // No other operations, except make and delete, are allowed.
-            return false;
+            throw new \invalid_parameter_exception(get_string('wrongintention', 'mod_collaborativefolders', $intention));
         }
     }
 

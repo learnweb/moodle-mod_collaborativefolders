@@ -75,7 +75,13 @@ $string['error'] = 'An error occurred';
 $string['noviewpermission'] = 'You are currently not allowed to see that content.';
 $string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
 $string['webdaverror'] = 'WebDAV error code {$a}';
+$string['technicalnotloggedin'] = 'The technical user is not logged in.';
+$string['socketerror'] = 'The WebDAV socket could not be opened.';
 $string['ocserror'] = 'An error with the OCS Share API occurred.';
+$string['wrongintention'] = 'The intention argument \'{$a}\' is not valid';
+$string['incompletedata'] = 'Some configuration data might be missing. Please check the client settings.';
+$string['notcreated'] = 'Folder {$a} not created. ';
+$string['unexpectedcode'] = 'An unexpected status code was received.';
 
 // Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
