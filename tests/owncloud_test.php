@@ -257,6 +257,43 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
     }
 
     /**
+     * Test logout_user method from owncloud_access class.
+     */
+    public function test_log_out() {
+        set_user_preference('oC_token', 'token');
+        $this->oc->logout_user();
+        $this->assertNull(get_user_preferences('oC_token'));
+    }
+
+    /**
+     * Test get_login_url method from owncloud_access class.
+     */
+    public function test_login_url() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->once())->method('get_login_url')->will($this->returnValue('url'));
+        $this->set_private_oc($mock);
+
+        $this->assertEquals('url', $this->oc->get_login_url());
+    }
+
+    /**
+     * Test check_data method from owncloud_access class.
+     */
+    public function test_check_data() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->once())->method('check_data')->will($this->returnValue(true));
+        $private = $this->set_private_oc($mock);
+
+        $this->assertTrue($this->oc->check_data());
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->once())->method('check_data')->will($this->returnValue(false));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertFalse($this->oc->check_data());
+    }
+
+    /**
      * Helper method, which inserts a given owncloud mock object into the owncloud_access object.
      *
      * @param $mock object mock object, which needs to be inserted.
