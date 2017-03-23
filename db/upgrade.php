@@ -38,10 +38,10 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_collaborativefolders_upgrade($oldversion) {
-    global $CFG, $DB;
+    global $DB;
 
     $dbman = $DB->get_manager();
-    if ($oldversion<2017032002) {
+    if ($oldversion < 2017032002) {
 
         $table = new xmldb_table('collaborativefolders_link');
 

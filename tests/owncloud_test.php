@@ -36,15 +36,43 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
     }
 
     public function test_generate_share() {
-        $this->resetAfterTest(true);
+
         $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
-        $mock->expects($this->once())
-            ->method('check_login')
-            ->will($this->returnValue(false));
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(false));
 
         $refclient = new ReflectionClass($this->oc);
         $private = $refclient->getProperty('owncloud');
         $private->setAccessible(true);
+        $private->setValue($this->oc, $mock);
+
+        $this->assertFalse($this->oc->generate_share('path', '0'));
+
+        $response = array(
+                'code' => 100,
+                'status' => 'ok'
+        );
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('get_link')->will($this->returnValue($response));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertTrue($this->oc->generate_share('path', '0'));
+
+        $response['code'] = 403;
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('get_link')->will($this->returnValue($response));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertTrue($this->oc->generate_share('path', '0'));
+
+        $response['code'] = 404;
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('get_link')->will($this->returnValue($response));
         $private->setValue($this->oc, $mock);
 
         $this->assertFalse($this->oc->generate_share('path', '0'));
