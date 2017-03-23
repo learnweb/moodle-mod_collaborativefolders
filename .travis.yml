@@ -11,6 +11,9 @@ php:
  - 7.0
 
 env:
+ global:
+  - IGNORE_PATHS=db,tests
+  - IGNORE_NAMES=*-m.js,bad_lib.php
  matrix:
     - DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
     - DB=pgsql MOODLE_BRANCH=master
