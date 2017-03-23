@@ -194,6 +194,69 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
     }
 
     /**
+     * Tests for the share_and_rename method from the owncloud_access class.
+     */
+    public function test_share_and_rename() {
+        // Dummy data.
+        $accesstoken = new stdClass();
+        $accesstoken->user_id = 'admin';
+        $share = 'share';
+        $rename = 'ren';
+        $name = 'name';
+        $cmid = 10;
+        $userid = '0';
+
+        // The sharing operation was unsuccessful.
+        $ret = array(
+                'status' => false,
+                'type' => 'share',
+                'content' => get_string('ocserror', 'mod_collaborativefolders')
+        );
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(false));
+        $mock->expects($this->any())->method('get_accesstoken')->will($this->returnValue($accesstoken));
+        $private = $this->set_private_oc($mock);
+
+        $this->assertEquals($ret, $this->oc->share_and_rename($share, $rename, $name, $cmid, $userid));
+
+        // Renaming was unsuccessful.
+        $response = array(
+                'code' => 100,
+                'status' => 'ok'
+        );
+
+        $ret['type'] = 'rename';
+        $ret['content'] = get_string('socketerror', 'mod_collaborativefolders');
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('move')->will($this->returnValue(404));
+        $mock->expects($this->any())->method('get_accesstoken')->will($this->returnValue($accesstoken));
+        $mock->expects($this->any())->method('get_link')->will($this->returnValue($response));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertEquals($ret, $this->oc->share_and_rename($share, $rename, $name, $cmid, $userid));
+
+        // Sharing, as well as renaming, were successful.
+        $ret = array(
+                'status' => true,
+                'content' => 'https://example.com'
+        );
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('open')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('move')->will($this->returnValue(201));
+        $mock->expects($this->any())->method('get_accesstoken')->will($this->returnValue($accesstoken));
+        $mock->expects($this->any())->method('get_link')->will($this->returnValue($response));
+        $mock->expects($this->any())->method('get_path')->will($this->returnValue('https://example.com'));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertEquals($ret, $this->oc->share_and_rename($share, $rename, $name, $cmid, $userid));
+    }
+
+    /**
      * Helper method, which inserts a given owncloud mock object into the owncloud_access object.
      *
      * @param $mock object mock object, which needs to be inserted.

@@ -54,7 +54,7 @@ class owncloud_access {
      * @return string link to the folder.
      */
     public function generate_share($path, $userid) {
-        // First, the technical user's Access Token needs to checked.
+        // First, the technical user's Access Token needs to be checked.
         // If it is invalid, no access to ownCloud can be granted.
         if (!$this->owncloud->check_login('mod_collaborativefolders')) {
             return false;
