@@ -1,7 +1,8 @@
 #moodle-mod_collaborativefolders *(beta_candidate)*
 # English
-[![Build Status](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders.svg?branch=master)]
-(https://travis-ci.org/pssl16/moodle-mod_collaborativefolders)</br>
+[![Build Status](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders.svg?branch=master)](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders)
+[![codecov](https://codecov.io/gh/pssl16/moodle-mod_collaborativefolders/branch/master/graph/badge.svg)](https://codecov.io/gh/pssl16/moodle-mod_collaborativefolders)
+
 This Activity allows course admins to create Folders in [ownCloud](https://www.sciebo.de/), 
 allocate them to groups of students who can then voluntarily subscribe 
 to work collaborative in these folders. Students can subscribe to work in those folders.

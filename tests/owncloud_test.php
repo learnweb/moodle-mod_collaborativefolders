@@ -24,8 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use PHPUnit_Framework_TestCase;
-
 class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
 
     /** @var null|\mod_collaborativefolders\owncloud_access owncloud_access object. */
@@ -137,6 +135,62 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
 
         $this->assertEquals(201, $this->oc->handle_folder('make', 'path'));
         $this->assertEquals(201, $this->oc->handle_folder('delete', 'path'));
+    }
+
+    /**
+     * Tests for rename method from the owncloud_access class.
+     */
+    public function test_rename() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(false));
+        $private = $this->set_private_oc($mock);
+
+        // User is not logged in.
+        $path = 'path';
+        $name = 'name';
+        $cmid = 10;
+        $userid = '0';
+
+        $ret = array(
+                'status' => false,
+                'content' => get_string('usernotloggedin', 'mod_collaborativefolders')
+        );
+
+        $this->assertEquals($ret, $this->oc->rename($path, $name, $cmid, $userid));
+
+        // Socket could not be opened.
+        $ret['content'] = get_string('socketerror', 'mod_collaborativefolders');
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('open')->will($this->returnValue(false));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertEquals($ret, $this->oc->rename($path, $name, $cmid, $userid));
+
+        // Wrong response status code.
+        $ret['content'] = get_string('webdaverror', 'mod_collaborativefolders', 404);
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('open')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('move')->will($this->returnValue(404));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertEquals($ret, $this->oc->rename($path, $name, $cmid, $userid));
+
+        // Successful access to ownCloud, status code is accepted.
+        $ret['status'] = true;
+        $ret['content'] = 'https://example.com';
+
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->any())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('open')->will($this->returnValue(true));
+        $mock->expects($this->any())->method('move')->will($this->returnValue(201));
+        $mock->expects($this->any())->method('get_path')->will($this->returnValue('https://example.com'));
+        $private->setValue($this->oc, $mock);
+
+        $this->assertEquals($ret, $this->oc->rename($path, $name, $cmid, $userid));
     }
 
     /**
