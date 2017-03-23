@@ -24,9 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use PHPUnit_Framework_TestCase;
+
 class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
 
-    /** @var null|\mod_collaborativefolders\owncloud_access  */
+    /** @var null|\mod_collaborativefolders\owncloud_access owncloud_access object. */
     private $oc = null;
 
     protected function setUp() {
@@ -35,18 +37,19 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $this->oc = new \mod_collaborativefolders\owncloud_access($url);
     }
 
+    /**
+     * Tests for the generate_share function of the owncloud_access class.
+     */
     public function test_generate_share() {
-
+        // Technical user is not logged in.
         $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
         $mock->expects($this->any())->method('check_login')->will($this->returnValue(false));
 
-        $refclient = new ReflectionClass($this->oc);
-        $private = $refclient->getProperty('owncloud');
-        $private->setAccessible(true);
-        $private->setValue($this->oc, $mock);
+        $private = $this->set_private_oc($mock);
 
         $this->assertFalse($this->oc->generate_share('path', '0'));
 
+        // Technical user is logged in and the response is accepted.
         $response = array(
                 'code' => 100,
                 'status' => 'ok'
@@ -59,6 +62,7 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
 
         $this->assertTrue($this->oc->generate_share('path', '0'));
 
+        // Alternative accepted response.
         $response['code'] = 403;
 
         $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
@@ -68,6 +72,7 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
 
         $this->assertTrue($this->oc->generate_share('path', '0'));
 
+        // Not an accepted response.
         $response['code'] = 404;
 
         $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
@@ -76,5 +81,76 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $private->setValue($this->oc, $mock);
 
         $this->assertFalse($this->oc->generate_share('path', '0'));
+    }
+
+    /**
+     * Test, if authentication_exception is thrown in handle_folder, when the technical user is not
+     * logged in.
+     */
+    public function test_authentication_exception() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->once())->method('check_login')->will($this->returnValue(false));
+        $this->set_private_oc($mock);
+
+        $this->expectException(\tool_oauth2owncloud\authentication_exception::class);
+        $this->oc->handle_folder('make', 'path');
+    }
+
+    /**
+     * Test, if socket_exception is thrown in handle_folder, when the WebDAV socket cannot be
+     * opened.
+     */
+    public function test_socket_exception() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->once())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->once())->method('open')->will($this->returnValue(false));
+        $this->set_private_oc($mock);
+
+        $this->expectException(\tool_oauth2owncloud\socket_exception::class);
+        $this->oc->handle_folder('make', 'path');
+    }
+
+    /**
+     * Test, if invalid_parameter_exception is thrown in handle_folder, when an argument, other then 'make' or
+     * 'delete', has been inserted as $intention.
+     */
+    public function test_invalid_exception() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->once())->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->once())->method('open')->will($this->returnValue(true));
+        $this->set_private_oc($mock);
+
+        $this->expectException(invalid_parameter_exception::class);
+        $this->oc->handle_folder('do', 'path');
+    }
+
+    /**
+     * Tests successful runs for handle_folder with $intention set to 'make', as well as 'delete'.
+     */
+    public function test_handle_folder() {
+        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
+        $mock->expects($this->exactly(2))->method('check_login')->will($this->returnValue(true));
+        $mock->expects($this->exactly(2))->method('open')->will($this->returnValue(true));
+        $mock->expects($this->exactly(1))->method('make_folder')->will($this->returnValue(201));
+        $mock->expects($this->exactly(1))->method('delete_folder')->will($this->returnValue(201));
+        $this->set_private_oc($mock);
+
+        $this->assertEquals(201, $this->oc->handle_folder('make', 'path'));
+        $this->assertEquals(201, $this->oc->handle_folder('delete', 'path'));
+    }
+
+    /**
+     * Helper method, which inserts a given owncloud mock object into the owncloud_access object.
+     *
+     * @param $mock object mock object, which needs to be inserted.
+     * @return ReflectionProperty the resulting reflection property.
+     */
+    protected function set_private_oc($mock) {
+        $refclient = new ReflectionClass($this->oc);
+        $private = $refclient->getProperty('owncloud');
+        $private->setAccessible(true);
+        $private->setValue($this->oc, $mock);
+
+        return $private;
     }
 }
