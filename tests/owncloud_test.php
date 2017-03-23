@@ -294,6 +294,54 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
     }
 
     /**
+     * Test set_entry method from the owncloud_access class.
+     */
+    public function test_set_entry() {
+        global $DB;
+
+        $this->oc->set_entry('name', 10, '0', 'somename');
+
+        $params = array(
+                'userid' => '0',
+                'cmid' => 10,
+                'name' => 'somename',
+                'link' => null
+        );
+
+        $exists = $DB->record_exists('collaborativefolders_link', $params);
+
+        $this->assertTrue($exists);
+
+        $this->oc->set_entry('name', 10, '0', null);
+
+        $params['name'] = null;
+
+        $exists = $DB->record_exists('collaborativefolders_link', $params);
+
+        $this->assertTrue($exists);
+    }
+
+    /**
+     * Test get_entry method from the owncloud_access class.
+     */
+    public function test_get_entry() {
+        global $DB;
+
+        $this->assertNull($this->oc->get_entry('link', 10, '0'));
+
+        $params = array(
+                'userid' => '0',
+                'cmid' => 10,
+                'name' => 'somename',
+                'link' => 'linkname'
+        );
+
+        $DB->insert_record('collaborativefolders_link', (object) $params);
+
+        $this->assertEquals('linkname', $this->oc->get_entry('link', 10, '0'));
+    }
+
+    /**
      * Helper method, which inserts a given owncloud mock object into the owncloud_access object.
      *
      * @param $mock object mock object, which needs to be inserted.
