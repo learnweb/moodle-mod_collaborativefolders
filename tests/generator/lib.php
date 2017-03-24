@@ -39,7 +39,7 @@ class mod_collaborativefolders_generator extends testing_module_generator {
     /**
      * Creates Course, course members, groups and groupings to test the module.
      */
-    public function test_create_preparation () {
+    public function create_preparation () {
         $generator = advanced_testcase::getDataGenerator();
         $data = array();
         $course = $generator->create_course(array('name' => 'A course'));
@@ -78,7 +78,7 @@ class mod_collaborativefolders_generator extends testing_module_generator {
         $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user3']->id));
         $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $data['user4']->id));
         $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user2']->id));
-        $data["instance"] = $generator->create_instance();
+        $data["instance"] = $this->create_instance(array('course' => $data['course']->id));
         return $data; // Return the user, course and group objects.
     }
     public function create_instance($record = null, array $options = null) {
