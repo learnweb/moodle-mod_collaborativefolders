@@ -29,6 +29,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require($CFG->libdir . '/formslib.php');
 
+/**
+ * Class, which contains the form for name insertion in view.php.
+ *
+ * @codeCoverageIgnore
+ * @package mod_collaborativefolders
+ */
 class name_form extends \moodleform {
 
     public function definition() {

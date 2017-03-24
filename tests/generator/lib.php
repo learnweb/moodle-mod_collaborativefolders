@@ -65,7 +65,7 @@ class mod_collaborativefolders_generator extends testing_module_generator {
         $generator->create_grouping_group(array('groupingid' => $grouping2->id, 'groupid' => $group21->id));
 
         // Initiates the groupings and grouping members.
-        // Creates 4 Users, enroles them in course.
+        // Creates 4 Users, enrols them in course.
         for ($i = 1; $i <= 4; $i++) {
             $user = $generator->create_user();
             $generator->enrol_user($user->id, $course->id);
@@ -78,7 +78,7 @@ class mod_collaborativefolders_generator extends testing_module_generator {
         $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user3']->id));
         $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $data['user4']->id));
         $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user2']->id));
-        $data["instance"] = $generator->create_instance();
+        $data["instance"] = $generator->create_instance(array('course' => $course->id));
         return $data; // Return the user, course and group objects.
     }
     public function create_instance($record = null, array $options = null) {

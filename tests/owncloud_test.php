@@ -15,11 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The class contains a test script for the moodle mod_collaborativefolders
+ * This testcase contains tests for the owncloud_access class, which is part of the
+ * collaborativefolders activity module.
  *
- * @package mod_collaborativefolders
- * @copyright 2016 Projektseminar WWU
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
