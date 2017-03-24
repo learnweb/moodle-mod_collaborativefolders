@@ -37,6 +37,9 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
         $this->data = $generator->create_preparation();
     }
 
+    /**
+     * Test the build in course_module_instance_list_viewed event.
+     */
     public function test_instance_list_viewed() {
         $context = context_course::instance($this->data['course']->id);
 
@@ -44,14 +47,145 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
                 'context' => $context
         );
 
-        $sink = $this->redirectEvents();
         $event = \mod_collaborativefolders\event\course_module_instance_list_viewed::create($params);
+        $event = $this->get_event_result($event);
+
+        $this->assertEquals($context->id, $event->contextid);
+        $this->assertEquals($this->data['course']->id, $event->courseid);
+        $this->assertNotEmpty($event->get_name());
+    }
+
+    /**
+     * Test the build in course_module_viewed event.
+     */
+    public function test_module_viewed() {
+        $cmid = $this->data['instance']->cmid;
+        $context = context_module::instance($cmid);
+        $instanceid = $this->data['instance']->id;
+
+        $params = array(
+                'context' => $context,
+                'objectid' => $instanceid
+        );
+
+        $event = \mod_collaborativefolders\event\course_module_viewed::create($params);
+        $event = $this->get_event_result($event);
+
+        $this->assertEquals($context->id, $event->contextid);
+        $this->assertEquals($this->data['course']->id, $event->courseid);
+        $this->assertEquals('collaborativefolders', $event->objecttable);
+        $this->assertEquals($instanceid, $event->objectid);
+    }
+
+    /**
+     * Tests for the implemented folder_created event for collaborativefolders.
+     */
+    public function test_folders_created() {
+        $cmid = $this->data['instance']->cmid;
+        $context = context_module::instance($cmid);
+        $instanceid = $this->data['instance']->id;
+
+        $params = array(
+                'context' => $context,
+                'objectid' => $instanceid
+        );
+
+        $event = \mod_collaborativefolders\event\folders_created::create($params);
+        $event = $this->get_event_result($event);
+
+        // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
+        // verify the event's correctness.
+        $this->assertEquals($context->id, $event->contextid);
+        $this->assertEquals($this->data['course']->id, $event->courseid);
+        $this->assertEquals('collaborativefolders', $event->objecttable);
+        $this->assertEquals($instanceid, $event->objectid);
+        $this->assertEquals('c', $event->crud);
+        $this->assertEquals(0, $event->edulevel);
+
+        // Test the event methods, which were implemented within the event.
+        $this->assertNotEmpty($event->get_name());
+        $this->assertNotEmpty($event->get_description());
+
+        $url = new \moodle_url('/mod/collaborativefolders/view.php', array('id' => $cmid));
+        $this->assertEquals($url, $event->get_url());
+    }
+
+    /**
+     * Tests for the implemented link_generated event for collaborativefolders.
+     */
+    public function test_link_generated() {
+        $cmid = $this->data['instance']->cmid;
+        $context = context_module::instance($cmid);
+        $instanceid = $this->data['instance']->id;
+
+        $params = array(
+                'context' => $context,
+                'objectid' => $instanceid
+        );
+
+        $event = \mod_collaborativefolders\event\link_generated::create($params);
+        $event = $this->get_event_result($event);
+
+        // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
+        // verify the event's correctness.
+        $this->assertEquals($context->id, $event->contextid);
+        $this->assertEquals($this->data['course']->id, $event->courseid);
+        $this->assertEquals('collaborativefolders', $event->objecttable);
+        $this->assertEquals($instanceid, $event->objectid);
+        $this->assertEquals('u', $event->crud);
+        $this->assertEquals(2, $event->edulevel);
+
+        // Test the event methods, which were implemented within the event.
+        $this->assertNotEmpty($event->get_name());
+        $this->assertNotEmpty($event->get_description());
+
+        $url = new \moodle_url('/mod/collaborativefolders/view.php', array('id' => $cmid));
+        $this->assertEquals($url, $event->get_url());
+    }
+
+    /**
+     * Tests for the implemented technical_user_loggedout event for collaborativefolders.
+     */
+    public function test_technical_loggedout() {
+        $context = context_system::instance();
+
+        $params = array(
+                'context' => $context
+        );
+
+        $event = \mod_collaborativefolders\event\technical_user_loggedout::create($params);
+        $event = $this->get_event_result($event);
+
+        // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
+        // verify the event's correctness.
+        $this->assertEquals($context->id, $event->contextid);
+        $this->assertEquals(null, $event->courseid);
+        $this->assertEquals('', $event->objecttable);
+        $this->assertEquals(null, $event->objectid);
+        $this->assertEquals('u', $event->crud);
+        $this->assertEquals(0, $event->edulevel);
+
+        // Test the event methods, which were implemented within the event.
+        $this->assertNotEmpty($event->get_name());
+        $this->assertNotEmpty($event->get_description());
+
+        $url = new \moodle_url('/admin/settings.php?section=modsettingcollaborativefolders');
+        $this->assertEquals($url, $event->get_url());
+    }
+
+    /**
+     * Helper method to fetch the results from a triggered event.
+     *
+     * @param $event \core\event\base event, which needs to be triggered.
+     * @return \core\event\base|mixed the caught event data.
+     */
+    protected function get_event_result($event) {
+        $sink = $this->redirectEvents();
         $event->trigger();
         $result = $sink->get_events();
         $event = reset($result);
         $sink->close();
 
-        $this->assertEquals($context->id, $event->contextid);
-        $this->assertEquals($this->data['course']->id, $event->courseid);
+        return $event;
     }
 }
