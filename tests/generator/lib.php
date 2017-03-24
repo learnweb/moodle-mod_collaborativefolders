@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Data generator for the collaborativefolders module tests.
  *
  * @package    mod_collaborativefolders
  * @category   test
@@ -25,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
- *
+ * Adds a function to the parent class, which creates a course and an activity instance
+ * of collaborativefolders.
  *
  * @package    mod_collaborativefolders
  * @category   test
@@ -39,7 +40,7 @@ class mod_collaborativefolders_generator extends testing_module_generator {
     /**
      * Creates Course, course members, groups and groupings to test the module.
      */
-    public function create_preparation () {
+    public function create_preparation ($groupmode, $grouping) {
         $generator = advanced_testcase::getDataGenerator();
         $data = array();
         $course = $generator->create_course(array('name' => 'A course'));
@@ -78,18 +79,14 @@ class mod_collaborativefolders_generator extends testing_module_generator {
         $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user3']->id));
         $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $data['user4']->id));
         $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user2']->id));
-        $data["instance"] = $this->create_instance(array('course' => $data['course']->id));
-        return $data; // Return the user, course and group objects.
-    }
-    public function create_instance($record = null, array $options = null) {
-        $record = (object)(array)$record;
 
-        if (!isset($record->assessed)) {
-            $record->assessed = 0;
-        }
-        if (!isset($record->scale)) {
-            $record->scale = 0;
-        }
-        return parent::create_instance($record, $options);
+        $params = array(
+                'course' => $data['course']->id,
+                'groupmode' => $groupmode,
+                'groupingid' => $grouping
+        );
+
+        $data["instance"] = $this->create_instance($params);
+        return $data; // Return the user, course and group objects.
     }
 }

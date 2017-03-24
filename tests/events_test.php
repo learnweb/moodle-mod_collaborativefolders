@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The class contains a test script for the moodle mod_collaborativefolders
+ * The class contains a test script for the mod_collaborativefolders activity module's
+ * events.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
@@ -34,7 +35,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
-        $this->data = $generator->create_preparation();
+        $this->data = $generator->create_preparation(0, 0);
     }
 
     /**
@@ -50,6 +51,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
         $event = \mod_collaborativefolders\event\course_module_instance_list_viewed::create($params);
         $event = $this->get_event_result($event);
 
+        $this->assertInstanceOf('\mod_collaborativefolders\event\course_module_instance_list_viewed', $event);
         $this->assertEquals($context->id, $event->contextid);
         $this->assertEquals($this->data['course']->id, $event->courseid);
         $this->assertNotEmpty($event->get_name());
@@ -71,6 +73,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
         $event = \mod_collaborativefolders\event\course_module_viewed::create($params);
         $event = $this->get_event_result($event);
 
+        $this->assertInstanceOf('\mod_collaborativefolders\event\course_module_viewed', $event);
         $this->assertEquals($context->id, $event->contextid);
         $this->assertEquals($this->data['course']->id, $event->courseid);
         $this->assertEquals('collaborativefolders', $event->objecttable);
@@ -92,6 +95,9 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
 
         $event = \mod_collaborativefolders\event\folders_created::create($params);
         $event = $this->get_event_result($event);
+
+
+        $this->assertInstanceOf('\mod_collaborativefolders\event\folders_created', $event);
 
         // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
         // verify the event's correctness.
@@ -126,6 +132,8 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
         $event = \mod_collaborativefolders\event\link_generated::create($params);
         $event = $this->get_event_result($event);
 
+        $this->assertInstanceOf('\mod_collaborativefolders\event\link_generated', $event);
+
         // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
         // verify the event's correctness.
         $this->assertEquals($context->id, $event->contextid);
@@ -155,6 +163,8 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
 
         $event = \mod_collaborativefolders\event\technical_user_loggedout::create($params);
         $event = $this->get_event_result($event);
+
+        $this->assertInstanceOf('\mod_collaborativefolders\event\technical_user_loggedout', $event);
 
         // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
         // verify the event's correctness.

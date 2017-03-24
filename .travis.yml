@@ -13,7 +13,7 @@ php:
 env:
  global:
   - IGNORE_PATHS=db,tests
-  - IGNORE_NAMES=index.php,lib.php,mod_form.php,renderer.php,technicallogout.php,view.php
+  - IGNORE_NAMES=index.php,lib.php,mod_form.php,renderer.php,technicallogout.php,view.php,name_form.php
  matrix:
     - DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
     - DB=pgsql MOODLE_BRANCH=master
