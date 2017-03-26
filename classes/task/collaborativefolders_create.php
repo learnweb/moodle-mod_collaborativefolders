@@ -16,9 +16,7 @@
 
 namespace mod_collaborativefolders\task;
 
-// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die;
-// @codeCoverageIgnoreEnd
 
 use mod_collaborativefolders\event\folders_created;
 use mod_collaborativefolders\owncloud_access;
@@ -29,7 +27,6 @@ use tool_oauth2owncloud\webdav_response_exception;
 /**
  * Ad hoc task for the creation of group folders in ownCloud.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster

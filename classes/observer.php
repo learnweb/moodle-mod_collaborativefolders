@@ -16,16 +16,13 @@
 
 namespace mod_collaborativefolders;
 
-// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
-// @codeCoverageIgnoreEnd
 
 use mod_collaborativefolders\task\collaborativefolders_create;
 
 /**
  * Observers for the collaborative folders plugin.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
