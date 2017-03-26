@@ -17,6 +17,7 @@
 /**
  * Listing of the module instances.
  *
+ * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster

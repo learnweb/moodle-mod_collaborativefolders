@@ -17,6 +17,7 @@
 /**
  * Confirmation window for technical user logout.
  *
+ * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster

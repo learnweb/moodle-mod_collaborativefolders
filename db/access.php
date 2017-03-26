@@ -39,6 +39,7 @@
  *
  * The variable name for the capability definitions array is $capabilities
  *
+ * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster

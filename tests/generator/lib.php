@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
  * Adds a function to the parent class, which creates a course and an activity instance
  * of collaborativefolders.
  *
+ * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @category   test
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
