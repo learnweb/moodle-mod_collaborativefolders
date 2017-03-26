@@ -24,9 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart
+// @codeCoverageIgnoreStart .
 defined('MOODLE_INTERNAL') || die();
-// @codeCoverageIgnoreEnd
+// @codeCoverageIgnoreEnd .
 
 /**
  * Adds a function to the parent class, which creates a course and an activity instance
