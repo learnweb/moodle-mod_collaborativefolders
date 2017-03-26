@@ -18,13 +18,13 @@
  * Prints a particular instance of collaborativefolders. What is shown depends
  * on the current user.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// @codeCoverageIgnoreStart
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 // Page and parameter setup.
@@ -280,3 +280,4 @@ $cmviewed->trigger();
 
 
 echo $OUTPUT->footer();
+// @codeCoverageIgnoreEnd

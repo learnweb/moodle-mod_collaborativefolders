@@ -23,6 +23,7 @@ require($CFG->libdir . '/formslib.php');
 /**
  * Form class for the name insertion in collaborative folders.
  *
+ * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
