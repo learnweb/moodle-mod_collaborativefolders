@@ -97,7 +97,6 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
         $event = \mod_collaborativefolders\event\folders_created::create($params);
         $event = $this->get_event_result($event);
 
-
         $this->assertInstanceOf('\mod_collaborativefolders\event\folders_created', $event);
 
         // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
