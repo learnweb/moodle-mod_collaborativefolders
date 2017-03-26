@@ -16,11 +16,11 @@
 
 namespace mod_collaborativefolders;
 
-// @codeCoverageIgnoreStart .
+// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
 
 require($CFG->libdir . '/formslib.php');
-// @codeCoverageIgnoreEnd .
+// @codeCoverageIgnoreEnd
 
 /**
  * Form class for the name insertion in collaborative folders.

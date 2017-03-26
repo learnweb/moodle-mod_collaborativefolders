@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart .
+// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/setuplib.php');
@@ -141,4 +141,4 @@ function collaborativefolders_delete_instance($id) {
         return $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
     }
 }
-// @codeCoverageIgnoreEnd .
+// @codeCoverageIgnoreEnd

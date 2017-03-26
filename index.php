@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart .
+// @codeCoverageIgnoreStart
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
@@ -96,4 +96,4 @@ foreach ($modinfo->instances['collaborativefolders'] as $cm) {
 echo html_writer::table($table);
 
 echo $OUTPUT->footer();
-// @codeCoverageIgnoreEnd .
+// @codeCoverageIgnoreEnd
