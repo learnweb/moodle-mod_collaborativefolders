@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
+
 /**
  * Class of the mod_collaborativefolders renderer.
  *
@@ -32,9 +34,6 @@
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die;
-
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
 
     public function print_error($text, $code) {
@@ -97,4 +96,5 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
                 html_writer::link($url, get_string('here', 'mod_collaborativefolders'))));
         return $output;
     }
+
 }

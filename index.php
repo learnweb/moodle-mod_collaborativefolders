@@ -17,13 +17,13 @@
 /**
  * Listing of the module instances.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// @codeCoverageIgnoreStart
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
@@ -96,3 +96,4 @@ foreach ($modinfo->instances['collaborativefolders'] as $cm) {
 echo html_writer::table($table);
 
 echo $OUTPUT->footer();
+// @codeCoverageIgnoreEnd

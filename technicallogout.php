@@ -17,13 +17,13 @@
 /**
  * Confirmation window for technical user logout.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// @codeCoverageIgnoreStart
 require_once("../../config.php");
 
 defined('MOODLE_INTERNAL') || die;
@@ -50,3 +50,4 @@ if (is_siteadmin()) {
     echo $OUTPUT->footer();
 
 }
+// @codeCoverageIgnoreEnd
