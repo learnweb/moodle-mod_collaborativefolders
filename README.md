@@ -5,10 +5,10 @@
 
 # English
 
-This Activity Module allows course admins to create folders in [ownCloud](https://owncloud.org/), 
+This Activity Module allows teachers to create folders in [ownCloud](https://owncloud.org/), 
 which can be allocated to groups of students who can then voluntarily subscribe work collaboratively in these folders.
 
-Written by project seminar Sciebo@Leanrweb of the University of Münster.
+Written by project seminar sciebo@Leanrweb of the University of Münster.
 
 ## Information
 
