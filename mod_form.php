@@ -26,13 +26,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
+// @codeCoverageIgnoreEnd
 
 /**
  * Module instance settings form.
  *
+ * @codeCoverageIgnore
  * @package    mod_collaborativefolders
  * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
  * @author     Projektseminar Uni Münster
@@ -67,4 +70,5 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
+
 }

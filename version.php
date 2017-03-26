@@ -26,11 +26,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2017032200;
-$plugin->release = 'v0.1';
+$plugin->version = 2017032600;
+$plugin->release = 'v0.1.0';
 $plugin->requires = 2016052300;
 $plugin->maturity = MATURITY_BETA;
 $plugin->dependencies = array(
-    'tool_oauth2owncloud' => 2017032100
+    'tool_oauth2owncloud' => 2017032300
 );
 

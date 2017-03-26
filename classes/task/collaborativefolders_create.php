@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Ad hoc task for the creation of group folders in ownCloud.
- *
- * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace mod_collaborativefolders\task;
 
 defined('MOODLE_INTERNAL') || die;
@@ -33,6 +24,14 @@ use moodle_url;
 use tool_oauth2owncloud\configuration_exception;
 use tool_oauth2owncloud\webdav_response_exception;
 
+/**
+ * Ad hoc task for the creation of group folders in ownCloud.
+ *
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class collaborativefolders_create extends \core\task\adhoc_task {
 
     public function execute() {

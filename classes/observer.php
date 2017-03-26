@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_collaborativefolders;
+
+defined('MOODLE_INTERNAL') || die();
+
+use mod_collaborativefolders\task\collaborativefolders_create;
+
 /**
  * Observers for the collaborative folders plugin.
  *
@@ -22,13 +28,6 @@
  * @author     Projektseminar Uni Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace mod_collaborativefolders;
-
-defined('MOODLE_INTERNAL') || die();
-
-use mod_collaborativefolders\task\collaborativefolders_create;
-
 class observer {
 
     public static function collaborativefolders_created(\core\event\course_module_created $event) {

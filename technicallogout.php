@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// @codeCoverageIgnoreStart
 require_once("../../config.php");
 
 defined('MOODLE_INTERNAL') || die;
@@ -49,3 +50,4 @@ if (is_siteadmin()) {
     echo $OUTPUT->footer();
 
 }
+// @codeCoverageIgnoreEnd

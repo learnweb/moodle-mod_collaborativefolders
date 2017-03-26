@@ -14,26 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Form class for the name insertion in collaborative folders.
- *
- * @package    mod_collaborativefolders
- * @copyright  2016 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace mod_collaborativefolders;
 
+// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
 
 require($CFG->libdir . '/formslib.php');
+// @codeCoverageIgnoreEnd
 
 /**
- * Class, which contains the form for name insertion in view.php.
+ * Form class for the name insertion in collaborative folders.
  *
  * @codeCoverageIgnore
- * @package mod_collaborativefolders
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
+ * @author     Projektseminar Uni Münster
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class name_form extends \moodleform {
 
@@ -51,4 +47,5 @@ class name_form extends \moodleform {
 
         $mform->addElement('submit', 'enter', get_string('save', 'mod_collaborativefolders'));
     }
+
 }
