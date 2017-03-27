@@ -55,7 +55,7 @@ Erstellt von dem Projektseminar Sciebo@Leanrweb der Universität Münster.
 
 ## Information
 
-Diese Modul ist abhängig von dem [oauth2owncloud Plugin](https://github.com/pssl16/moodle-tool_oauth2owncloud) und
+Diese Modul ist abhängig von dem [`oauth2owncloud` Plugin](https://github.com/pssl16/moodle-tool_oauth2owncloud) und
 kann nicht separat genutzt werden.
 
 ## Installation
