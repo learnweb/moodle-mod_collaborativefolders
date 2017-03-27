@@ -162,7 +162,10 @@ $showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == nul
 // are blocked.
 if ($showwarning) {
 
-    if (is_siteadmin()) {
+    $sitecontext = context_system::instance();
+
+    // The current user is able to edit the site configuration.
+    if (has_capability('moodle/site:config', $sitecontext)) {
 
         $link = $CFG->wwwroot . '/' . $CFG->admin . '/settings.php?section=oauth2owncloud';
 
