@@ -149,6 +149,35 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
 
 
+// Is the client configuration complete?
+$complete = $ocs->check_data();
+
+// Fetch a stored link belonging to this particular activity instance.
+$privatelink = $ocs->get_entry('link', $id, $userid);
+
+// Shall the warning about missing client configuration be shown?
+$showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == null;
+
+// If client configuration data is missing, a warning is shown and ownCloud access actions
+// are blocked.
+if ($showwarning) {
+
+    if (is_siteadmin()) {
+
+        $link = $CFG->wwwroot . '/' . $CFG->admin . '/settings.php?section=oauth2owncloud';
+
+        // Generates a link to the admin setting page.
+        echo $OUTPUT->notification('<a href="' . $link . '" target="_blank" rel="noopener noreferrer">
+                                ' . get_string('missing_settings_admin', 'tool_oauth2owncloud') . '</a>', 'warning');
+    } else {
+
+        // Otherwise, just print a notification, bacause the current user cannot configure admin
+        // settings himself.
+        echo $OUTPUT->notification(get_string('missing_settings_user', 'tool_oauth2owncloud'));
+    }
+}
+
+
 // If the folders are not created yet, display the concerning message to the user.
 if (!$folderscreated) {
 
@@ -164,7 +193,6 @@ $teacheraccess = $capteacher && $teacherallowed == true;
 // Does the current user have access to this activity, be it teacher or student?
 $hasaccess = ($teacheraccess || $capstudent) && $folderscreated;
 
-
 // Does a table of all participating groups have to be shown? The teacher does not need to have
 // access to the Collaborative Folder to see the table.
 $showtable = $folderscreated && $capteacher && $gm;
@@ -178,9 +206,6 @@ if ($showtable) {
     echo $renderer->render_view_table($groups);
 }
 
-
-// Fetch a stored link belonging to this particular activity instance.
-$privatelink = $ocs->get_entry('link', $id, $userid);
 
 // Does the user have a link to this Collaborative Folder and access to this activity?
 $haslink = $privatelink != null && $hasaccess;
@@ -204,7 +229,7 @@ $cangenerate = $nolink && $generate;
 if ($cangenerate) {
 
     // If no personal name has been stored for the folder, no link can be generated yet.
-    if ($name == null) {
+    if ($name == null || !$complete) {
 
         $generate = false;
     } else {
@@ -254,13 +279,20 @@ if ($nogenerate) {
             $logouturl = qualified_me() . '&logout=1';
             echo $renderer->print_link($logouturl, 'logout');
 
-            $genurl = qualified_me() . '&generate=1';
-            echo $renderer->print_link($genurl, 'generate');
+            if ($complete) {
+
+                $genurl = qualified_me() . '&generate=1';
+                echo $renderer->print_link($genurl, 'generate');
+            }
+
         } else {
 
-            // If no Access Token was received, a login link has to be provided.
-            $url = $ocs->get_login_url();
-            echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
+            if ($complete) {
+
+                // If no Access Token was received, a login link has to be provided.
+                $url = $ocs->get_login_url();
+                echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
+            }
         }
     } else {
 
