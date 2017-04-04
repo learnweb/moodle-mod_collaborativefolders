@@ -35,17 +35,17 @@ $string['collaborativefolders:viewstudent'] = 'View a Collaborative Folder as a 
 $string['collaborativefolders:viewteacher'] = 'View a Collaborative Folder as a teacher or manager';
 $string['collaborativefoldersname'] = 'Name for the Collaborative Folder in Moodle:';
 $string['collaborativefoldersname_help'] = 'Enter a new name, which will be displayed for this Collaborative Folder instance.';
-$string['collaborativefolders'] = 'collaborativefolders';
+$string['collaborativefolders'] = 'Collaborative Folder';
 $string['nocollaborativefolders'] = 'No instance of Collaborative Folders is active in this course.';
 $string['pluginadministration'] = 'Administration of Collaborative Folders';
-$string['pluginname'] = 'collaborativefolders';
+$string['pluginname'] = 'Collaborative Folder';
 
 // View.php.
 $string['activityoverview'] = 'Overview of Collaborative Folders';
 $string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
 $string['introoverview'] = 'Overview of all participating groups';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
-$string['foldernotcreatedyet'] = 'The Folder was not yet created. If this message remains in the next days please contact the administrator.';
+$string['foldernotcreatedyet'] = 'The folder has not been created yet. If this message remains in a few hours please contact the administrator.';
 $string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use this {$a}.';
 $string['logout_heading'] = 'Logout from ownCloud';
 $string['logoutpressed'] = 'You now are logged out from your ownCloud account.';
@@ -86,7 +86,7 @@ $string['unexpectedcode'] = 'An unexpected status code was received.';
 // Global technical user.
 $string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
  It is recommended that you change the technical user as infrequently as possible.';
-$string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All Folders that will be created will be saved
+$string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All folders that will be created will be saved
 in the storage space of the technical user. Therefore, please consider the available memory of the user.';
 $string['areyousure'] = 'Are you sure you want to proceed?';
 $string['logouttechnicaluser'] = 'Logout the technical user';
