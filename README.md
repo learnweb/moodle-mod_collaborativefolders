@@ -1,3 +1,8 @@
+# Do not use in production
+Please be aware that this is a pre-release. **  Do not use in production! **  Plugins and their structure **will** be subject to change. We will **NOT** support any upgrade paths from this release.
+
+Nevertheless, we are actively working on a release. We would be extremely happy for (non-production) test users and developer contributions!
+
 # Moodle Activity Module `collaborativefolders`
 
 [![Build Status](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders.svg?branch=master)](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders)
