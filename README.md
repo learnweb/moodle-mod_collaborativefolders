@@ -5,8 +5,8 @@ Nevertheless, we are actively working on a release. We would be extremely happy 
 
 # Moodle Activity Module `collaborativefolders`
 
-[![Build Status](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders.svg?branch=master)](https://travis-ci.org/pssl16/moodle-mod_collaborativefolders)
-[![codecov](https://codecov.io/gh/pssl16/moodle-mod_collaborativefolders/branch/master/graph/badge.svg)](https://codecov.io/gh/pssl16/moodle-mod_collaborativefolders)
+[![Build Status](https://travis-ci.org/learnweb/moodle-mod_collaborativefolders.svg?branch=master)](https://travis-ci.org/learnweb/moodle-mod_collaborativefolders)
+[![codecov](https://codecov.io/gh/learnweb/moodle-mod_collaborativefolders/branch/master/graph/badge.svg)](https://codecov.io/gh/learnweb/moodle-mod_collaborativefolders)
 
 # English
 
@@ -17,7 +17,7 @@ Written by project seminar sciebo@Leanrweb of the University of Münster.
 
 ## Information
 
-This module is depending on the [`oauth2owncloud` plugin](https://github.com/pssl16/moodle-tool_oauth2owncloud) and
+This module is depending on the [`oauth2owncloud` plugin](https://github.com/learnweb/moodle-tool_oauth2owncloud) and
 can not be used separately.
 
 ## Installation
@@ -40,14 +40,14 @@ concerning instance. Activation of the groupmode leads to the creation of separa
 
 After the folder(s) was created by a cron task, users are requested to choose an individual name for the folder.
 
- ![filepickerlogin](pix/GiveFolderName.png)
+ ![Choose a folder name](https://user-images.githubusercontent.com/432117/27693591-28c99eda-5cea-11e7-9214-62d736d45273.png)
  
 Afterwards, users can change the name and logout from their ownCloud account. 
 If a user entered a valid name for the folder and already is authenticated in ownCloud,
 he is able to generate a Share for the collaborative folder. Thereafter, the folder is accessible either from
 the activity instance or from the personal ownCloud directory.
  
- ![filepickerlogin](pix/Overview.png)
+ ![Student view](https://user-images.githubusercontent.com/432117/27693597-2b2f0106-5cea-11e7-8f40-705980c8e055.png)
 
 Further information can be found in our [documentation](https://pssl16.github.io).
 
@@ -60,7 +60,7 @@ Erstellt von dem Projektseminar Sciebo@Leanrweb der Universität Münster.
 
 ## Information
 
-Diese Modul ist abhängig von dem [`oauth2owncloud` Plugin](https://github.com/pssl16/moodle-tool_oauth2owncloud) und
+Diese Modul ist abhängig von dem [`oauth2owncloud` Plugin](https://github.com/learnweb/moodle-tool_oauth2owncloud) und
 kann nicht separat genutzt werden.
 
 ## Installation
@@ -84,13 +84,13 @@ Eine Aktivierung des Gruppenmodus bewirkt die Erstellung einzelner Gruppenordner
 Nachdem der/die Ordner von einem Cron Task erstellt worden sind, werden die Nutzer dazu aufgefordert, 
 einen individuellen Namen für den Ordner anzugeben.
 
- ![filepickerlogin](pix/GiveFolderName.png)
+ ![Choose a folder name](https://user-images.githubusercontent.com/432117/27693591-28c99eda-5cea-11e7-9214-62d736d45273.png)
  
 Der Name kann anschließend wieder von den Nutzern geändert werden und bei Bedarf können diese sich in ownCloud ausloggen.
 Hat ein Nutzer einen validen Namen für den Ordner eingegeben und ist bereits in ownCloud authentifiziert,
 so hat er die Möglichkeit den kollaborativen Ordner für sich freizugeben. Danach kann auf den Ordner entweder
 über die Instanz der Aktivität oder das persönliche ownCloud Verzeichnis zugegriffen werden.
  
- ![filepickerlogin](pix/Overview.png)
+ ![Student view](https://user-images.githubusercontent.com/432117/27693597-2b2f0106-5cea-11e7-8f40-705980c8e055.png)
 
 Nähere Informationen zu dem Plugin finden Sie in unserer [Dokumentation](https://pssl16.github.io).
