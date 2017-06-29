@@ -18,12 +18,11 @@
  * Settings.php for collaborativefolders activity module. Manages the login to an ownCloud account.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die('moodle_internal not defined');
+defined('MOODLE_INTERNAL') || die();
 
 $logout = optional_param('technicallogout', null, PARAM_BOOL);
 

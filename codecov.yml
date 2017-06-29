@@ -1,2 +1,9 @@
 fixes:
   - "moodle/mod/collaborativefolders/::"
+
+ignore:
+  - "view.php"
+  - "index.php"
+  - "settings.php"
+  - "tests/"
+  - "db/"

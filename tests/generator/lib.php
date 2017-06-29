@@ -18,25 +18,18 @@
  * Data generator for the collaborativefolders module tests.
  *
  * @package    mod_collaborativefolders
- * @category   test
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
-// @codeCoverageIgnoreEnd
 
 /**
  * Adds a function to the parent class, which creates a course and an activity instance
  * of collaborativefolders.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
- * @category   test
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_collaborativefolders_generator extends testing_module_generator {

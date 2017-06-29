@@ -18,12 +18,10 @@
  * Library of interface functions and constants for module collaborativefolders.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/setuplib.php');
@@ -141,4 +139,3 @@ function collaborativefolders_delete_instance($id) {
         return $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
     }
 }
-// @codeCoverageIgnoreEnd
