@@ -24,10 +24,8 @@
  * it cannot do itself, it will tell you what you need to do.  The commands in
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project Seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,25 +37,6 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_collaborativefolders_upgrade($oldversion) {
-    global $DB;
-
-    $dbman = $DB->get_manager();
-    if ($oldversion < 2017032002) {
-
-        $table = new xmldb_table('collaborativefolders_link');
-
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, true, null, null);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, false, null, null);
-        $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, false, null, null);
-        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, null, false, null, null);
-        $table->add_field('link', XMLDB_TYPE_CHAR, '255', null, null, false, null, null);
-
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'), null, null);
-
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-    }
 
     return true;
 }

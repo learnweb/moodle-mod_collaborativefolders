@@ -19,8 +19,7 @@
  * were created successfully by an ad hoc task.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,8 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Describes the successful folder creation event.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class folders_created extends  \core\event\base {

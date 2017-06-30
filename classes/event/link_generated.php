@@ -19,8 +19,7 @@
  * successfully and the folder renamed in the collaborativefolders activity module.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,8 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Describes the successful link generation event.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class link_generated extends  \core\event\base {

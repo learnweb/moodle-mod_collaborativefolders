@@ -19,23 +19,23 @@
  * on the current user.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(__DIR__ . '/../../config.php');
 
 // Page and parameter setup.
 $id = required_param('id', PARAM_INT);
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
 $context = context_module::instance($id);
-$capteacher = has_capability('mod/collaborativefolders:viewteacher', $context);
-$capstudent = has_capability('mod/collaborativefolders:viewstudent', $context);
 $instanceid = $cm->instance;
 $userid = $USER->id;
+
+// Check whether viewer be treated as teacher or student. Actively ignore admins!
+$capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
+$capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
 
 // Indicators for name reset, logout from current ownCloud user and link generation.
 $reset = optional_param('reset', false, PARAM_BOOL);
@@ -315,4 +315,3 @@ $cmviewed->trigger();
 
 
 echo $OUTPUT->footer();
-// @codeCoverageIgnoreEnd

@@ -18,22 +18,17 @@
  * Renderer for the Web interface of collaborativefolders module.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// @codeCoverageIgnoreStart
 defined('MOODLE_INTERNAL') || die;
-// @codeCoverageIgnoreEnd
 
 /**
  * Class of the mod_collaborativefolders renderer.
  *
- * @codeCoverageIgnore
  * @package    mod_collaborativefolders
- * @copyright  2017 Westfälische Wilhelms-Universität Münster (WWU Münster)
- * @author     Projektseminar Uni Münster
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
