@@ -51,7 +51,6 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
 
-
         $this->standard_intro_elements();
 
         // Reminder for groupsettings.
@@ -64,9 +63,14 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
             [], array(0, 1));
         $mform->addHelpButton('teacher', 'teacher_mode', 'collaborativefolders');
 
-
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
+
+        // Make changing certain settings impossible (except at creation time)
+        // Being able to change them would lead to undefined behaviour, so it is forbidden.
+        if ($this->current->instance) { // Only set if editing an existing instance.
+            $mform->hardFreeze(['groupmode', 'groupingid', 'teacher']);
+        }
 
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
