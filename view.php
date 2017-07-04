@@ -37,8 +37,6 @@ $userid = $USER->id;
 $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
 $capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
 
-// Indicators for name reset, logout from current ownCloud user and link generation.
-$generate = optional_param('generate', false, PARAM_BOOL);
 // View action, supposed to be one of "reset", "logout", "generate", or empty.
 $action = optional_param('action', null, PARAM_ALPHA);
 
@@ -227,38 +225,38 @@ $name = $ocs->get_entry('name', $id, $userid);
 $nolink = $hasaccess && $privatelink == null;
 
 // Does the user wish to generate a link and has not already stored one?
-$cangenerate = $nolink && $generate;
+$generate = false;
+if ($action === 'generate') {
+    $generate = true; // Default until we know otherwise!
 
-if ($cangenerate) {
-
-    // If no personal name has been stored for the folder, no link can be generated yet.
-    if ($name == null || !$complete) {
-
-        $generate = false;
-    } else {
-
-        // Otherwise, try to share and rename the folder.
-        $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $name, $id, $userid);
-
-        // Check, if the sharing and renaming operations were successful.
-        if ($sharerename['status'] === true) {
-
-            // Display the Link.
-            echo $renderer->print_link($sharerename['content'], 'access');
-
-            // Event data is gathered.
-            $params = array(
-                    'context'  => $context,
-                    'objectid' => $instanceid
-            );
-
-            // And the link_generated event is triggered.
-            $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
-            $generatedevent->trigger();
+    if ($nolink) {
+        if ($name == null || !$complete) {
+            // If no personal name has been stored for the folder, no link can be generated yet.
+            $generate = false;
         } else {
+            // Otherwise, try to share and rename the folder.
+            $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $name, $id, $userid);
 
-            // Share or rename were unsuccessful.
-            echo $renderer->print_error($sharerename['type'], $sharerename['content']);
+            // Check, if the sharing and renaming operations were successful.
+            if ($sharerename['status'] === true) {
+
+                // Display the Link.
+                echo $renderer->print_link($sharerename['content'], 'access');
+
+                // Event data is gathered.
+                $params = array(
+                    'context' => $context,
+                    'objectid' => $instanceid
+                );
+
+                // And the link_generated event is triggered.
+                $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
+                $generatedevent->trigger();
+            } else {
+
+                // Share or rename were unsuccessful.
+                echo $renderer->print_error($sharerename['type'], $sharerename['content']);
+            }
         }
     }
 }
@@ -284,7 +282,7 @@ if ($nogenerate) {
 
             if ($complete) {
 
-                $genurl = qualified_me() . '&generate=1';
+                $genurl = qualified_me() . '&action=generate';
                 echo $renderer->print_link($genurl, 'generate');
             }
 
