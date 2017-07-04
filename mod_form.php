@@ -51,13 +51,19 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'collaborativefoldersname', 'collaborativefolders');
 
-        // Checkbox, which indicates whether the course's should habe access to the folder.
-        $mform->addElement('advcheckbox', 'teacher', get_string('teacher_mode', 'mod_collaborativefolders'), '', '', array(0, 1));
 
         $this->standard_intro_elements();
 
         // Reminder for groupsettings.
-        $mform->addElement('warning', null, 'notifyproblem', get_string('edit_groups', 'mod_collaborativefolders'));
+        $mform->addElement('warning', null, 'notifyproblem', get_string('edit_after_creation', 'mod_collaborativefolders'));
+
+        // Checkbox, which indicates whether the course's should have access to the folder.
+        $mform->addElement('advcheckbox', 'teacher',
+            get_string('teacher_access', 'mod_collaborativefolders'),
+            get_string('teacher_mode', 'mod_collaborativefolders'),
+            [], array(0, 1));
+        $mform->addHelpButton('teacher', 'teacher_mode', 'collaborativefolders');
+
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
