@@ -32,8 +32,6 @@ $string['collaborativefolders:addinstance'] = 'Add a new Collaborative Folder';
 $string['collaborativefolders:view'] = 'View a Collaborative Folder';
 $string['collaborativefolders:viewstudent'] = 'View a Collaborative Folder as a student';
 $string['collaborativefolders:viewteacher'] = 'View a Collaborative Folder as a teacher or manager';
-$string['collaborativefoldersname'] = 'Name for the Collaborative Folder in Moodle:';
-$string['collaborativefoldersname_help'] = 'Enter a new name, which will be displayed for this Collaborative Folder instance.';
 $string['collaborativefolders'] = 'Collaborative Folder';
 $string['nocollaborativefolders'] = 'No instance of Collaborative Folders is active in this course.';
 $string['pluginadministration'] = 'Administration of Collaborative Folders';
@@ -94,8 +92,12 @@ $string['loginlabel'] = 'Login';
 $string['manageheading'] = 'Manage the technical user';
 
 // Adding an instance (mod_form).
+$string['collaborativefoldersname'] = 'Collaborative folder name';
+$string['collaborativefoldersname_help'] = 'Enter a new name that will be shown in the course homepage.';
+$string['teacher_access'] = 'Teacher access';
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
-$string['edit_groups'] = 'Please consider, that the groupsettings for this activity cannot be changed after its creation.';
+$string['teacher_mode_help'] = 'Usually, only students have access to their folders. However, if this checkbox is checked, teachers will also be granted access. Note that this setting cannot be changed after creation.';
+$string['edit_after_creation'] = 'Please consider that teacher access and group-related settings cannot be changed after this activity is created.';
 
 // Events.
 $string['eventfolderscreated'] = 'The ad hoc task successfully created all necessary folders for an collaborativefolders instance.';
