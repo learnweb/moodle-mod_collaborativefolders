@@ -81,6 +81,8 @@ foreach ($modinfo->instances['collaborativefolders'] as $cm) {
                 $table->data[] = 'hr';
             }
             $currentsection = $cm->sectionnum;
+        } else {
+            $row[] = '';
         }
     }
 
