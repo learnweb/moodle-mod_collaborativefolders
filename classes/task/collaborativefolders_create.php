@@ -66,9 +66,11 @@ class collaborativefolders_create extends \core\task\adhoc_task {
             }
         }
 
+        $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance'])
+
         $params = array(
-                'objectid' => $customdata->instance,
-                'context' => \context_system::instance(), // TODO maybe better collfolder activity!
+                'objectid' => $customdata['instance'],
+                'context' => \context_module::instance($cm->id)
         );
 
         $done = folders_created::create($params);
