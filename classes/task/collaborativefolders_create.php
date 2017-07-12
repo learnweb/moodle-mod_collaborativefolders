@@ -66,7 +66,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
             }
         }
 
-        $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance'])
+        $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance']);
 
         $params = array(
                 'objectid' => $customdata['instance'],

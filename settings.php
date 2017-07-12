@@ -32,7 +32,7 @@ if ($ADMIN->fulltree) {
     // Validates which issuers implement the right endpoints. WebDav is necessary for ownCloud.
     $validissuers = [];
     foreach ($issuers as $issuer) {
-        if (false) { // TODO actually validate the issuer! (cf. repo plugin)
+        if (false) { // TODO actually validate the issuer! (cf. repo plugin).
             $validissuers[] = $issuer->get('name');
         }
         $types[$issuer->get('id')] = $issuer->get('name');
@@ -50,9 +50,7 @@ if ($ADMIN->fulltree) {
     // Additionally when the chosen issuer is invalid there appears a strong warning.
     $selectedissuer = get_config("collaborativefolders", "issuerid");
     $issuer = \core\oauth2\api::get_issuer($selectedissuer);
-    if (!$issuer->is_system_account_connected()) {
-        // TODO use this in validation hints!!
-    }
+    // TODO Use $issuer->is_system_account_connected()) in validation hints.
     if (empty($selectedissuer)) {
         $issuervalidation = get_string('issuervalidation_without', 'mod_collaborativefolders');
     } else if (!in_array($types[$selectedissuer], $validissuers)) {
@@ -63,7 +61,8 @@ if ($ADMIN->fulltree) {
 
     // Render the form.
     $url = new \moodle_url('/admin/tool/oauth2/issuers.php');
-    $settings->add(new admin_setting_configselect('collaborativefolders/issuerid', get_string('chooseissuer', 'mod_collaborativefolders'),
+    $settings->add(new admin_setting_configselect('collaborativefolders/issuerid',
+        get_string('chooseissuer', 'mod_collaborativefolders'),
         join('<br>', [get_string('oauth2serviceslink', 'mod_collaborativefolders', $url->out()),
             $issuershint,
             $issuervalidation,
