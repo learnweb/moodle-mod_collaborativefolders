@@ -151,38 +151,6 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
     }
 
     /**
-     * Tests for the implemented technical_user_loggedout event for collaborativefolders.
-     */
-    public function test_technical_loggedout() {
-        $context = context_system::instance();
-
-        $params = array(
-                'context' => $context
-        );
-
-        $event = \mod_collaborativefolders\event\technical_user_loggedout::create($params);
-        $event = $this->get_event_result($event);
-
-        $this->assertInstanceOf('\mod_collaborativefolders\event\technical_user_loggedout', $event);
-
-        // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
-        // verify the event's correctness.
-        $this->assertEquals($context->id, $event->contextid);
-        $this->assertEquals(null, $event->courseid);
-        $this->assertEquals('', $event->objecttable);
-        $this->assertEquals(null, $event->objectid);
-        $this->assertEquals('u', $event->crud);
-        $this->assertEquals(0, $event->edulevel);
-
-        // Test the event methods, which were implemented within the event.
-        $this->assertNotEmpty($event->get_name());
-        $this->assertNotEmpty($event->get_description());
-
-        $url = new \moodle_url('/admin/settings.php?section=modsettingcollaborativefolders');
-        $this->assertEquals($url, $event->get_url());
-    }
-
-    /**
      * Helper method to fetch the results from a triggered event.
      *
      * @param $event \core\event\base event, which needs to be triggered.
