@@ -35,8 +35,6 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
     public function execute() {
 
-        $context = \context_system::instance();
-
         $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
                 'callback'  => 'yes',
                 'sesskey'   => sesskey(),
@@ -51,25 +49,25 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
         foreach ($folderpaths as $key => $path) {
 
-            if ($key != 'instance') {
+        $customdata = $this->get_custom_data();
 
-                // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
-                $code = $oc->handle_folder('make', $path);
-                mtrace('Folder: ' . $path . ', Code: ' . $code);
+        foreach ($customdata['paths'] as $key => $path) {
+            // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
+            $code = $oc->handle_folder('make', $path);
+            mtrace('Folder: ' . $path . ', Code: ' . $code);
 
-                if (($code != 201) && ($code != 405)) {
+            if (($code != 201) && ($code != 405)) {
 
-                    // If the folder could not be created, an exception is thrown.
-                    $error = get_string('notcreated', 'mod_collaborativefolders', $path) .
-                            get_string('unexpectedcode', 'mod_collaborativefolders');
-                    throw new webdav_response_exception($error);
-                }
+                // If the folder could not be created, an exception is thrown.
+                $error = get_string('notcreated', 'mod_collaborativefolders', $path) .
+                        get_string('unexpectedcode', 'mod_collaborativefolders');
+                throw new webdav_response_exception($error);
             }
         }
 
         $params = array(
-                'objectid' => $folderpaths->instance,
-                'context' => $context
+                'objectid' => $customdata->instance,
+                'context' => \context_system::instance(), // TODO maybe better collfolder activity!
         );
 
         $done = folders_created::create($params);
