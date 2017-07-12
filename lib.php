@@ -139,3 +139,19 @@ function collaborativefolders_delete_instance($id) {
         return $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
     }
 }
+
+
+/**
+ * Callback to get additional scopes required for system account.
+ * Currently, ownCloud does not actually support/use scopes, so this is intended as a hint at required
+ * functionality and will help declare future scopes.
+ *
+ * @param \core\oauth2\issuer $issuer
+ * @return string
+ */
+function collaborativefolders_oauth2_system_scopes(\core\oauth2\issuer $issuer) {
+    if ($issuer->get('id') == get_config('collaborativefolders', 'issuerid')) {
+        return 'ocs files'; // TODO move into constant.
+    }
+    return '';
+}
