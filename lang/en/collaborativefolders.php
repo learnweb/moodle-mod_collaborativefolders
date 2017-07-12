@@ -79,14 +79,15 @@ $string['incompletedata'] = 'Some configuration data might be missing. Please ch
 $string['notcreated'] = 'Folder {$a} not created. ';
 $string['unexpectedcode'] = 'An unexpected status code was received.';
 
-// Global technical user.
-$string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization. It is recommended that you never change the technical user, unless absolutely necessary.';
-$string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All folders that will be created will be saved in the storage space of the technical user. Therefore, please consider the available storage of the user and discuss this with your ownCloud administrator.';
-$string['areyousure'] = 'Are you sure you want to proceed?';
-$string['logouttechnicaluser'] = 'Logout the technical user';
-$string['logoutlabel'] = 'Logout';
-$string['loginlabel'] = 'Login';
-$string['manageheading'] = 'Manage the technical user';
+// Settings.
+$string['chooseissuer'] = 'Issuer';
+$string['oauth2serviceslink'] = '<a href="{$a}" title="Link to OAuth 2 services configuration">OAuth 2 services configuration</a>';
+$string['issuervalidation_without'] = 'You have not selected an ownCloud server as the OAuth 2 issuer yet.';
+$string['issuervalidation_valid'] = 'Currently the {$a} issuer is active.';
+$string['issuervalidation_invalid'] = 'Currently the {$a} issuer is active, however it does not implement all necessary endpoints. The repository will not work.';
+$string['right_issuers'] = 'The following issuers implement the required endpoints: <br> {$a}';
+$string['no_right_issuers'] = 'None of the existing issuers implement all required endpoints. Please register an appropriate issuer.';
+
 
 // Adding an instance (mod_form).
 $string['collaborativefoldersname'] = 'Collaborative folder name';
