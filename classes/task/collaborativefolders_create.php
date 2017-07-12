@@ -35,19 +35,20 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
     public function execute() {
 
-        $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
-                'callback'  => 'yes',
-                'sesskey'   => sesskey(),
-        ]);
-
-        $oc = new owncloud_access($returnurl);
-        $folderpaths = $this->get_custom_data();
-
-        if (!$oc->check_data()) {
+        // Get issuer and system account client. Fail early, if needed.
+        $selectedissuer = get_config("collaborativefolders", "issuerid");
+        if (empty($selectedissuer)) {
+            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
+        }
+        $issuer = \core\oauth2\api::get_issuer($selectedissuer);
+        if (!$issuer->is_system_account_connected()) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        foreach ($folderpaths as $key => $path) {
+        $systemaccount = \core\oauth2\api::get_system_oauth_client($issuer);
+        if (!$systemaccount) {
+            throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
+        }
 
         $customdata = $this->get_custom_data();
 

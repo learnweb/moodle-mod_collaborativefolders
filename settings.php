@@ -49,6 +49,10 @@ if ($ADMIN->fulltree) {
     // In case no issuer is chosen there appears a warning.
     // Additionally when the chosen issuer is invalid there appears a strong warning.
     $selectedissuer = get_config("collaborativefolders", "issuerid");
+    $issuer = \core\oauth2\api::get_issuer($selectedissuer);
+    if (!$issuer->is_system_account_connected()) {
+        // TODO use this in validation hints!!
+    }
     if (empty($selectedissuer)) {
         $issuervalidation = get_string('issuervalidation_without', 'mod_collaborativefolders');
     } else if (!in_array($types[$selectedissuer], $validissuers)) {

@@ -71,13 +71,13 @@ $string['error'] = 'An error occurred';
 $string['noviewpermission'] = 'You are currently not allowed to see that content.';
 $string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
 $string['webdaverror'] = 'WebDAV error code {$a}';
-$string['technicalnotloggedin'] = 'The technical user is not logged in.';
 $string['socketerror'] = 'The WebDAV socket could not be opened.';
 $string['ocserror'] = 'An error with the OCS sharing API occurred.';
 $string['wrongintention'] = 'The intention argument \'{$a}\' is not valid';
-$string['incompletedata'] = 'Some configuration data might be missing. Please check the client settings.';
 $string['notcreated'] = 'Folder {$a} not created. ';
 $string['unexpectedcode'] = 'An unexpected status code was received.';
+$string['technicalnotloggedin'] = 'The system account is not logged in or does not have authorisation in the remote system.';
+$string['incompletedata'] = 'Please check the module settings. Either no OAuth 2 issuer is selected or no corresponding system account is connected.';
 
 // Settings.
 $string['chooseissuer'] = 'Issuer';
