@@ -19,10 +19,8 @@ namespace mod_collaborativefolders\task;
 defined('MOODLE_INTERNAL') || die;
 
 use mod_collaborativefolders\event\folders_created;
-use mod_collaborativefolders\owncloud_access;
-use moodle_url;
-use tool_oauth2owncloud\configuration_exception;
-use tool_oauth2owncloud\webdav_response_exception;
+use mod_collaborativefolders\folder_access;
+use mod_collaborativefolders\webdav_response_exception;
 
 /**
  * Ad hoc task for the creation of group folders in ownCloud.
@@ -33,37 +31,33 @@ use tool_oauth2owncloud\webdav_response_exception;
  */
 class collaborativefolders_create extends \core\task\adhoc_task {
 
+    /**
+     * Create one folder per group, as specified by \mod_collaborativefolders\observer::collaborativefolders_created.
+     * @throws webdav_response_exception
+     */
     public function execute() {
-
-        // Get issuer and system account client. Fail early, if needed.
-        $selectedissuer = get_config("collaborativefolders", "issuerid");
-        if (empty($selectedissuer)) {
-            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
-        }
-        $issuer = \core\oauth2\api::get_issuer($selectedissuer);
-        if (!$issuer->is_system_account_connected()) {
-            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
-        }
-
-        $systemaccount = \core\oauth2\api::get_system_oauth_client($issuer);
-        if (!$systemaccount) {
-            throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
-        }
+        // Get the wrapper that contains client logged in as the system user.
+        $ocaccess = new folder_access();
+        $errors = array();
 
         $customdata = $this->get_custom_data();
-
         foreach ($customdata['paths'] as $path) {
             // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
-            $code = $oc->handle_folder('make', $path); // TODO can't work.
-            mtrace('Folder: ' . $path . ', Code: ' . $code);
+            $statuscode = $ocaccess->handle_folder('make', $path); // TODO can't work.
+            mtrace('Folder: ' . $path . ', Code: ' . $statuscode);
 
-            if (($code != 201) && ($code != 405)) {
-
-                // If the folder could not be created, an exception is thrown.
-                $error = get_string('notcreated', 'mod_collaborativefolders', $path) .
+            if ($statuscode == 201 || $statuscode == 405) {
+                // If the folder could not be created, record it for later logging.
+                $errors[] = get_string('notcreated', 'mod_collaborativefolders', $path) .
                         get_string('unexpectedcode', 'mod_collaborativefolders');
-                throw new webdav_response_exception($error);
             }
+        }
+
+        if (!empty($errors)) {
+            // TODO Not happy with this! Handle such cases appropriately! e.g. new task, message to someone, ...?
+            $errorsformatted = implode('; ', $errors);
+            mtrace(sprintf('The following errors occurred: %s', $errorsformatted));
+            throw new webdav_response_exception($errorsformatted);
         }
 
         $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance']);

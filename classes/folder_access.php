@@ -25,24 +25,103 @@
 
 namespace mod_collaborativefolders;
 
-use tool_oauth2owncloud\authentication_exception;
-use tool_oauth2owncloud\owncloud;
+use mod_collaborativefolders\owncloud;
 use tool_oauth2owncloud\socket_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-class owncloud_access {
+class folder_access {
 
-    /** @var \tool_oauth2owncloud\owncloud client instance for server access. */
+    /**
+     * client instance for server access using the system account
+     * @var \mod_collaborativefolders\owncloud
+     */
     private $owncloud;
 
     /**
-     * owncloud_access constructor. The OAuth 2.0 client is initialized within it.
+     * client instance for server access using the system account
+     * @var \mod_collaborativefolders\owncloud_client
+     */
+    private $webdav;
+
+    /**
+     * OAuth 2 system account client
+     * @var \core\oauth2\client
+     */
+    private $systemclient;
+
+    /**
+     * OAuth 2 issuer
+     * @var \core\oauth2\issuer
+     */
+    private $issuer;
+
+    /**
+     * Additional scopes needed for the repository. Currently, ownCloud does not actually support/use scopes, so
+     * this is intended as a hint at required functionality and will help declare future scopes.
+     */
+    const SCOPES = 'files ocs';
+
+    /**
+     * Construct the wrapper and initialise the WebDAV client.
      *
      * @param $returnurl
      */
-    public function __construct ($returnurl) {
-        $this->owncloud = new owncloud($returnurl);
+    public function __construct () {
+
+        // Get issuer and system account client. Fail early, if needed.
+        $selectedissuer = get_config("collaborativefolders", "issuerid");
+        if (empty($selectedissuer)) {
+            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
+        }
+        $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
+        //TODO Handle if issuer does not exist anymore.
+        if (!$this->issuer->is_system_account_connected()) {
+            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
+        }
+
+        $this->systemclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
+        if (!$this->systemclient) {
+            throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
+        }
+
+        $this->webdav = initiate_webdavclient();
+    }
+
+    /**
+     * Initiates the webdav client.
+     * @return \repository_owncloud\owncloud_client An initialised WebDAV client for ownCloud.
+     * @throws \configuration_exception If configuration is missing (endpoints).
+     */
+    public function initiate_webdavclient() {
+        $url = $this->issuer->get_endpoint_url('webdav');
+        if (empty($url)) {
+            throw new configuration_exception('Endpoint webdav not defined.');
+        }
+        $webdavendpoint = parse_url($url);
+
+        // Selects the necessary information (port, type, server) from the path to build the webdavclient.
+        $server = $webdavendpoint['host'];
+        if ($webdavendpoint['scheme'] === 'https') {
+            $webdavtype = 'ssl://';
+            $webdavport = 443;
+        } else if ($webdavendpoint['scheme'] === 'http') {
+            $webdavtype = '';
+            $webdavport = 80;
+        }
+
+        // Override default port, if a specific one is set.
+        if (isset($webdavendpoint['port'])) {
+            $webdavport = $webdavendpoint['port'];
+        }
+
+        // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
+        $dav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
+            $this->systemclient, $webdavendpoint['path']);
+
+        $dav->port = $webdavport;
+        $dav->debug = false;
+        return $dav;
     }
 
     /**
@@ -55,9 +134,7 @@ class owncloud_access {
     public function generate_share($path, $userid) {
         // First, the technical user's Access Token needs to be checked.
         // If it is invalid, no access to ownCloud can be granted.
-        if (!$this->owncloud->check_login('mod_collaborativefolders')) {
-            return false;
-        }
+
 
         $response = $this->owncloud->get_link($path, $userid);
 
@@ -77,15 +154,9 @@ class owncloud_access {
      * @param $intention string 'make' for creating and 'delete' for deletion.
      * @return int status code received from the client.
      * @throws \invalid_parameter_exception
-     * @throws authentication_exception
      * @throws socket_exception
      */
     public function handle_folder($intention, $path) {
-        // First, the technical user's Access Token needs to checked.
-        // If it is invalid, no access to ownCloud can be granted.
-        if (!$this->owncloud->check_login('mod_collaborativefolders')) {
-            throw new authentication_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
-        }
 
         // If no socket could be opened, no connection to the ownCloud server is available
         // via WebDAV.

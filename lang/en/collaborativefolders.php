@@ -101,3 +101,7 @@ $string['edit_after_creation'] = 'Please consider that teacher access and group-
 $string['eventfolderscreated'] = 'The ad-hoc task successfully created all necessary folders for a collaborativefolders instance.';
 $string['eventlinkgenerated'] = 'A user-specific share to a collaborative folder was created successfully.';
 $string['eventloggedout'] = 'The technical user of collaborativefolders logged out.';
+
+// Exceptions.
+$string['configuration_exception'] = 'An error in the configuration of the OAuth 2 client occurred: {$a}';
+$string['webdav_response_exception'] = 'WebDAV responded with an error: {$a}';

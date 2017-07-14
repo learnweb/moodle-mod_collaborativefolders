@@ -58,7 +58,7 @@ $returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
         'sesskey'   => sesskey(),
 ]);
 
-$ocs = new \mod_collaborativefolders\owncloud_access($returnurl);
+$ocs = new \mod_collaborativefolders\folder_access($returnurl);
 
 
 // If the reset link was used, the chosen foldername is reset.

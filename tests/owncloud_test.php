@@ -28,13 +28,13 @@ defined('MOODLE_INTERNAL') || die();
 
 class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
 
-    /** @var null|\mod_collaborativefolders\owncloud_access owncloud_access object. */
+    /** @var null|\mod_collaborativefolders\folder_access owncloud_access object. */
     private $oc = null;
 
     protected function setUp() {
         $this->resetAfterTest(true);
         $url = new \moodle_url('/');
-        $this->oc = new \mod_collaborativefolders\owncloud_access($url);
+        $this->oc = new \mod_collaborativefolders\folder_access($url);
     }
 
     /**
