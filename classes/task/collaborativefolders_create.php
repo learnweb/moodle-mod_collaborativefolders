@@ -43,7 +43,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
         $customdata = $this->get_custom_data();
         foreach ($customdata['paths'] as $path) {
             // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
-            $statuscode = $ocaccess->handle_folder('make', $path); // TODO can't work.
+            $statuscode = $ocaccess->handle_folder('make', $path);
             mtrace('Folder: ' . $path . ', Code: ' . $statuscode);
 
             if ($statuscode == 201 || $statuscode == 405) {

@@ -75,7 +75,7 @@ class folder_access {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
         $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
-        //TODO Handle if issuer does not exist anymore.
+        // TODO Handle if issuer does not exist anymore.
         if (!$this->issuer->is_system_account_connected()) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
@@ -134,7 +134,6 @@ class folder_access {
     public function generate_share($path, $userid) {
         // First, the technical user's Access Token needs to be checked.
         // If it is invalid, no access to ownCloud can be granted.
-
 
         $response = $this->owncloud->get_link($path, $userid);
 
