@@ -25,8 +25,7 @@
 
 namespace mod_collaborativefolders;
 
-use mod_collaborativefolders\owncloud;
-use tool_oauth2owncloud\socket_exception;
+use repository_owncloud\ocs_client;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -34,15 +33,15 @@ class folder_access {
 
     /**
      * client instance for server access using the system account
-     * @var \mod_collaborativefolders\owncloud
+     * @var \repository_owncloud\owncloud_client
      */
-    private $owncloud;
+    private $webdav = null;
 
     /**
-     * client instance for server access using the system account
-     * @var \mod_collaborativefolders\owncloud_client
+     * OCS Rest client for a system account
+     * @var \repository_owncloud\ocs_client
      */
-    private $webdav;
+    private $ocsclient = null;
 
     /**
      * OAuth 2 system account client
@@ -74,18 +73,29 @@ class folder_access {
         if (empty($selectedissuer)) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
-        $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
-        // TODO Handle if issuer does not exist anymore.
+        try {
+            $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
+        } catch (dml_missing_record_exception $e) {
+            // Issuer does not exist anymore.
+            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
+        }
+
         if (!$this->issuer->is_system_account_connected()) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        $this->systemclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
+        try {
+            // Returns a client on success, otherwise false or throws an exception.
+            $this->systemclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
+        } catch (\moodle_exception $e) {
+            $this->systemclient = false;
+        }
         if (!$this->systemclient) {
             throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
         }
 
-        $this->webdav = initiate_webdavclient();
+        initiate_webdavclient();
+        $this->ocsclient = new ocs_client($this->systemclient);
     }
 
     /**
@@ -94,6 +104,10 @@ class folder_access {
      * @throws \configuration_exception If configuration is missing (endpoints).
      */
     public function initiate_webdavclient() {
+        if ($this->webdav !== null) {
+            return $this->webdav;
+        }
+
         $url = $this->issuer->get_endpoint_url('webdav');
         if (empty($url)) {
             throw new configuration_exception('Endpoint webdav not defined.');
@@ -116,67 +130,60 @@ class folder_access {
         }
 
         // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
-        $dav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
+        $this->webdav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
             $this->systemclient, $webdavendpoint['path']);
 
-        $dav->port = $webdavport;
-        $dav->debug = false;
-        return $dav;
+        $this->webdav->port = $webdavport;
+        $this->webdav->debug = false;
+        return $this->webdav;
     }
 
     /**
-     * Method for share creation in ownCloud. A share for a specific user and folder is generated.
+     * Method for share creation in ownCloud. A folder is shared privately with a specific user.
      *
-     * @param $path string path to the folder.
-     * @param $userid string username in ownCloud.
-     * @return string link to the folder.
+     * @param $path string path to the folder (relative to sharing private storage).
+     * @param $userid string Receiving username.
+     * @return bool Success/Failure of sharing.
      */
     public function generate_share($path, $userid) {
-        // First, the technical user's Access Token needs to be checked.
-        // If it is invalid, no access to ownCloud can be granted.
+        $response = $this->ocsclient->call('create_share', [
+            'path' => $path,
+            'shareType' => SHARE_TYPE_USER,
+            'shareWith' => $userid,
+        ]); // TODO consider permissions (default vs. wanted).
 
-        $response = $this->owncloud->get_link($path, $userid);
+        $xml = simplexml_load_string($response);
 
-        // Only if the link was created or already shared with the specific user, true is returned.
-        if (($response['code'] == 100 && $response['status'] == 'ok') || $response['code'] == 403) {
-            return true;
-        } else {
+        if ($xml === false) {
             return false;
         }
+
+        if ((string)$xml->meta->status === 'ok') {
+            // Share successfully created
+            return true;
+        } else if ((string)$xml->meta->code === 403) {
+            // Already shared with the specific user
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
-     * Method for creation and deletion of folders for collaborative work. It is only meant to be called by the
+     * Method for creation of folders for collaborative work. It is only meant to be called by the
      * concerning ad hoc task from collaborativefolders.
      *
      * @param $path string specific path of the groupfolder.
-     * @param $intention string 'make' for creating and 'delete' for deletion.
      * @return int status code received from the client.
-     * @throws \invalid_parameter_exception
-     * @throws socket_exception
      */
-    public function handle_folder($intention, $path) {
-
-        // If no socket could be opened, no connection to the ownCloud server is available
-        // via WebDAV.
-        if (!$this->owncloud->open()) {
+    public function make_folder($path) {
+        if (!$this->webdav->open()) {
             throw new socket_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }
-
-        // WebDAV path is handed over.
-        $webdavpath = '/' . $path;
-
-        if ($intention == 'make') {
-
-            return $this->owncloud->make_folder($webdavpath);
-        } else if ($intention == 'delete') {
-
-            return $this->owncloud->delete_folder($webdavpath);
-        } else {
-
-            // No other operations, except make and delete, are allowed.
-            throw new \invalid_parameter_exception(get_string('wrongintention', 'mod_collaborativefolders', $intention));
-        }
+        $result = $this->webdav->mkcol($this->prefixwebdav . $path);
+        $this->webdav->close();
+        return $result;
     }
 
     /**
@@ -194,18 +201,18 @@ class folder_access {
 
         $ret = array();
 
-        if (!$this->user_loggedin()) {
+        if (!$this->user_loggedin()) { // TODO supposed to be done elsewhere (we may assume that user is logged in)
             // If the user is not logged in, a suitable error message is returned.
             $ret['status'] = false;
             $ret['content'] = get_string('usernotloggedin', 'mod_collaborativefolders');
             return $ret;
         }
 
-        if ($this->owncloud->open()) {
+        if ($this->webdav->open()) {
 
             // After the socket's opening, the WebDAV MOVE method has to be performed in
             // order to rename the folder.
-            $renamed = $this->owncloud->move($pathtofolder, '/' . $newname, false);
+            $renamed = $this->webdav->move($pathtofolder, '/' . $newname, false);
         } else {
 
             // If the socket could not be opened, a socket error needs to be returned.
@@ -218,7 +225,7 @@ class folder_access {
 
             // After the folder having been renamed, a specific link has been generated, which is to
             // be stored for each user individually.
-            $link = $this->owncloud->get_path('private', $newname);
+            $link = $this->issuer->get('baseurl') . 'index.php/apps/files/?dir=' . $newname;
             $this->set_entry('link', $cmid, $userid, $link);
 
             // Afterwards, the generated link is returned.
@@ -233,41 +240,6 @@ class folder_access {
             $ret['content'] = get_string('webdaverror', 'mod_collaborativefolders', $renamed);
             return $ret;
         }
-    }
-
-    /**
-     * Passes the result of the check_login method from the private owncloud client.
-     *
-     * @return bool user login status.
-     */
-    public function user_loggedin() {
-        return $this->owncloud->check_login();
-    }
-
-    /**
-     * Releases the personal Access Token of the current user and the owncloud client.
-     */
-    public function logout_user() {
-        set_user_preference('oC_token', null);
-        $this->owncloud->log_out();
-    }
-
-    /**
-     * Passes the result of the get_login_url method from the private owncloud client.
-     *
-     * @return \moodle_url URL to the authentication interface in ownCloud.
-     */
-    public function get_login_url() {
-        return $this->owncloud->get_login_url();
-    }
-
-    /**
-     * Passes the result of the check_data method from the private owncloud client.
-     *
-     * @return bool false, if any configuration data is missing. Otherwise, true.
-     */
-    public function check_data() {
-        return $this->owncloud->check_data();
     }
 
     /**

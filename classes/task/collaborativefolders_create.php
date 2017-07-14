@@ -37,13 +37,14 @@ class collaborativefolders_create extends \core\task\adhoc_task {
      */
     public function execute() {
         // Get the wrapper that contains client logged in as the system user.
+        // TODO check login status.
         $ocaccess = new folder_access();
         $errors = array();
 
         $customdata = $this->get_custom_data();
         foreach ($customdata['paths'] as $path) {
             // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
-            $statuscode = $ocaccess->handle_folder('make', $path);
+            $statuscode = $ocaccess->make_folder($path);
             mtrace('Folder: ' . $path . ', Code: ' . $statuscode);
 
             if ($statuscode == 201 || $statuscode == 405) {

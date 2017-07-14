@@ -148,7 +148,7 @@ echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders')
 
 
 // Is the client configuration complete?
-$complete = $ocs->check_data();
+$complete = true; // TODO no.
 
 // Fetch a stored link belonging to this particular activity instance.
 $privatelink = $ocs->get_entry('link', $id, $userid);

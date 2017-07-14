@@ -60,9 +60,9 @@ class observer {
 
         if (groups_get_activity_groupmode($cm) != 0) {
             $groups = groups_get_all_groups($course->id, 0, $cm->groupingid);
-
+            // TODO is a path for the CM created if groupmode is unused? check!
             foreach ($groups as $group) {
-                $path = $cmid . '/' . $group->id;
+                $path = '/' . $cmid . '/' . $group->id;
                 $taskdata['paths'][$group->id] = $path;
             }
         }

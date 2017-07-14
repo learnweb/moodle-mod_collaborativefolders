@@ -93,7 +93,7 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $this->set_private_oc($mock);
 
         $this->expectException(\tool_oauth2owncloud\authentication_exception::class);
-        $this->oc->handle_folder('make', 'path');
+        $this->oc->make_folder('make', 'path');
     }
 
     /**
@@ -107,7 +107,7 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $this->set_private_oc($mock);
 
         $this->expectException(\tool_oauth2owncloud\socket_exception::class);
-        $this->oc->handle_folder('make', 'path');
+        $this->oc->make_folder('make', 'path');
     }
 
     /**
@@ -121,7 +121,7 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $this->set_private_oc($mock);
 
         $this->expectException(invalid_parameter_exception::class);
-        $this->oc->handle_folder('do', 'path');
+        $this->oc->make_folder('do', 'path');
     }
 
     /**
@@ -132,11 +132,9 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $mock->expects($this->exactly(2))->method('check_login')->will($this->returnValue(true));
         $mock->expects($this->exactly(2))->method('open')->will($this->returnValue(true));
         $mock->expects($this->exactly(1))->method('make_folder')->will($this->returnValue(201));
-        $mock->expects($this->exactly(1))->method('delete_folder')->will($this->returnValue(201));
         $this->set_private_oc($mock);
 
-        $this->assertEquals(201, $this->oc->handle_folder('make', 'path'));
-        $this->assertEquals(201, $this->oc->handle_folder('delete', 'path'));
+        $this->assertEquals(201, $this->oc->make_folder('make', 'path'));
     }
 
     /**
@@ -276,23 +274,6 @@ class mod_collaborativefolders_owncloud_testcase extends \advanced_testcase {
         $this->set_private_oc($mock);
 
         $this->assertEquals('url', $this->oc->get_login_url());
-    }
-
-    /**
-     * Test check_data method from owncloud_access class.
-     */
-    public function test_check_data() {
-        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
-        $mock->expects($this->once())->method('check_data')->will($this->returnValue(true));
-        $private = $this->set_private_oc($mock);
-
-        $this->assertTrue($this->oc->check_data());
-
-        $mock = $this->createMock(\tool_oauth2owncloud\owncloud::class);
-        $mock->expects($this->once())->method('check_data')->will($this->returnValue(false));
-        $private->setValue($this->oc, $mock);
-
-        $this->assertFalse($this->oc->check_data());
     }
 
     /**
