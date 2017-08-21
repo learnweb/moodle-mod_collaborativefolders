@@ -49,8 +49,25 @@ class view_controller {
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm);
+        $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); // TODO might make sense to add $returnurl here.
+
+        // TODO Show notice to teacher if there is a problem with system account.
 
         echo $renderer->render($statusinfo);
+
+        // TODO Login / logout form.
+
+        // Interaction with instance.
+        if ($userclient->check_login()) {
+            if ($statusinfo->status === 'created') {
+                // TODO Share form / View link.
+            } else {
+                // Folders are not yet created and can therefore not be shared.
+                $notification = new \core\output\notification('@plswait', \core\output\notification::NOTIFY_INFO);
+                $notification->set_show_closebutton(false);
+                echo $renderer->render($notification);
+            }
+        }
 
         echo $OUTPUT->footer();
     }
@@ -71,6 +88,7 @@ class view_controller {
             $groups = groups_get_all_groups($cm->course, $USER->id, $cm->groupingid);
         }
 
+        // TODO Change to actual instance status.
         return new \mod_collaborativefolders\output\statusinfo('pending', $collaborativefolder->teacher, $groupmode, $groups);
     }
 }
