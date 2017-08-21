@@ -19,8 +19,7 @@ namespace mod_collaborativefolders\task;
 defined('MOODLE_INTERNAL') || die;
 
 use mod_collaborativefolders\event\folders_created;
-use mod_collaborativefolders\system_folder_access;
-use mod_collaborativefolders\webdav_response_exception;
+use mod_collaborativefolders\local\clients\system_folder_access;
 
 /**
  * Ad hoc task for the creation of group folders in ownCloud.
@@ -33,7 +32,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
     /**
      * Create one folder per group, as specified by \mod_collaborativefolders\observer::collaborativefolders_created.
-     * @throws webdav_response_exception
+     * @throws \moodle_exception
      */
     public function execute() {
         // Get the wrapper that contains client logged in as the system user.
@@ -58,7 +57,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
             // TODO Not happy with this! Handle such cases appropriately! e.g. new task, message to someone, ...?
             $errorsformatted = implode('; ', $errors);
             mtrace(sprintf('The following errors occurred: %s', $errorsformatted));
-            throw new webdav_response_exception($errorsformatted);
+            throw new \moodle_exception($errorsformatted);
         }
 
         $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance']);

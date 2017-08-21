@@ -63,7 +63,7 @@ if ($ADMIN->fulltree) {
     $url = new \moodle_url('/admin/tool/oauth2/issuers.php');
     $settings->add(new admin_setting_configselect('collaborativefolders/issuerid',
         get_string('chooseissuer', 'mod_collaborativefolders'),
-        join('<br>', [get_string('oauth2serviceslink', 'mod_collaborativefolders', $url->out()),
+        implode('<br>', [get_string('oauth2serviceslink', 'mod_collaborativefolders', $url->out()),
             $issuershint,
             $issuervalidation,
             $selectedissuer, // TODO remove this dummy output.

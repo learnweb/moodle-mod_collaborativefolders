@@ -167,10 +167,10 @@ class system_folder_access {
         }
 
         if ((string)$xml->meta->status === 'ok') {
-            // Share successfully created
+            // Share successfully created.
             return true;
         } else if ((string)$xml->meta->code === 403) {
-            // Already shared with the specific user
+            // Already shared with the specific user.
             return true;
         }
 
