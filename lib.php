@@ -151,7 +151,7 @@ function collaborativefolders_delete_instance($id) {
  */
 function collaborativefolders_oauth2_system_scopes(\core\oauth2\issuer $issuer) {
     if ($issuer->get('id') == get_config('collaborativefolders', 'issuerid')) {
-        return \mod_collaborativefolders\system_folder_access::SCOPES;
+        return \mod_collaborativefolders\local\clients\system_folder_access::SCOPES;
     }
     return '';
 }

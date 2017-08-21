@@ -83,9 +83,10 @@ $string['incompletedata'] = 'Please check the module settings. Either no OAuth 2
 $string['chooseissuer'] = 'Issuer';
 $string['oauth2serviceslink'] = '<a href="{$a}" title="Link to OAuth 2 services configuration">OAuth 2 services configuration</a>';
 $string['issuervalidation_without'] = 'You have not selected an ownCloud server as the OAuth 2 issuer yet.';
-$string['issuervalidation_valid'] = 'Currently the {$a} issuer is active.';
-$string['issuervalidation_invalid'] = 'Currently the {$a} issuer is active, however it does not implement all necessary endpoints. The repository will not work.';
-$string['right_issuers'] = 'The following issuers implement the required endpoints: <br> {$a}';
+$string['issuervalidation_valid'] = 'Currently the {$a} issuer is valid and active.';
+$string['issuervalidation_invalid'] = 'Currently the {$a} issuer is active, however it does not implement all necessary endpoints. The repository will not work. Please choose a valid issuer.';
+$string['issuervalidation_notconnected'] = 'Currently the valid {$a} issuer is active, but no system account is connected. The repository will not work. Please connect a system account.';
+$string['right_issuers'] = 'The following issuers implement the required endpoints: {$a}';
 $string['no_right_issuers'] = 'None of the existing issuers implement all required endpoints. Please register an appropriate issuer.';
 
 
