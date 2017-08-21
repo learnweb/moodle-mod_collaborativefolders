@@ -31,7 +31,6 @@ list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
 $PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
 $context = context_module::instance($id);
 $instanceid = $cm->instance;
-$userid = $USER->id;
 
 // Check whether viewer be treated as teacher or student. Actively ignore admins!
 $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
@@ -57,7 +56,7 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); 
 
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
-    $userclient->set_entry('name', $id, $userid, null);
+    $userclient->set_entry('name', $id, $USER->id, null);
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
     exit;
 }
@@ -75,7 +74,7 @@ $mform = new mod_collaborativefolders\name_form(qualified_me(), array('namefield
 
 if ($fromform = $mform->get_data() && isset($fromform->enter)) {
     // If a name has been submitted, it gets stored in the user preferences.
-    $userclient->set_entry('name', $id, $userid, $fromform->namefield);
+    $userclient->set_entry('name', $id, $USER->id, $fromform->namefield);
 }
 
 
@@ -145,7 +144,7 @@ echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders')
 $complete = true; // TODO no.
 
 // Fetch a stored link belonging to this particular activity instance.
-$privatelink = $userclient->get_entry('link', $id, $userid);
+$privatelink = $userclient->get_entry('link', $id, $USER->id);
 
 // Shall the warning about missing client configuration be shown?
 $showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == null;
@@ -213,7 +212,7 @@ if ($haslink) {
 
 
 // The name of the folder, chosen by the user.
-$name = $userclient->get_entry('name', $id, $userid);
+$name = $userclient->get_entry('name', $id, $USER->id);
 
 // Does the user have access but no link has been stored yet?
 $nolink = $hasaccess && $privatelink == null;
@@ -229,27 +228,35 @@ if ($action === 'generate') {
             $generate = false;
         } else {
             // Otherwise, try to share and rename the folder.
-            $sharerename = $systemclient->share_and_rename($sharepath, $finalpath, $name, $id, $userid);
+            // First: Get user identifier from user client.
+            $user = 'testuser'; // TODO Get user identifier from user client.
+            // Second: Share from system to user.
+            $shared = $systemclient->generate_share($sharepath, $user);
 
-            // Check, if the sharing and renaming operations were successful.
-            if ($sharerename['status'] === true) {
-
-                // Display the Link.
-                echo $renderer->print_link($sharerename['content'], 'access');
-
-                // Event data is gathered.
-                $params = array(
-                    'context' => $context,
-                    'objectid' => $instanceid
-                );
-
-                // And the link_generated event is triggered.
-                $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
-                $generatedevent->trigger();
+            if (!$shared) {
+                // Share was unsuccessful.
+                echo $renderer->print_error('share', get_string('ocserror', 'mod_collaborativefolders'));
             } else {
+                $renamed = $userclient->rename($finalpath, $name, $id, $USER->id);
 
-                // Share or rename were unsuccessful.
-                echo $renderer->print_error($sharerename['type'], $sharerename['content']);
+                if ($renamed['status'] === false) {
+                    echo $renderer->print_error('rename', $renamed['content']);
+                } else {
+                    // Sharing and renaming operations were successful.
+
+                    // Display the Link.
+                    echo $renderer->print_link($renamed['content'], 'access');
+
+                    // Event data is gathered.
+                    $params = array(
+                        'context' => $context,
+                        'objectid' => $instanceid
+                    );
+
+                    // And the link_generated event is triggered.
+                    $generatedevent = \mod_collaborativefolders\event\link_generated::create($params);
+                    $generatedevent->trigger();
+                }
             }
         }
     }
