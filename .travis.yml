@@ -31,6 +31,11 @@ matrix:
  allow_failures:
   - env: DB=pgsql MOODLE_BRANCH=master
   - env: DB=mysqli MOODLE_BRANCH=master
+ exclude:
+  - php: 5.6
+    env: DB=pgsql MOODLE_BRANCH=master
+  - php: 5.6
+    env: DB=mysqli MOODLE_BRANCH=master
  fast_finish: true
 
 before_install:
@@ -42,7 +47,7 @@ before_install:
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
 
 install:
-  - moodle-plugin-ci add-plugin --branch master pssl16/moodle-tool_oauth2owncloud
+  - moodle-plugin-ci add-plugin --branch otherplugins learnweb/moodle-repository_owncloud
   - moodle-plugin-ci install
 
 script:
