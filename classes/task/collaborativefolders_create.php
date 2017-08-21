@@ -19,7 +19,7 @@ namespace mod_collaborativefolders\task;
 defined('MOODLE_INTERNAL') || die;
 
 use mod_collaborativefolders\event\folders_created;
-use mod_collaborativefolders\folder_access;
+use mod_collaborativefolders\system_folder_access;
 use mod_collaborativefolders\webdav_response_exception;
 
 /**
@@ -38,7 +38,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
     public function execute() {
         // Get the wrapper that contains client logged in as the system user.
         // TODO check login status.
-        $ocaccess = new folder_access();
+        $ocaccess = new system_folder_access();
         $errors = array();
 
         $customdata = $this->get_custom_data();

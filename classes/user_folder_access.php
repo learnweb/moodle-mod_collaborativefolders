@@ -16,38 +16,36 @@
 //
 
 /**
- * Helper class, which performs ownCloud access functions for collaborative folders.
+ * ownCloud client wrapper, intended for operations on a user's private storage.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Project seminar (Learnweb, University of Münster)
+ * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace mod_collaborativefolders;
-
-use repository_owncloud\ocs_client;
 
 defined('MOODLE_INTERNAL') || die();
 
-class folder_access {
+/**
+ * ownCloud client wrapper, intended for operations on a user's private storage.
+ *
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class user_folder_access {
 
     /**
-     * client instance for server access using the system account
+     * client instance for server access using the user's personal account
      * @var \repository_owncloud\owncloud_client
      */
     private $webdav = null;
 
     /**
-     * OCS Rest client for a system account
-     * @var \repository_owncloud\ocs_client
-     */
-    private $ocsclient = null;
-
-    /**
-     * OAuth 2 system account client
+     * OAuth 2 user account client
      * @var \core\oauth2\client
      */
-    private $systemclient;
+    private $userclient = null;
 
     /**
      * OAuth 2 issuer
@@ -56,18 +54,9 @@ class folder_access {
     private $issuer;
 
     /**
-     * Additional scopes needed for the repository. Currently, ownCloud does not actually support/use scopes, so
-     * this is intended as a hint at required functionality and will help declare future scopes.
-     */
-    const SCOPES = 'files ocs';
-
-    /**
-     * Construct the wrapper and initialise the WebDAV client.
-     *
-     * @param $returnurl
+     * Construct the wrapper and initialise the user WebDAV client.
      */
     public function __construct () {
-
         // Get issuer and system account client. Fail early, if needed.
         $selectedissuer = get_config("collaborativefolders", "issuerid");
         if (empty($selectedissuer)) {
@@ -80,22 +69,32 @@ class folder_access {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        if (!$this->issuer->is_system_account_connected()) {
+        if (!$this->get_user_oauth_client()) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        try {
-            // Returns a client on success, otherwise false or throws an exception.
-            $this->systemclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
-        } catch (\moodle_exception $e) {
-            $this->systemclient = false;
-        }
-        if (!$this->systemclient) {
-            throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
+        $this->userclient = $this->get_user_oauth_client();
+
+        $this->initiate_webdavclient();
+    }
+
+    /**
+     * Get a cached user authenticated oauth client.
+     * @return \core\oauth2\client
+     */
+    protected function get_user_oauth_client() {
+        if ($this->userclient !== null) {
+            return $this->userclient;
         }
 
-        initiate_webdavclient();
-        $this->ocsclient = new ocs_client($this->systemclient);
+        // TODO change repo URL and store authorisation if provided. Separate callback file?
+        $returnurl = new moodle_url('/repository/repository_callback.php');
+        $returnurl->param('callback', 'yes');
+        $returnurl->param('repo_id', $this->id);
+        $returnurl->param('sesskey', sesskey());
+
+        $this->userclient = \core\oauth2\api::get_user_oauth_client($this->issuer, $returnurl);
+        return $this->userclient;
     }
 
     /**
@@ -131,59 +130,11 @@ class folder_access {
 
         // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
         $this->webdav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
-            $this->systemclient, $webdavendpoint['path']);
+            $this->userclient, $webdavendpoint['path']);
 
         $this->webdav->port = $webdavport;
         $this->webdav->debug = false;
         return $this->webdav;
-    }
-
-    /**
-     * Method for share creation in ownCloud. A folder is shared privately with a specific user.
-     *
-     * @param $path string path to the folder (relative to sharing private storage).
-     * @param $userid string Receiving username.
-     * @return bool Success/Failure of sharing.
-     */
-    public function generate_share($path, $userid) {
-        $response = $this->ocsclient->call('create_share', [
-            'path' => $path,
-            'shareType' => SHARE_TYPE_USER,
-            'shareWith' => $userid,
-        ]); // TODO consider permissions (default vs. wanted).
-
-        $xml = simplexml_load_string($response);
-
-        if ($xml === false) {
-            return false;
-        }
-
-        if ((string)$xml->meta->status === 'ok') {
-            // Share successfully created
-            return true;
-        } else if ((string)$xml->meta->code === 403) {
-            // Already shared with the specific user
-            return true;
-        }
-
-        return false;
-
-    }
-
-    /**
-     * Method for creation of folders for collaborative work. It is only meant to be called by the
-     * concerning ad hoc task from collaborativefolders.
-     *
-     * @param $path string specific path of the groupfolder.
-     * @return int status code received from the client.
-     */
-    public function make_folder($path) {
-        if (!$this->webdav->open()) {
-            throw new socket_exception(get_string('socketerror', 'mod_collaborativefolders'));
-        }
-        $result = $this->webdav->mkcol($this->prefixwebdav . $path);
-        $this->webdav->close();
-        return $result;
     }
 
     /**
@@ -243,83 +194,6 @@ class folder_access {
     }
 
     /**
-     * This method first shares a folder from a technical user account with the current user.
-     * Thereafter the folder is renamed to the user chosen name and the resulting private
-     * link is returned. In case something goes wrong along the way, an error message is
-     * returned.
-     *
-     * @param $sharepath string the path to the folder which has to be shared.
-     * @param $renamepath string path to the folder, which needs to be renamed.
-     * @param $newname string new name of the folder, chosen by the user.
-     * @param $cmid int the course module ID, which is used to identify specific user preferences.
-     * @param $userid string the id of the current user. Needed for rename method.
-     * @return array returns an array, which contains the results of the share and rename operations.
-     */
-    public function share_and_rename($sharepath, $renamepath, $newname, $cmid, $userid) {
-        $ret = array();
-        // First, the ownCloud user ID is fetched from the current user's Access Token.
-        $user = $this->owncloud->get_accesstoken()->user_id;
-
-        // Thereafter, a share for this specific user can be created with the technical user and
-        // his Access Token.
-        $status = $this->generate_share($sharepath, $user);
-
-        // If the process was successful, try to rename the folder.
-        if ($status) {
-
-            $renamed = $this->rename($renamepath, $newname, $cmid, $userid);
-
-            if ($renamed['status'] === true) {
-
-                $ret['status'] = true;
-                $ret['content'] = $renamed['content'];
-                return $ret;
-            } else {
-
-                // Renaming operation was unsuccessful.
-                $ret['status'] = false;
-                $ret['type'] = 'rename';
-                $ret['content'] = $renamed['content'];
-                return $ret;
-            }
-        } else {
-
-            // The share was unsuccessful.
-            $ret['status'] = false;
-            $ret['type'] = 'share';
-            $ret['content'] = get_string('ocserror', 'mod_collaborativefolders');
-            return $ret;
-        }
-    }
-
-    /**
-     * This method attempts to get a specific field from an entry in the collaborativefolders_link
-     * database table. It is used to get a stored folder name or link for a specific user and course
-     * module.
-     *
-     * @param $field string the field, which value has to be returned.
-     * @param $cmid int the course module ID. Needed to specify the concrete activity instance.
-     * @param $userid string ID of the user, which the value needs to be gotten for.
-     * @return mixed null, if the record does not exist or the field is null. Otherwise, the field's value.
-     */
-    public function get_entry($field, $cmid, $userid) {
-        global $DB;
-
-        $params = array(
-                'userid' => $userid,
-                'cmid' => $cmid
-        );
-
-        $record = $DB->get_record('collaborativefolders_link', $params);
-
-        if (!$record) {
-            return null;
-        } else {
-            return $record->$field;
-        }
-    }
-
-    /**
      * This method is used to set a field for a specific user and course module in the collaborativefolders_link
      * database table. If the specific record already exists, it gets updated in the concerning field. Otherwise,
      * a new record is inserted into the table.
@@ -330,6 +204,7 @@ class folder_access {
      * @param $value string the specific value, which needs to be set or updated.
      */
     public function set_entry($field, $cmid, $userid, $value) {
+        // TODO use persistent API instead.
         global $DB;
 
         $params = array(
@@ -348,6 +223,34 @@ class folder_access {
         } else {
             $params->id = $record->id;
             $DB->update_record('collaborativefolders_link', $params);
+        }
+    }
+
+    /**
+     * This method attempts to get a specific field from an entry in the collaborativefolders_link
+     * database table. It is used to get a stored folder name or link for a specific user and course
+     * module.
+     *
+     * @param $field string the field, which value has to be returned.
+     * @param $cmid int the course module ID. Needed to specify the concrete activity instance.
+     * @param $userid string ID of the user, which the value needs to be gotten for.
+     * @return mixed null, if the record does not exist or the field is null. Otherwise, the field's value.
+     */
+    public function get_entry($field, $cmid, $userid) {
+        // TODO use persistent API instead.
+        global $DB;
+
+        $params = array(
+            'userid' => $userid,
+            'cmid' => $cmid
+        );
+
+        $record = $DB->get_record('collaborativefolders_link', $params);
+
+        if (!$record) {
+            return null;
+        } else {
+            return $record->$field;
         }
     }
 }

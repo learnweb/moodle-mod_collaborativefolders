@@ -50,15 +50,9 @@ require_login($course, true, $cm);
 require_capability('mod/collaborativefolders:view', $context);
 
 
-// The owncloud_access object will be used to access both, the technical and the current user.
-// The return URL leads back to the current page.
-$returnurl = new moodle_url('/mod/collaborativefolders/view.php', [
-        'id' => $id,
-        'callback'  => 'yes',
-        'sesskey'   => sesskey(),
-]);
-
-$ocs = new \mod_collaborativefolders\folder_access($returnurl);
+// The system_folder_access object will be used to access the system user's storage.
+$ocs = new \mod_collaborativefolders\system_folder_access($returnurl);
+// TODO add user client!
 
 
 // If the reset link was used, the chosen foldername is reset.
