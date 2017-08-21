@@ -56,7 +56,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Reminder for groupsettings.
         $mform->addElement('warning', null, 'notifyproblem', get_string('edit_after_creation', 'mod_collaborativefolders'));
 
-        // Checkbox, which indicates whether the course's should have access to the folder.
+        // Checkbox, which indicates whether the course's teacher(s) should have access to the folder.
         $mform->addElement('advcheckbox', 'teacher',
             get_string('teacher_access', 'mod_collaborativefolders'),
             get_string('teacher_mode', 'mod_collaborativefolders'),

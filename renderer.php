@@ -94,4 +94,13 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $output;
     }
 
+    /**
+     * Output an informational table
+     *
+     * @param \mod_collaborativefolders\output\statusinfo $statusinfo
+     * @return string
+     */
+    public function render_statusinfo(\mod_collaborativefolders\output\statusinfo $statusinfo) {
+        return $this->render_from_template('mod_collaborativefolders/statusinfo', $statusinfo);
+    }
 }

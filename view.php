@@ -26,11 +26,22 @@
 require_once(__DIR__ . '/../../config.php');
 
 // Page and parameter setup.
-$id = required_param('id', PARAM_INT);
-list ($course, $cm) = get_course_and_cm_from_cmid($id, 'collaborativefolders');
-$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $id)));
-$context = context_module::instance($id);
-$instanceid = $cm->instance;
+$cmid = required_param('id', PARAM_INT);
+list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
+require_login($course, false, $cm);
+$context = context_module::instance($cmid);
+$collaborativefolder = $DB->get_record('collaborativefolders', ['id' => $cm->instance]);
+
+$PAGE->set_context($context);
+$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cmid)));
+$PAGE->set_title(format_string($cm->name));
+$PAGE->set_heading(format_string($course->fullname));
+
+require_capability('mod/collaborativefolders:view', $context);
+
+\mod_collaborativefolders\view_controller::handle_request(
+    $collaborativefolder, $cm, $context, $PAGE->get_renderer('mod_collaborativefolders'));
+exit;
 
 // Check whether viewer be treated as teacher or student. Actively ignore admins!
 $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
@@ -39,16 +50,6 @@ $capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, f
 // View action, supposed to be one of "reset", "logout", "generate", or empty.
 $action = optional_param('action', null, PARAM_ALPHA);
 
-
-// User needs to be logged in to proceed.
-require_login($course, false, $cm);
-
-
-// If the user does not have the permission to view this activity instance,
-// he gets redirected.
-require_capability('mod/collaborativefolders:view', $context);
-
-
 // The system_folder_access object will be used to access the system user's storage.
 $systemclient = new \mod_collaborativefolders\local\clients\system_folder_access();
 $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); // TODO might make sense to add $returnurl here.
@@ -56,7 +57,7 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); 
 
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
-    $userclient->set_entry('name', $id, $USER->id, null);
+    $userclient->set_entry('name', $cmid, $USER->id, null);
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
     exit;
 }
@@ -74,24 +75,18 @@ $mform = new mod_collaborativefolders\name_form(qualified_me(), array('namefield
 
 if ($fromform = $mform->get_data() && isset($fromform->enter)) {
     // If a name has been submitted, it gets stored in the user preferences.
-    $userclient->set_entry('name', $id, $USER->id, $fromform->namefield);
+    $userclient->set_entry('name', $cmid, $USER->id, $fromform->namefield);
 }
 
 
 // Indicates, whether the teacher is allowed to have access to the folder or not.
-$paramsteacher = array('id' => $instanceid);
-$teacherallowed = $DB->get_record('collaborativefolders', $paramsteacher)->teacher;
-
-
-// Renderer is initialized.
-$renderer = $PAGE->get_renderer('mod_collaborativefolders');
-
+$teacherallowed = $collaborativefolder->teacher;
 
 // Indicator for groupmode.
 $gm = false;
 
 // Two separate paths are needed, one for the share and another to rename the shared folder.
-$sharepath = '/' . $id;
+$sharepath = '/' . $cmid;
 $finalpath = $sharepath;
 
 // Tells, which group the current user is part of.
@@ -127,24 +122,16 @@ foreach ($adhoc as $element) {
     $cmidoftask = $content->cmid;
 
     // As long as at least one ad-hoc task exist, that has the same cm->id as the current cm the folders were not created.
-    if ($id == $cmidoftask) {
+    if ($cmid == $cmidoftask) {
         $folderscreated = false;
     }
 }
-
-
-// Set up further page properties and print the header and heading for this page.
-$PAGE->set_title(format_string($cm->name));
-$PAGE->set_heading(format_string($course->fullname));
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
-
 
 // Is the client configuration complete?
 $complete = true; // TODO no.
 
 // Fetch a stored link belonging to this particular activity instance.
-$privatelink = $userclient->get_entry('link', $id, $USER->id);
+$privatelink = $userclient->get_entry('link', $cmid, $USER->id);
 
 // Shall the warning about missing client configuration be shown?
 $showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == null;
@@ -212,7 +199,7 @@ if ($haslink) {
 
 
 // The name of the folder, chosen by the user.
-$name = $userclient->get_entry('name', $id, $USER->id);
+$name = $userclient->get_entry('name', $cmid, $USER->id);
 
 // Does the user have access but no link has been stored yet?
 $nolink = $hasaccess && $privatelink == null;
@@ -237,7 +224,7 @@ if ($action === 'generate') {
                 // Share was unsuccessful.
                 echo $renderer->print_error('share', get_string('ocserror', 'mod_collaborativefolders'));
             } else {
-                $renamed = $userclient->rename($finalpath, $name, $id, $USER->id);
+                $renamed = $userclient->rename($finalpath, $name, $cmid, $USER->id);
 
                 if ($renamed['status'] === false) {
                     echo $renderer->print_error('rename', $renamed['content']);
@@ -250,7 +237,7 @@ if ($action === 'generate') {
                     // Event data is gathered.
                     $params = array(
                         'context' => $context,
-                        'objectid' => $instanceid
+                        'objectid' => $cm->instance
                     );
 
                     // And the link_generated event is triggered.
@@ -306,7 +293,7 @@ if ($nogenerate) {
 
 $params = array(
         'context' => $context,
-        'objectid' => $instanceid
+        'objectid' => $cm->instance
 );
 
 $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
