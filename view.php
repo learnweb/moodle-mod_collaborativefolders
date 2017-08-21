@@ -51,13 +51,13 @@ require_capability('mod/collaborativefolders:view', $context);
 
 
 // The system_folder_access object will be used to access the system user's storage.
-$ocs = new \mod_collaborativefolders\system_folder_access($returnurl);
-// TODO add user client!
+$systemclient = new \mod_collaborativefolders\local\clients\system_folder_access();
+$userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); // TODO might make sense to add $returnurl here.
 
 
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
-    $ocs->set_entry('name', $id, $userid, null);
+    $systemclient->set_entry('name', $id, $userid, null);
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
     exit;
 }
@@ -65,7 +65,7 @@ if ($action === 'reset') {
 // If the user wishes to logout from his current ownCloud account, his Access Token is
 // set to null and so is the client's.
 if ($action === 'logout') {
-    $ocs->logout_user();
+    $systemclient->logout_user();
     redirect(qualified_me(), get_string('logoutpressed', 'mod_collaborativefolders'));
     exit;
 }
@@ -75,7 +75,7 @@ $mform = new mod_collaborativefolders\name_form(qualified_me(), array('namefield
 
 if ($fromform = $mform->get_data() && isset($fromform->enter)) {
     // If a name has been submitted, it gets stored in the user preferences.
-    $ocs->set_entry('name', $id, $userid, $fromform->namefield);
+    $systemclient->set_entry('name', $id, $userid, $fromform->namefield);
 }
 
 
@@ -145,7 +145,7 @@ echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders')
 $complete = true; // TODO no.
 
 // Fetch a stored link belonging to this particular activity instance.
-$privatelink = $ocs->get_entry('link', $id, $userid);
+$privatelink = $systemclient->get_entry('link', $id, $userid);
 
 // Shall the warning about missing client configuration be shown?
 $showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == null;
@@ -213,7 +213,7 @@ if ($haslink) {
 
 
 // The name of the folder, chosen by the user.
-$name = $ocs->get_entry('name', $id, $userid);
+$name = $systemclient->get_entry('name', $id, $userid);
 
 // Does the user have access but no link has been stored yet?
 $nolink = $hasaccess && $privatelink == null;
@@ -229,7 +229,7 @@ if ($action === 'generate') {
             $generate = false;
         } else {
             // Otherwise, try to share and rename the folder.
-            $sharerename = $ocs->share_and_rename($sharepath, $finalpath, $name, $id, $userid);
+            $sharerename = $systemclient->share_and_rename($sharepath, $finalpath, $name, $id, $userid);
 
             // Check, if the sharing and renaming operations were successful.
             if ($sharerename['status'] === true) {
@@ -268,7 +268,7 @@ if ($nogenerate) {
         $reseturl = qualified_me() . '&action=reset';
         echo $renderer->print_name_and_reset($name, $reseturl);
 
-        if ($ocs->user_loggedin()) {
+        if ($systemclient->user_loggedin()) {
 
             // Print the logout text and link.
             $logouturl = qualified_me() . '&action=logout';
@@ -285,7 +285,7 @@ if ($nogenerate) {
             if ($complete) {
 
                 // If no Access Token was received, a login link has to be provided.
-                $url = $ocs->get_login_url();
+                $url = $systemclient->get_login_url();
                 echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
             }
         }

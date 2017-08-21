@@ -22,7 +22,7 @@
  * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_collaborativefolders;
+namespace mod_collaborativefolders\local\clients;
 
 defined('MOODLE_INTERNAL') || die();
 
