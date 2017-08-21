@@ -41,7 +41,7 @@ $action = optional_param('action', null, PARAM_ALPHA);
 
 
 // User needs to be logged in to proceed.
-require_login($course, true, $cm);
+require_login($course, false, $cm);
 
 
 // If the user does not have the permission to view this activity instance,

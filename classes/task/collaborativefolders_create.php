@@ -18,6 +18,7 @@ namespace mod_collaborativefolders\task;
 
 defined('MOODLE_INTERNAL') || die;
 
+use mod_collaborativefolders\configuration_exception;
 use mod_collaborativefolders\event\folders_created;
 use mod_collaborativefolders\local\clients\system_folder_access;
 
@@ -32,16 +33,16 @@ class collaborativefolders_create extends \core\task\adhoc_task {
 
     /**
      * Create one folder per group, as specified by \mod_collaborativefolders\observer::collaborativefolders_created.
-     * @throws \moodle_exception
      */
     public function execute() {
         // Get the wrapper that contains client logged in as the system user.
-        // TODO check login status.
+        // TODO check login status by catching configuration exceptions.
         $ocaccess = new system_folder_access();
-        $errors = array();
 
+        $errors = array();
         $customdata = $this->get_custom_data();
-        foreach ($customdata['paths'] as $path) {
+
+        foreach ($customdata->paths as $path) {
             // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
             $statuscode = $ocaccess->make_folder($path);
             mtrace('Folder: ' . $path . ', Code: ' . $statuscode);
@@ -63,11 +64,12 @@ class collaborativefolders_create extends \core\task\adhoc_task {
         $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance']);
 
         $params = array(
-                'objectid' => $customdata['instance'],
+                'objectid' => $customdata->instance,
                 'context' => \context_module::instance($cm->id)
         );
 
         $done = folders_created::create($params);
         $done->trigger();
+
     }
 }

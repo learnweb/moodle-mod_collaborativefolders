@@ -29,6 +29,7 @@ namespace mod_collaborativefolders\local\clients;
 
 defined('MOODLE_INTERNAL') || die();
 
+use mod_collaborativefolders\configuration_exception;
 use repository_owncloud\ocs_client;
 
 /**
@@ -83,7 +84,7 @@ class system_folder_access {
         }
         try {
             $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
-        } catch (dml_missing_record_exception $e) {
+        } catch (\dml_missing_record_exception $e) {
             // Issuer does not exist anymore.
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
@@ -102,14 +103,14 @@ class system_folder_access {
             throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
         }
 
-        initiate_webdavclient();
+        $this->initiate_webdavclient();
         $this->ocsclient = new ocs_client($this->systemclient);
     }
 
     /**
      * Initiates the webdav client.
      * @return \repository_owncloud\owncloud_client An initialised WebDAV client for ownCloud.
-     * @throws \configuration_exception If configuration is missing (endpoints).
+     * @throws configuration_exception If configuration is missing (endpoints).
      */
     public function initiate_webdavclient() {
         if ($this->webdav !== null) {
@@ -156,7 +157,7 @@ class system_folder_access {
     public function generate_share($path, $userid) {
         $response = $this->ocsclient->call('create_share', [
             'path' => $path,
-            'shareType' => SHARE_TYPE_USER,
+            'shareType' => ocs_client::SHARE_TYPE_USER,
             'shareWith' => $userid,
         ]); // TODO consider permissions (default vs. wanted).
 
@@ -186,9 +187,12 @@ class system_folder_access {
      * @return int status code received from the client.
      */
     public function make_folder($path) {
+        mtrace('open1');
         if (!$this->webdav->open()) {
-            throw new socket_exception(get_string('socketerror', 'mod_collaborativefolders'));
+            mtrace('open2');
+            throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }
+        mtrace('open3');
         $result = $this->webdav->mkcol($this->prefixwebdav . $path);
         $this->webdav->close();
         return $result;

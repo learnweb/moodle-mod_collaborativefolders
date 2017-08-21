@@ -54,7 +54,7 @@ class observer {
         $taskdata = array();
         $taskdata['cmid'] = $cmid;
         $taskdata['instance'] = $other['instanceid'];
-        $taskdata['paths'] = array();
+        $taskdata['paths'] = array('0' => '/'.$cmid);
 
         list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
 

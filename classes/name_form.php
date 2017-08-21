@@ -18,7 +18,7 @@ namespace mod_collaborativefolders;
 
 defined('MOODLE_INTERNAL') || die();
 
-require($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 
 /**

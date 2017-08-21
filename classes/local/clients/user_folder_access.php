@@ -24,6 +24,8 @@
  */
 namespace mod_collaborativefolders\local\clients;
 
+use mod_collaborativefolders\configuration_exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -88,9 +90,8 @@ class user_folder_access {
         }
 
         // TODO change repo URL and store authorisation if provided. Separate callback file?
-        $returnurl = new moodle_url('/repository/repository_callback.php');
+        $returnurl = new \moodle_url('/repository/repository_callback.php');
         $returnurl->param('callback', 'yes');
-        $returnurl->param('repo_id', $this->id);
         $returnurl->param('sesskey', sesskey());
 
         $this->userclient = \core\oauth2\api::get_user_oauth_client($this->issuer, $returnurl);
@@ -100,7 +101,7 @@ class user_folder_access {
     /**
      * Initiates the webdav client.
      * @return \repository_owncloud\owncloud_client An initialised WebDAV client for ownCloud.
-     * @throws \configuration_exception If configuration is missing (endpoints).
+     * @throws configuration_exception If configuration is missing (endpoints).
      */
     public function initiate_webdavclient() {
         if ($this->webdav !== null) {
