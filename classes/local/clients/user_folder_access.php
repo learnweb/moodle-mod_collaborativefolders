@@ -193,6 +193,23 @@ class user_folder_access {
         }
     }
 
+
+    /**
+     * Deletes the held access token.
+     */
+    public function log_out() {
+        $this->userclient->log_out();
+    }
+
+    /**
+     * Function which checks whether the user is logged in on the ownCloud instance.
+     *
+     * @return bool false, if no Access Token is set or can be requested.
+     */
+    public function check_login() {
+        return $this->userclient->is_logged_in();
+    }
+
     /**
      * This method is used to set a field for a specific user and course module in the collaborativefolders_link
      * database table. If the specific record already exists, it gets updated in the concerning field. Otherwise,

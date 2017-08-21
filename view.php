@@ -57,15 +57,15 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); 
 
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
-    $systemclient->set_entry('name', $id, $userid, null);
+    $userclient->set_entry('name', $id, $userid, null);
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
     exit;
 }
 
-// If the user wishes to logout from his current ownCloud account, his Access Token is
+// If the user wishes to logout from his current ownCloud account, his/her access token is
 // set to null and so is the client's.
 if ($action === 'logout') {
-    $systemclient->logout_user();
+    $userclient->log_out();
     redirect(qualified_me(), get_string('logoutpressed', 'mod_collaborativefolders'));
     exit;
 }
@@ -75,7 +75,7 @@ $mform = new mod_collaborativefolders\name_form(qualified_me(), array('namefield
 
 if ($fromform = $mform->get_data() && isset($fromform->enter)) {
     // If a name has been submitted, it gets stored in the user preferences.
-    $systemclient->set_entry('name', $id, $userid, $fromform->namefield);
+    $userclient->set_entry('name', $id, $userid, $fromform->namefield);
 }
 
 
@@ -145,7 +145,7 @@ echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders')
 $complete = true; // TODO no.
 
 // Fetch a stored link belonging to this particular activity instance.
-$privatelink = $systemclient->get_entry('link', $id, $userid);
+$privatelink = $userclient->get_entry('link', $id, $userid);
 
 // Shall the warning about missing client configuration be shown?
 $showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == null;
@@ -213,7 +213,7 @@ if ($haslink) {
 
 
 // The name of the folder, chosen by the user.
-$name = $systemclient->get_entry('name', $id, $userid);
+$name = $userclient->get_entry('name', $id, $userid);
 
 // Does the user have access but no link has been stored yet?
 $nolink = $hasaccess && $privatelink == null;
@@ -268,7 +268,7 @@ if ($nogenerate) {
         $reseturl = qualified_me() . '&action=reset';
         echo $renderer->print_name_and_reset($name, $reseturl);
 
-        if ($systemclient->user_loggedin()) {
+        if ($userclient->user_loggedin()) {
 
             // Print the logout text and link.
             $logouturl = qualified_me() . '&action=logout';
@@ -285,7 +285,7 @@ if ($nogenerate) {
             if ($complete) {
 
                 // If no Access Token was received, a login link has to be provided.
-                $url = $systemclient->get_login_url();
+                $url = $userclient->get_login_url();
                 echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
             }
         }
