@@ -36,6 +36,11 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_folder_access {
+    /**
+     * Additional scopes needed by the user account. Currently, ownCloud does not actually support/use scopes, so
+     * this is intended as a hint at required functionality and will help declare future scopes.
+     */
+    const SCOPES = 'files';
 
     /**
      * client instance for server access using the user's personal account
@@ -57,8 +62,10 @@ class user_folder_access {
 
     /**
      * Construct the wrapper and initialise the user WebDAV client.
+     * @param \moodle_url $oauthloginreturnurl URL that will be redirected to after the login callback has succeeded.
+     * @throws configuration_exception If essential data is missing.
      */
-    public function __construct () {
+    public function __construct ($oauthloginreturnurl) {
         // Get issuer and system account client. Fail early, if needed.
         $selectedissuer = get_config("collaborativefolders", "issuerid");
         if (empty($selectedissuer)) {
@@ -66,35 +73,33 @@ class user_folder_access {
         }
         try {
             $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
-        } catch (dml_missing_record_exception $e) {
+        } catch (\dml_missing_record_exception $e) {
             // Issuer does not exist anymore.
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        if (!$this->get_user_oauth_client()) {
+        $this->userclient = $this->get_user_oauth_client($oauthloginreturnurl);
+        if (!$this->userclient) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
-
-        $this->userclient = $this->get_user_oauth_client();
 
         $this->initiate_webdavclient();
     }
 
     /**
      * Get a cached user authenticated oauth client.
+     * @param \moodle_url $oauthloginreturnurl URL that will be redirected to after the login callback has succeeded.
      * @return \core\oauth2\client
      */
-    protected function get_user_oauth_client() {
+    protected function get_user_oauth_client($oauthloginreturnurl) {
         if ($this->userclient !== null) {
             return $this->userclient;
         }
 
-        // TODO change repo URL and store authorisation if provided. Separate callback file?
-        $returnurl = new \moodle_url('/repository/repository_callback.php');
-        $returnurl->param('callback', 'yes');
+        $returnurl = clone($oauthloginreturnurl);
         $returnurl->param('sesskey', sesskey());
 
-        $this->userclient = \core\oauth2\api::get_user_oauth_client($this->issuer, $returnurl);
+        $this->userclient = \core\oauth2\api::get_user_oauth_client($this->issuer, $returnurl, self::SCOPES);
         return $this->userclient;
     }
 
@@ -200,6 +205,15 @@ class user_folder_access {
      */
     public function log_out() {
         $this->userclient->log_out();
+    }
+
+    /**
+     * Returns the login link for this oauth request
+     *
+     * @return \moodle_url login url
+     */
+    public function get_login_url() {
+        return $this->userclient->get_login_url();
     }
 
     /**

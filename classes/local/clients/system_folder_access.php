@@ -68,7 +68,7 @@ class system_folder_access {
     private $issuer;
 
     /**
-     * Additional scopes needed for the repository. Currently, ownCloud does not actually support/use scopes, so
+     * Additional scopes needed by the system account. Currently, ownCloud does not actually support/use scopes, so
      * this is intended as a hint at required functionality and will help declare future scopes.
      */
     const SCOPES = 'files ocs';

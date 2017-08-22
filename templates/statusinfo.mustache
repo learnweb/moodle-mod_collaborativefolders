@@ -26,14 +26,14 @@
     * none
 
     Context variables required for this template:
-    * status
+    * creationstatus
     * teachermayaccess
     * groupmode
     * groups
 
     Example context (json):
     {
-        "status": "created",
+        "creationstatus": "created",
         "teachermayaccess": 0,
         "groupmode": 1,
         "groups": [{ "1" : "Group 1" }]
@@ -43,8 +43,8 @@
 <table class="generaltable fullwidth">
     <tbody>
     <tr>
-        <th scope="row">@status</th>
-        <td>@{{status}}
+        <th scope="row">@creationstatus</th>
+        <td>@{{creationstatus}}
             {{! display problem info if applicable}}
         </td>
     </tr>

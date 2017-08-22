@@ -49,17 +49,27 @@ class view_controller {
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm);
-        $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); // TODO might make sense to add $returnurl here.
+        $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(new \moodle_url(qualified_me()));
 
         // TODO Show notice to teacher if there is a problem with system account.
 
         echo $renderer->render($statusinfo);
 
-        // TODO Login / logout form.
+        // Login / logout form.
+        if ($userclient->check_login()) {
+            echo $renderer->render(new \single_button(
+                    new \moodle_url('/mod/collaborativefolders/authorise.php', [
+                        'action' => 'logout',
+                        'id' => $cm->id,
+                        'sesskey' => sesskey()
+                    ]), '@logout'));
+        } else {
+            echo $renderer->render_widget_login($userclient->get_login_url());
+        }
 
         // Interaction with instance.
         if ($userclient->check_login()) {
-            if ($statusinfo->status === 'created') {
+            if ($statusinfo->creationstatus === 'created') {
                 // TODO Share form / View link.
             } else {
                 // Folders are not yet created and can therefore not be shared.

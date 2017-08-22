@@ -95,7 +95,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Output an informational table
+     * Render an informational table.
      *
      * @param \mod_collaborativefolders\output\statusinfo $statusinfo
      * @return string
@@ -103,4 +103,19 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     public function render_statusinfo(\mod_collaborativefolders\output\statusinfo $statusinfo) {
         return $this->render_from_template('mod_collaborativefolders/statusinfo', $statusinfo);
     }
+
+    /**
+     * Render a login button (needed because of MDL-59902)
+     *
+     * @param \moodle_url $loginurl URL of the remote system that handles login
+     * @return string
+     */
+    public function render_widget_login(\moodle_url $loginurl) {
+        /* TODO change to the following line as soon as MDL-59902 is resolved.
+         * $this->render(new \single_button($userclient->get_login_url(), '@login'));
+         * ... Maybe this function can even be removed/deprecated then.
+         */
+        return html_writer::link($loginurl, '@login', ['class' => 'btn btn-primary']);
+    }
+
 }

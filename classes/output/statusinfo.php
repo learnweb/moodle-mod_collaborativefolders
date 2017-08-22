@@ -38,8 +38,8 @@ use stdClass;
  */
 class statusinfo implements \renderable {
 
-    /** @var string Status in created/pending */
-    public $status;
+    /** @var string General creation status in created/pending */
+    public $creationstatus;
     /** @var int 0 if teacher may not access folder; 1 otherwise */
     public $teachermayaccess;
     /** @var int 0 if whole course (NOGROUPS), >0 otherwise */
@@ -49,13 +49,13 @@ class statusinfo implements \renderable {
 
     /**
      * statusinfo constructor.
-     * @param string $status
+     * @param string $creationstatus
      * @param int $teachermayaccess
      * @param int $groupmode
      * @param array $groups
      */
-    public function __construct($status, $teachermayaccess, $groupmode, array $groups) {
-        $this->status = $status;
+    public function __construct($creationstatus, $teachermayaccess, $groupmode, array $groups) {
+        $this->creationstatus = $creationstatus;
         $this->teachermayaccess = $teachermayaccess;
         $this->groupmode = $groupmode;
         $this->groups = $groups;

@@ -44,8 +44,8 @@ require_capability('mod/collaborativefolders:view', $context);
 exit;
 
 // Check whether viewer be treated as teacher or student. Actively ignore admins!
-$capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
-$capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
+//$capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
+//$capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
 
 // View action, supposed to be one of "reset", "logout", "generate", or empty.
 $action = optional_param('action', null, PARAM_ALPHA);
@@ -262,27 +262,14 @@ if ($nogenerate) {
         $reseturl = qualified_me() . '&action=reset';
         echo $renderer->print_name_and_reset($name, $reseturl);
 
-        if ($userclient->user_loggedin()) {
+        // ASSUME LOGGED IN
 
-            // Print the logout text and link.
-            $logouturl = qualified_me() . '&action=logout';
-            echo $renderer->print_link($logouturl, 'logout');
+        if ($complete) {
 
-            if ($complete) {
-
-                $genurl = qualified_me() . '&action=generate';
-                echo $renderer->print_link($genurl, 'generate');
-            }
-
-        } else {
-
-            if ($complete) {
-
-                // If no Access Token was received, a login link has to be provided.
-                $url = $userclient->get_login_url();
-                echo html_writer::link($url, 'Login', array('target' => '_blank', 'rel' => 'noopener noreferrer'));
-            }
+            $genurl = qualified_me() . '&action=generate';
+            echo $renderer->print_link($genurl, 'generate');
         }
+
     } else {
 
         // Otherwise, show a form for the user to enter a name into.
