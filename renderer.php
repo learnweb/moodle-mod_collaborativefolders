@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\notification;
+use mod_collaborativefolders\output\statusinfo;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -97,10 +100,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     /**
      * Render an informational table.
      *
-     * @param \mod_collaborativefolders\output\statusinfo $statusinfo
+     * @param statusinfo $statusinfo
      * @return string
      */
-    public function render_statusinfo(\mod_collaborativefolders\output\statusinfo $statusinfo) {
+    public function render_statusinfo(statusinfo $statusinfo) {
         return $this->render_from_template('mod_collaborativefolders/statusinfo', $statusinfo);
     }
 
@@ -112,16 +115,22 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
      */
     public function render_widget_login(\moodle_url $loginurl) {
         /* TODO change to the following line as soon as MDL-59902 is resolved.
-         * $this->render(new \single_button($userclient->get_login_url(), '@login'));
-         * ... Maybe this function can even be removed/deprecated then.
+         * $this->render(new \single_button($loginurl, '@login'));
+         * ... Maybe this function can even be inlined and removed then.
          */
         return html_writer::link($loginurl, '@login', ['class' => 'btn btn-primary']);
     }
 
     public function render_widget_notcreatedyet() {
-        $notification = new \core\output\notification('@plswait', \core\output\notification::NOTIFY_INFO);
+        $notification = new notification('@plswait', notification::NOTIFY_INFO);
         $notification->set_show_closebutton(false);
-        echo $this->render($notification);
+        return $this->render($notification);
+    }
+
+    public function render_widget_teachermaynotaccess() {
+        $notification = new notification('@teachermaynotaccess', notification::NOTIFY_INFO);
+        $notification->set_show_closebutton(false);
+        return $this->render($notification);
     }
 
 }

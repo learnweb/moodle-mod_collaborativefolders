@@ -45,8 +45,8 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
     new \moodle_url('/mod/collaborativefolders/authorise.php', [
         'action' => 'login',
         'id' => $cmid,
-        'sesskey' => sesskey()
-    ]));
+        'sesskey' => sesskey()])
+);
 
 // Handle actions.
 if ($action === 'logout') {

@@ -24,6 +24,11 @@
  */
 namespace mod_collaborativefolders;
 
+use core\output\notification;
+use mod_collaborativefolders\local\clients\user_folder_access;
+use mod_collaborativefolders\output\statusinfo;
+use mod_collaborativefolders_renderer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -40,10 +45,10 @@ class view_controller {
      * @param \stdClass $collaborativefolder Collaborativefolder instance
      * @param \cm_info $cm Corresponding course module
      * @param \context_module $context Module context
-     * @param \mod_collaborativefolders_renderer $renderer Plugin-specific renderer
+     * @param mod_collaborativefolders_renderer $renderer Plugin-specific renderer
      */
     public static function handle_request($collaborativefolder, \cm_info $cm, \context_module $context,
-                                          \mod_collaborativefolders_renderer $renderer) {
+                                          mod_collaborativefolders_renderer $renderer) {
         global $OUTPUT, $USER;
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
@@ -52,26 +57,28 @@ class view_controller {
         $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, false);
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm, $isteacher);
-        $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
+        $userclient = new user_folder_access(
             new \moodle_url('/mod/collaborativefolders/authorise.php', [
                 'action' => 'login',
                 'id' => $cm->id,
                 'sesskey' => sesskey()
-            ]));
+            ])
+        );
 
         // TODO Show notice to teacher if there is a problem with system account.
 
         // Start output.
+        // Show status info table.
         echo $renderer->render($statusinfo);
 
         // Login / logout form.
         if ($userclient->check_login()) {
             echo $renderer->render(new \single_button(
-                    new \moodle_url('/mod/collaborativefolders/authorise.php', [
-                        'action' => 'logout',
-                        'id' => $cm->id,
-                        'sesskey' => sesskey()
-                    ]), '@logout'));
+                new \moodle_url('/mod/collaborativefolders/authorise.php', [
+                    'action' => 'logout',
+                    'id' => $cm->id,
+                    'sesskey' => sesskey()
+                ]), '@logout'));
         } else {
             echo $renderer->render_widget_login($userclient->get_login_url());
         }
@@ -79,7 +86,11 @@ class view_controller {
         // Interaction with instance.
         if ($userclient->check_login()) {
             if ($statusinfo->creationstatus === 'created') {
-                // TODO Share form / View link.
+                if ($isteacher) {
+                    echo self::view_folder_teacher($statusinfo, $userclient, $renderer);
+                } else {
+                    echo self::view_folders_student($statusinfo, $userclient, $renderer);
+                }
             } else {
                 // Folders are not yet created and can therefore not be shared.
                 echo $renderer->render_widget_notcreatedyet();
@@ -111,6 +122,42 @@ class view_controller {
         }
 
         // TODO Change to actual instance status.
-        return new \mod_collaborativefolders\output\statusinfo('pending', $collaborativefolder->teacher, $groupmode, $groups);
+        return new statusinfo('pending', $collaborativefolder->teacher, $groupmode, $groups);
+    }
+
+    /**
+     * Render the view that is used for interactions with folders. Per applicable folder:
+     * # Defining a user-local name and generating a share
+     * # Display the selected name, a link, and a button for problem solving (aka re-share).
+     *
+     * @param statusinfo $statusinfo
+     * @param user_folder_access $userclient
+     * @param mod_collaborativefolders_renderer $renderer
+     * @return string Rendered view
+     */
+    private static function view_folders_student(statusinfo $statusinfo, user_folder_access $userclient,
+                                                 mod_collaborativefolders_renderer $renderer) {
+        // TODO Get applicable groups from $statusinfo.
+        // TODO Per group: Define name / access share.
+    }
+
+    /**
+     * Render the view that is used for interactions with student folders. Per applicable folder:
+     * # Defining a user-local name and generating a share
+     * # Display the selected name, a link, and a button for problem solving (aka re-share).
+     *
+     * @param statusinfo $statusinfo
+     * @param user_folder_access $userclient
+     * @param mod_collaborativefolders_renderer $renderer
+     * @return string Rendered view
+     */
+    private static function view_folder_teacher(statusinfo $statusinfo, user_folder_access $userclient,
+                                                mod_collaborativefolders_renderer $renderer) {
+        if (!$statusinfo->teachermayaccess) {
+            echo $renderer->render_widget_teachermaynotaccess();
+            return;
+        }
+
+        // TODO Define name / access share.
     }
 }
