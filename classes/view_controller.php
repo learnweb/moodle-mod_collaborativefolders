@@ -61,6 +61,7 @@ class view_controller {
 
         // TODO Show notice to teacher if there is a problem with system account.
 
+        // Start output.
         echo $renderer->render($statusinfo);
 
         // Login / logout form.
