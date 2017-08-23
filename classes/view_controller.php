@@ -25,6 +25,7 @@
 namespace mod_collaborativefolders;
 
 use core\output\notification;
+use mod_collaborativefolders\local\clients\system_folder_access;
 use mod_collaborativefolders\local\clients\user_folder_access;
 use mod_collaborativefolders\output\statusinfo;
 use mod_collaborativefolders_renderer;
@@ -52,6 +53,9 @@ class view_controller {
         global $OUTPUT, $USER;
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
+        if (!empty($collaborativefolder->intro)) {
+            echo $OUTPUT->box(format_module_intro('collaborativefolder', $collaborativefolder, $cm->id), 'generalbox', 'intro');
+        }
 
         // Check whether viewer is considered as non-student, because their access may be restricted. Admin override is ignored.
         // Note: This is a restriction, not a capability. Don't use for deciding what someone MAY do, consider as MAY NOT instead.
@@ -64,13 +68,17 @@ class view_controller {
                 'sesskey' => sesskey()
             ])
         );
+        try {
+            $systemclient = new system_folder_access();
+        } catch (configuration_exception $e) {
+            $systemclient = null;
+        }
 
         // Start output.
 
         // Show notice if there is a general problem with the system account.
         // Show to someone who can add/configure this instance (i.e. teachers).
-        if (has_capability('mod/collaborativefolders:addinstance', $context)) {
-            // TODO really only show if there is a problem!
+        if ($systemclient === null && has_capability('mod/collaborativefolders:addinstance', $context)) {
             echo $renderer->render_widget_noconnection();
         }
 
