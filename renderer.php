@@ -133,4 +133,11 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    public function render_widget_noconnection() {
+        $notification = new notification('@noconnection (may affect creation of folders/ability to access. talk to admin!)',
+            notification::NOTIFY_WARNING);
+        $notification->set_show_closebutton(false);
+        return $this->render($notification);
+    }
+
 }

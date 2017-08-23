@@ -54,24 +54,31 @@ class view_controller {
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
 
         // Check whether viewer is considered as non-student, because their access may be restricted. Admin override is ignored.
+        // Note: This is a restriction, not a capability. Don't use for deciding what someone MAY do, consider as MAY NOT instead.
         $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, false);
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm, $isteacher);
-        $userclient = new user_folder_access(
-            new \moodle_url('/mod/collaborativefolders/authorise.php', [
+        $userclient = new user_folder_access(new \moodle_url('/mod/collaborativefolders/authorise.php', [
                 'action' => 'login',
                 'id' => $cm->id,
                 'sesskey' => sesskey()
             ])
         );
 
-        // TODO Show notice to teacher if there is a problem with system account.
-
         // Start output.
+
+        // Show notice if there is a general problem with the system account.
+        // Show to someone who can add/configure this instance (i.e. teachers).
+        if (has_capability('mod/collaborativefolders:addinstance', $context)) {
+            // TODO really only show if there is a problem!
+            echo $renderer->render_widget_noconnection();
+        }
+
         // Show status info table.
         echo $renderer->render($statusinfo);
 
         // Login / logout form.
+        echo $OUTPUT->heading('@remote system', 3);
         if ($userclient->check_login()) {
             echo $renderer->render(new \single_button(
                 new \moodle_url('/mod/collaborativefolders/authorise.php', [
@@ -85,6 +92,7 @@ class view_controller {
 
         // Interaction with instance.
         if ($userclient->check_login()) {
+            echo $OUTPUT->heading('@access', 3);
             if ($statusinfo->creationstatus === 'created') {
                 if ($isteacher) {
                     echo self::view_folder_teacher($statusinfo, $userclient, $renderer);
