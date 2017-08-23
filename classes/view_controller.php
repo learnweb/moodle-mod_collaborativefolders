@@ -51,6 +51,9 @@ class view_controller {
     public static function handle_request($collaborativefolder, \cm_info $cm, \context_module $context,
                                           mod_collaborativefolders_renderer $renderer) {
         global $OUTPUT, $USER;
+
+        \mod_collaborativefolders\toolbox::coursemodule_viewed($context, $cm);
+
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
         if (!empty($collaborativefolder->intro)) {

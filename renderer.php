@@ -35,49 +35,6 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
-
-    public function print_error($text, $code) {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->heading(get_string('error', 'mod_collaborativefolders'), 4);
-        if ($text === 'rename') {
-            $output .= html_writer::div(get_string('retry_rename', 'mod_collaborativefolders'));
-        }
-        if ($text === 'share') {
-            $output .= html_writer::div(get_string('retry_shared', 'mod_collaborativefolders'));
-        } else {
-            $output .= html_writer::div(get_string('retry', 'mod_collaborativefolders'));
-        }
-        $output .= html_writer::div(get_string('code', 'mod_collaborativefolders', $code));
-        return $output;
-    }
-
-    public function render_view_table($groups) {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->heading(get_string('introoverview', 'mod_collaborativefolders'), 4);
-        $table = new html_table();
-        $table->head = array('groupid' => get_string('groupid', 'mod_collaborativefolders'),
-                             'groupname' => get_string('groupname', 'mod_collaborativefolders'),
-                             'members' => get_string('members', 'mod_collaborativefolders'));
-
-        $table->attributes['class'] = 'admintable collaborativefolder generaltable';
-
-        foreach ($groups as $group) {
-
-            $memberlist = '';
-            $members = groups_get_members($group->id);
-
-            foreach ($members as $member) {
-                $memberlist .= $member->firstname . ' ' . $member->lastname . ', ';
-            }
-
-            $table->data[] = array($group->id, $group->name, $memberlist);
-        }
-        $output .= html_writer::table($table);
-        return $output;
-    }
-
     public function print_link($url, $action) {
         global $OUTPUT;
         $output = '';
@@ -122,7 +79,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     public function render_widget_notcreatedyet() {
-        $notification = new notification('@plswait', notification::NOTIFY_INFO);
+        $notification = new notification(get_string('foldernotcreatedyet', 'mod_collaborativefolders'), notification::NOTIFY_INFO);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
     }

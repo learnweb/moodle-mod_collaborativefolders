@@ -93,4 +93,20 @@ class toolbox {
         }
         return false;
     }
+
+    /**
+     * Store a course_module_viewed event.
+     *
+     * @param \context_module $context
+     * @param \cm_info $cm
+     */
+    public static function coursemodule_viewed(\context_module $context, \cm_info $cm) {
+        $params = array(
+            'context' => $context,
+            'objectid' => $cm->instance
+        );
+
+        $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
+        $cmviewed->trigger();
+    }
 }

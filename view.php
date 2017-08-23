@@ -44,29 +44,21 @@ require_capability('mod/collaborativefolders:view', $context);
 exit;
 
 // Check whether viewer be treated as teacher or student. Actively ignore admins!
-//$capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
-//$capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
+// $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
+// $capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
 
 // View action, supposed to be one of "reset", "logout", "generate", or empty.
 $action = optional_param('action', null, PARAM_ALPHA);
 
 // The system_folder_access object will be used to access the system user's storage.
 $systemclient = new \mod_collaborativefolders\local\clients\system_folder_access();
-$userclient = new \mod_collaborativefolders\local\clients\user_folder_access(); // TODO might make sense to add $returnurl here.
+$userclient = new \mod_collaborativefolders\local\clients\user_folder_access();
 
 
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
     $userclient->set_entry('name', $cmid, $USER->id, null);
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
-    exit;
-}
-
-// If the user wishes to logout from his current ownCloud account, his/her access token is
-// set to null and so is the client's.
-if ($action === 'logout') {
-    $userclient->log_out();
-    redirect(qualified_me(), get_string('logoutpressed', 'mod_collaborativefolders'));
     exit;
 }
 
@@ -89,9 +81,6 @@ $gm = false;
 $sharepath = '/' . $cmid;
 $finalpath = $sharepath;
 
-// Tells, which group the current user is part of.
-$ingroup = null;
-
 // Checks if the groupmode is active. Does not differentiate between VISIBLE and SEPERATE.
 if (groups_get_activity_groupmode($cm) != 0) {
     // If the groupmode is set by the creator, $gm is set to true.
@@ -111,68 +100,14 @@ if (groups_get_activity_groupmode($cm) != 0) {
     }
 }
 
-$folderscreated = \mod_collaborativefolders\toolbox::is_create_task_running($cmid);
-
-// Is the client configuration complete?
-$complete = true; // TODO no.
-
 // Fetch a stored link belonging to this particular activity instance.
 $privatelink = $userclient->get_entry('link', $cmid, $USER->id);
-
-// Shall the warning about missing client configuration be shown?
-$showwarning = ($capteacher || $capstudent) && !$complete && $privatelink == null;
-
-// If client configuration data is missing, a warning is shown and ownCloud access actions
-// are blocked.
-if ($showwarning) {
-
-    $sitecontext = context_system::instance();
-
-    // The current user is able to edit the site configuration.
-    if (has_capability('moodle/site:config', $sitecontext)) {
-
-        $link = $CFG->wwwroot . '/' . $CFG->admin . '/settings.php?section=oauth2owncloud';
-
-        // Generates a link to the admin setting page.
-        echo $OUTPUT->notification('<a href="' . $link . '" target="_blank" rel="noopener noreferrer">
-                                ' . get_string('missing_settings_admin', 'tool_oauth2owncloud') . '</a>', 'warning');
-    } else {
-
-        // Otherwise, just print a notification, bacause the current user cannot configure admin
-        // settings himself.
-        echo $OUTPUT->notification(get_string('missing_settings_user', 'tool_oauth2owncloud'));
-    }
-}
-
-
-// If the folders are not created yet, display the concerning message to the user.
-if (!$folderscreated) {
-
-    $output = '';
-    $output .= html_writer::div(get_string('foldernotcreatedyet', 'mod_collaborativefolders'));
-    echo $output;
-}
-
 
 // Does the teacher have access to this activity?
 $teacheraccess = $capteacher && $teacherallowed == true;
 
 // Does the current user have access to this activity, be it teacher or student?
-$hasaccess = ($teacheraccess || $capstudent) && $folderscreated;
-
-// Does a table of all participating groups have to be shown? The teacher does not need to have
-// access to the Collaborative Folder to see the table.
-$showtable = $folderscreated && $capteacher && $gm;
-
-// If the folders are created, the current user is a teacher and the groupmode is active,
-// show a table of all participating groups.
-if ($showtable) {
-
-    $grid = $cm->groupingid;
-    $groups = groups_get_all_groups($course->id, 0, $grid);
-    echo $renderer->render_view_table($groups);
-}
-
+$hasaccess = ($teacheraccess || $capstudent) && \mod_collaborativefolders\toolbox::is_create_task_running($cmid);
 
 // Does the user have a link to this Collaborative Folder and access to this activity?
 $haslink = $privatelink != null && $hasaccess;
@@ -196,7 +131,7 @@ if ($action === 'generate') {
     $generate = true; // Default until we know otherwise!
 
     if ($nolink) {
-        if ($name == null || !$complete) {
+        if ($name == null) {
             // If no personal name has been stored for the folder, no link can be generated yet.
             $generate = false;
         } else {
@@ -248,13 +183,9 @@ if ($nogenerate) {
         $reseturl = qualified_me() . '&action=reset';
         echo $renderer->print_name_and_reset($name, $reseturl);
 
-        // ASSUME LOGGED IN
-
-        if ($complete) {
-
-            $genurl = qualified_me() . '&action=generate';
-            echo $renderer->print_link($genurl, 'generate');
-        }
+        // Generate share
+        $genurl = qualified_me() . '&action=generate';
+        echo $renderer->print_link($genurl, 'generate');
 
     } else {
 
@@ -263,14 +194,3 @@ if ($nogenerate) {
     }
 }
 
-
-$params = array(
-        'context' => $context,
-        'objectid' => $cm->instance
-);
-
-$cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
-$cmviewed->trigger();
-
-
-echo $OUTPUT->footer();
