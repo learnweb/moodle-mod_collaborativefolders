@@ -48,8 +48,16 @@ class view_controller {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
 
-        $statusinfo = self::get_instance_status($collaborativefolder, $cm);
-        $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(new \moodle_url(qualified_me()));
+        // Check whether viewer is considered as non-student, because their access may be restricted. Admin override is ignored.
+        $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, false);
+
+        $statusinfo = self::get_instance_status($collaborativefolder, $cm, $isteacher);
+        $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
+            new \moodle_url('/mod/collaborativefolders/authorise.php', [
+                'action' => 'login',
+                'id' => $cm->id,
+                'sesskey' => sesskey()
+            ]));
 
         // TODO Show notice to teacher if there is a problem with system account.
 
@@ -73,9 +81,7 @@ class view_controller {
                 // TODO Share form / View link.
             } else {
                 // Folders are not yet created and can therefore not be shared.
-                $notification = new \core\output\notification('@plswait', \core\output\notification::NOTIFY_INFO);
-                $notification->set_show_closebutton(false);
-                echo $renderer->render($notification);
+                echo $renderer->render_widget_notcreatedyet();
             }
         }
 
@@ -87,15 +93,20 @@ class view_controller {
      *
      * @param \stdClass $collaborativefolder Collaborativefolder instance
      * @param \cm_info $cm Corresponding course module
+     * @param bool $asteacher Assume a teacher's perspective (additional output).
      * @return output\statusinfo
      */
-    private static function get_instance_status($collaborativefolder, \cm_info $cm) {
+    private static function get_instance_status($collaborativefolder, \cm_info $cm, $asteacher) {
         global $USER;
 
         $groupmode = groups_get_activity_groupmode($cm) != 0;
         $groups = array();
         if ($groupmode) {
-            $groups = groups_get_all_groups($cm->course, $USER->id, $cm->groupingid);
+            if ($asteacher) {
+                $groups = groups_get_all_groups($cm->course, 0, $cm->groupingid);
+            } else {
+                $groups = groups_get_all_groups($cm->course, $USER->id, $cm->groupingid);
+            }
         }
 
         // TODO Change to actual instance status.

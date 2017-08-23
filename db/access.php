@@ -54,15 +54,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/collaborativefolders:viewstudent' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW
-        )
-    ),
-
-    'mod/collaborativefolders:viewteacher' => array(
+    'mod/collaborativefolders:isteacher' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

@@ -118,4 +118,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return html_writer::link($loginurl, '@login', ['class' => 'btn btn-primary']);
     }
 
+    public function render_widget_notcreatedyet() {
+        $notification = new \core\output\notification('@plswait', \core\output\notification::NOTIFY_INFO);
+        $notification->set_show_closebutton(false);
+        echo $this->render($notification);
+    }
+
 }
