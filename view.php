@@ -111,21 +111,7 @@ if (groups_get_activity_groupmode($cm) != 0) {
     }
 }
 
-
-// Checks if the adhoc task for the folder creation was successful.
-$adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
-$folderscreated = true;
-
-foreach ($adhoc as $element) {
-
-    $content = json_decode($element->customdata);
-    $cmidoftask = $content->cmid;
-
-    // As long as at least one ad-hoc task exist, that has the same cm->id as the current cm the folders were not created.
-    if ($cmid == $cmidoftask) {
-        $folderscreated = false;
-    }
-}
+$folderscreated = \mod_collaborativefolders\toolbox::is_create_task_running($cmid);
 
 // Is the client configuration complete?
 $complete = true; // TODO no.

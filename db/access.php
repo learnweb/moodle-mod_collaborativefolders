@@ -54,7 +54,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/collaborativefolders:isteacher' => array(
+    'mod/collaborativefolders:isteacher' => array( // Negative capabibility intended for exclusion!
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

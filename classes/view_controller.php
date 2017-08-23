@@ -119,8 +119,11 @@ class view_controller {
     private static function get_instance_status($collaborativefolder, \cm_info $cm, $asteacher) {
         global $USER;
 
+        // Check if folders are per-group.
         $groupmode = groups_get_activity_groupmode($cm) != 0;
+
         $groups = array();
+        // If in groupmode, find out which groups are relevant (own groups, except if teacher, then all groups).
         if ($groupmode) {
             if ($asteacher) {
                 $groups = groups_get_all_groups($cm->course, 0, $cm->groupingid);
@@ -129,8 +132,13 @@ class view_controller {
             }
         }
 
-        // TODO Change to actual instance status.
-        return new statusinfo('pending', $collaborativefolder->teacher, $groupmode, $groups);
+        // Check the state of asynchronous folder creation.
+        $creationstatus = \mod_collaborativefolders\toolbox::is_create_task_running($cm->id) ? 'pending' : 'created';
+
+        // Determine whether teachers may also access the share.
+        $teachermayaccess = $collaborativefolder->teacher;
+
+        return new statusinfo($creationstatus, $teachermayaccess, $groupmode, $groups);
     }
 
     /**
@@ -145,8 +153,21 @@ class view_controller {
      */
     private static function view_folders_student(statusinfo $statusinfo, user_folder_access $userclient,
                                                  mod_collaborativefolders_renderer $renderer) {
-        // TODO Get applicable groups from $statusinfo.
-        // TODO Per group: Define name / access share.
+        // Get applicable groups from $statusinfo.
+        $folders = array();
+        if (!$statusinfo->groupmode) {
+            $folders[] = 'cm'; // TODO Might change.
+        } else {
+            // One folder per applicable group.
+            $folders = $statusinfo->groups;
+        }
+
+        // Per group: Either define user-local name or access share.
+        foreach ($folders as $f) {
+            // TODO Define name.
+            // TODO Access share.
+            var_dump($f);
+        }
     }
 
     /**
