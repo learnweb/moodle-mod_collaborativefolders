@@ -74,7 +74,7 @@ $string['socketerror'] = 'The WebDAV socket could not be opened.';
 $string['ocserror'] = 'An error with the OCS sharing API occurred.';
 $string['wrongintention'] = 'The intention argument \'{$a}\' is not valid';
 $string['notcreated'] = 'Folder {$a} not created. ';
-$string['unexpectedcode'] = 'An unexpected status code was received.';
+$string['unexpectedcode'] = 'An unexpected response status code ({$a}) was received.';
 $string['technicalnotloggedin'] = 'The system account is not logged in or does not have authorisation in the remote system.';
 $string['incompletedata'] = 'Please check the module settings. Either no OAuth 2 issuer is selected or no corresponding system account is connected.';
 

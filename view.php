@@ -103,9 +103,6 @@ if (groups_get_activity_groupmode($cm) != 0) {
 // Fetch a stored link belonging to this particular activity instance.
 $privatelink = $userclient->get_entry('link', $cmid, $USER->id);
 
-// Does the teacher have access to this activity?
-$teacheraccess = $capteacher && $teacherallowed == true;
-
 // Does the current user have access to this activity, be it teacher or student?
 $hasaccess = ($teacheraccess || $capstudent) && \mod_collaborativefolders\toolbox::is_create_task_running($cmid);
 

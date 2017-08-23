@@ -167,7 +167,7 @@ class view_controller {
         // Get applicable groups from $statusinfo.
         $folders = array();
         if (!$statusinfo->groupmode) {
-            $folders[] = 'cm'; // TODO Might change.
+            $folders = [0 => 'coursemodule-root']; // TODO Might change.
         } else {
             // One folder per applicable group.
             $folders = $statusinfo->groups;

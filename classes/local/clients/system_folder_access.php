@@ -183,17 +183,14 @@ class system_folder_access {
      * Method for creation of folders for collaborative work. It is only meant to be called by the
      * concerning ad hoc task from collaborativefolders.
      *
-     * @param $path string specific path of the groupfolder.
+     * @param string $path specific path of the groupfolder.
      * @return int status code received from the client.
      */
     public function make_folder($path) {
-        mtrace('open1');
         if (!$this->webdav->open()) {
-            mtrace('open2');
             throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }
-        mtrace('open3');
-        $result = $this->webdav->mkcol($this->prefixwebdav . $path);
+        $result = $this->webdav->mkcol($path);
         $this->webdav->close();
         return $result;
     }

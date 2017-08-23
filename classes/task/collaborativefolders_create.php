@@ -35,22 +35,34 @@ class collaborativefolders_create extends \core\task\adhoc_task {
      * Create one folder per group, as specified by \mod_collaborativefolders\observer::collaborativefolders_created.
      */
     public function execute() {
-        // Get the wrapper that contains client logged in as the system user.
-        // TODO check login status by catching configuration exceptions.
-        $ocaccess = new system_folder_access();
+        // Get a client logged in as the system user.
+        try {
+            $ocaccess = new system_folder_access();
+        } catch (configuration_exception $e) {
+            mtrace(sprintf('System client not configured: %s', $e->getMessage()));
+            // Re-throw so that task is not marked as finished. End.
+            throw $e;
+        }
 
         $errors = array();
         $customdata = $this->get_custom_data();
 
         foreach ($customdata->paths as $path) {
-            // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
+            // If a request or something along the way fails badly, make_folders throws an exception.
+            // TODO treat this identical to wrong status codes!
             $statuscode = $ocaccess->make_folder($path);
             mtrace('Folder: ' . $path . ', Code: ' . $statuscode);
 
-            if ($statuscode == 201 || $statuscode == 405) {
+            // Legend:
+            // 201: Created. (Expected regularly.)
+            // 405: Method not allowed. Will be raised if folder already exists. Also expected, although less regularly.
+            $requestok = $statuscode == 201 || $statuscode == 405;
+
+            // Request failed; record.
+            if (!$requestok) {
                 // If the folder could not be created, record it for later logging.
                 $errors[] = get_string('notcreated', 'mod_collaborativefolders', $path) .
-                        get_string('unexpectedcode', 'mod_collaborativefolders');
+                        get_string('unexpectedcode', 'mod_collaborativefolders', $statuscode);
             }
         }
 
@@ -61,15 +73,13 @@ class collaborativefolders_create extends \core\task\adhoc_task {
             throw new \moodle_exception($errorsformatted);
         }
 
-        $cm = get_coursemodule_from_instance('collaborativefolders', $customdata['instance']);
-
-        $params = array(
-                'objectid' => $customdata->instance,
-                'context' => \context_module::instance($cm->id)
+        // Record successful run.
+        $cm = get_coursemodule_from_instance('collaborativefolders', $customdata->instance);
+        $done = folders_created::create([
+            'objectid' => $customdata->instance,
+            'context' => \context_module::instance($cm->id)
+            ]
         );
-
-        $done = folders_created::create($params);
         $done->trigger();
-
     }
 }
