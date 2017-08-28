@@ -164,6 +164,7 @@ class view_controller {
      */
     private static function view_folders_student(statusinfo $statusinfo, user_folder_access $userclient,
                                                  mod_collaborativefolders_renderer $renderer, \cm_info $cm) {
+        echo 'student view!'; // TODO remove debug statement.
         // Get applicable groups from $statusinfo.
         $folders = array();
         if (!$statusinfo->groupmode) {
@@ -175,9 +176,22 @@ class view_controller {
 
         // Per group: Either define user-local name or access share.
         foreach ($folders as $f) {
-            // TODO Define name.
+            $form = new name_form(qualified_me(), [// TODO move to front and do something.
+                'id' => $f->id,
+                'namefield' => sprintf("%s (%s)", $cm->name, $f->name),
+                ]
+            );
+
+            // Show form to define user-local name.
+            if ($fromform = $form->get_data()) {
+                // TODO move to front and do something.
+                echo "submitted and validated!";
+                var_dump($fromform);
+            } else {
+                $renderer->output_name_form($f, $form);
+            }
+
             // TODO Access share.
-            var_dump($f);
         }
     }
 
@@ -193,11 +207,13 @@ class view_controller {
      */
     private static function view_folder_teacher(statusinfo $statusinfo, user_folder_access $userclient,
                                                 mod_collaborativefolders_renderer $renderer, \cm_info $cm) {
+        echo 'teacher view!'; // TODO remove debug statement.
         if (!$statusinfo->teachermayaccess) {
             echo $renderer->render_widget_teachermaynotaccess();
             return;
         }
 
         // TODO Define name / access share.
+        $folders = [0 => 'coursemodule-root']; // TODO Might change.
     }
 }

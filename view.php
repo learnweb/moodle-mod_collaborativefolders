@@ -43,17 +43,9 @@ require_capability('mod/collaborativefolders:view', $context);
     $collaborativefolder, $cm, $context, $PAGE->get_renderer('mod_collaborativefolders'));
 exit;
 
-// Check whether viewer be treated as teacher or student. Actively ignore admins!
-// $capteacher = has_capability('mod/collaborativefolders:viewteacher', $context, false);
-// $capstudent = has_capability('mod/collaborativefolders:viewstudent', $context, false);
-
-// View action, supposed to be one of "reset", "logout", "generate", or empty.
-$action = optional_param('action', null, PARAM_ALPHA);
-
 // The system_folder_access object will be used to access the system user's storage.
 $systemclient = new \mod_collaborativefolders\local\clients\system_folder_access();
 $userclient = new \mod_collaborativefolders\local\clients\user_folder_access();
-
 
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
@@ -70,41 +62,8 @@ if ($fromform = $mform->get_data() && isset($fromform->enter)) {
     $userclient->set_entry('name', $cmid, $USER->id, $fromform->namefield);
 }
 
-
-// Indicates, whether the teacher is allowed to have access to the folder or not.
-$teacherallowed = $collaborativefolder->teacher;
-
-// Indicator for groupmode.
-$gm = false;
-
-// Two separate paths are needed, one for the share and another to rename the shared folder.
-$sharepath = '/' . $cmid;
-$finalpath = $sharepath;
-
-// Checks if the groupmode is active. Does not differentiate between VISIBLE and SEPERATE.
-if (groups_get_activity_groupmode($cm) != 0) {
-    // If the groupmode is set by the creator, $gm is set to true.
-    $gm = true;
-    // If the current user is a student and participates in one ore more of the chosen
-    // groups, $ingroup is set to the group, which was created first.
-    $ingroup = groups_get_activity_group($cm);
-
-    // If a groupmode is used and the current user is not a teacher, the sharepath is
-    // extended by the group ID of the student.
-    // The path for renaming the folder, becomes the group ID, because only the groupfolder
-    // is shared with the concerning user.
-    if ($ingroup != 0) {
-
-        $sharepath .= '/' . $ingroup;
-        $finalpath = '/' . $ingroup;
-    }
-}
-
 // Fetch a stored link belonging to this particular activity instance.
 $privatelink = $userclient->get_entry('link', $cmid, $USER->id);
-
-// Does the current user have access to this activity, be it teacher or student?
-$hasaccess = ($teacheraccess || $capstudent) && \mod_collaborativefolders\toolbox::is_create_task_running($cmid);
 
 // Does the user have a link to this Collaborative Folder and access to this activity?
 $haslink = $privatelink != null && $hasaccess;
@@ -166,28 +125,3 @@ if ($action === 'generate') {
         }
     }
 }
-
-
-// No link has been stored yet and no order to generate one has been received.
-$nogenerate = $nolink && !$generate;
-
-if ($nogenerate) {
-
-    // If the user already has set a name for the folder, proceed.
-    if ($name != null) {
-
-        // A reset parameter has to be passed on redirection.
-        $reseturl = qualified_me() . '&action=reset';
-        echo $renderer->print_name_and_reset($name, $reseturl);
-
-        // Generate share
-        $genurl = qualified_me() . '&action=generate';
-        echo $renderer->print_link($genurl, 'generate');
-
-    } else {
-
-        // Otherwise, show a form for the user to enter a name into.
-        $mform->display();
-    }
-}
-

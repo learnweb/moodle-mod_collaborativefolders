@@ -23,6 +23,7 @@
  */
 
 use core\output\notification;
+use mod_collaborativefolders\name_form;
 use mod_collaborativefolders\output\statusinfo;
 
 defined('MOODLE_INTERNAL') || die;
@@ -61,7 +62,8 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_statusinfo(statusinfo $statusinfo) {
-        return $this->render_from_template('mod_collaborativefolders/statusinfo', $statusinfo);
+        $exported = $statusinfo->export_for_template($this);
+        return $this->render_from_template('mod_collaborativefolders/statusinfo', $exported);
     }
 
     /**
@@ -95,6 +97,15 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
+    }
+
+    /**
+     * @param name_form $form
+     */
+    public function output_name_form($group, name_form $form) {
+        echo $this->output->heading(sprintf('@Group: %s', $group->name), 4);
+        echo $this->output->box('@define the name under which the shared folder will be stored in your ownCloud.');
+        $form->display();
     }
 
 }
