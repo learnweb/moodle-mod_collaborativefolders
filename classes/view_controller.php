@@ -54,12 +54,6 @@ class view_controller {
 
         \mod_collaborativefolders\toolbox::coursemodule_viewed($context, $cm);
 
-        echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
-        if (!empty($collaborativefolder->intro)) {
-            echo $OUTPUT->box(format_module_intro('collaborativefolder', $collaborativefolder, $cm->id), 'generalbox', 'intro');
-        }
-
         // Check whether viewer is considered as non-student, because their access may be restricted. Admin override is ignored.
         // Note: This is a restriction, not a capability. Don't use for deciding what someone MAY do, consider as MAY NOT instead.
         $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, null, false);
@@ -78,6 +72,11 @@ class view_controller {
         }
 
         // Start output.
+        echo $OUTPUT->header();
+        echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
+        if (!empty($collaborativefolder->intro)) {
+            echo $OUTPUT->box(format_module_intro('collaborativefolder', $collaborativefolder, $cm->id), 'generalbox', 'intro');
+        }
 
         // Show notice if there is a general problem with the system account.
         // Show to someone who can add/configure this instance (i.e. teachers).

@@ -43,10 +43,6 @@ require_capability('mod/collaborativefolders:view', $context);
     $collaborativefolder, $cm, $context, $PAGE->get_renderer('mod_collaborativefolders'));
 exit;
 
-// The system_folder_access object will be used to access the system user's storage.
-$systemclient = new \mod_collaborativefolders\local\clients\system_folder_access();
-$userclient = new \mod_collaborativefolders\local\clients\user_folder_access();
-
 // If the reset link was used, the chosen foldername is reset.
 if ($action === 'reset') {
     $userclient->set_entry('name', $cmid, $USER->id, null);
@@ -54,26 +50,13 @@ if ($action === 'reset') {
     exit;
 }
 
-// Get form data and check whether the submit button has been pressed.
-$mform = new mod_collaborativefolders\name_form(qualified_me(), array('namefield' => $cm->name));
-
 if ($fromform = $mform->get_data() && isset($fromform->enter)) {
     // If a name has been submitted, it gets stored in the user preferences.
     $userclient->set_entry('name', $cmid, $USER->id, $fromform->namefield);
 }
 
-// Fetch a stored link belonging to this particular activity instance.
-$privatelink = $userclient->get_entry('link', $cmid, $USER->id);
-
-// Does the user have a link to this Collaborative Folder and access to this activity?
-$haslink = $privatelink != null && $hasaccess;
-
-// If the current user already received a link to the Collaborative Folder, display it.
-if ($haslink) {
-
-    echo $renderer->print_link($privatelink, 'access');
-}
-
+$privatlink = $userclient->get_entry('link', $cmid, $USER->id);
+echo $renderer->print_link($privatelink, 'access');
 
 // The name of the folder, chosen by the user.
 $name = $userclient->get_entry('name', $cmid, $USER->id);
