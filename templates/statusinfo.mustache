@@ -36,7 +36,7 @@
         "creationstatus": "created",
         "teachermayaccess": 0,
         "groupmode": 1,
-        "groups": [{ "1" : "Group 1" }]
+        "groups": [{ 'id': 1, 'name': 'Group 1' }]
     }
 }}
 <h3>@Overview</h3>
@@ -68,7 +68,7 @@
             <td>
                 <ul>
                     {{#groups}}
-                        <li>{{.}}</li>
+                        <li>{{name}}</li>
                     {{/groups}}
                 </ul>
             </td>

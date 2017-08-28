@@ -36,7 +36,7 @@ use stdClass;
  * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class statusinfo implements \renderable {
+class statusinfo implements \renderable, \templatable {
 
     /** @var string General creation status in created/pending */
     public $creationstatus;
@@ -62,4 +62,24 @@ class statusinfo implements \renderable {
     }
 
 
+    /**
+     * This is required because, although $groups is an array, Mustache does not consider it as one. This is due to the fact
+     * that it is indexed by group ID number (i.e. sparse keys), whereas Mustache requires consecutive IDs as keys.
+     *
+     * Function to export the renderer data in a format that is suitable for a
+     * mustache template. This means:
+     * 1. No complex types - only stdClass, array, int, string, float, bool
+     * 2. Any additional info that is required for the template is pre-calculated (e.g. capability checks).
+     *
+     * @param renderer_base $output Used to do a final render of any components that need to be rendered for export.
+     * @return stdClass
+     */
+    public function export_for_template(renderer_base $output) {
+        $export = clone($this);
+        $export->groups = array();
+        foreach ($this->groups as $group) {
+            $export->groups[] = $group;
+        }
+        return $export;
+    }
 }

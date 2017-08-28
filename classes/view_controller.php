@@ -106,9 +106,9 @@ class view_controller {
             echo $OUTPUT->heading('@access', 3);
             if ($statusinfo->creationstatus === 'created') {
                 if ($isteacher) {
-                    echo self::view_folder_teacher($statusinfo, $userclient, $renderer);
+                    echo self::view_folder_teacher($statusinfo, $userclient, $renderer, $cm);
                 } else {
-                    echo self::view_folders_student($statusinfo, $userclient, $renderer);
+                    echo self::view_folders_student($statusinfo, $userclient, $renderer, $cm);
                 }
             } else {
                 // Folders are not yet created and can therefore not be shared.
@@ -163,7 +163,7 @@ class view_controller {
      * @return string Rendered view
      */
     private static function view_folders_student(statusinfo $statusinfo, user_folder_access $userclient,
-                                                 mod_collaborativefolders_renderer $renderer) {
+                                                 mod_collaborativefolders_renderer $renderer, \cm_info $cm) {
         // Get applicable groups from $statusinfo.
         $folders = array();
         if (!$statusinfo->groupmode) {
@@ -192,7 +192,7 @@ class view_controller {
      * @return string Rendered view
      */
     private static function view_folder_teacher(statusinfo $statusinfo, user_folder_access $userclient,
-                                                mod_collaborativefolders_renderer $renderer) {
+                                                mod_collaborativefolders_renderer $renderer, \cm_info $cm) {
         if (!$statusinfo->teachermayaccess) {
             echo $renderer->render_widget_teachermaynotaccess();
             return;
