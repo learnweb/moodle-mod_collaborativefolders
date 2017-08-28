@@ -62,7 +62,7 @@ class view_controller {
 
         // Check whether viewer is considered as non-student, because their access may be restricted. Admin override is ignored.
         // Note: This is a restriction, not a capability. Don't use for deciding what someone MAY do, consider as MAY NOT instead.
-        $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, false);
+        $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, null, false);
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm, $isteacher);
         $userclient = new user_folder_access(new \moodle_url('/mod/collaborativefolders/authorise.php', [
@@ -182,7 +182,7 @@ class view_controller {
     }
 
     /**
-     * Render the view that is used for interactions with student folders. Per applicable folder:
+     * Render the view that is used for interactions with a folder as a teacher.
      * # Defining a user-local name and generating a share
      * # Display the selected name, a link, and a button for problem solving (aka re-share).
      *
