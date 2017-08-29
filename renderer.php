@@ -36,27 +36,8 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
-    public function print_link($url, $action) {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->heading(get_string($action.'_heading', 'mod_collaborativefolders'), 4);
-        $output .= html_writer::div(get_string($action, 'mod_collaborativefolders',
-                html_writer::link($url, 'Link')));
-        return $output;
-    }
-
-    public function print_name_and_reset($name, $url) {
-        global $OUTPUT;
-        $output = '';
-        $output .= $OUTPUT->heading(get_string('generate_change_name', 'mod_collaborativefolders'), 4);
-        $output .= html_writer::div(get_string('folder_name', 'mod_collaborativefolders', $name));
-        $output .= html_writer::div(get_string('reset', 'mod_collaborativefolders',
-                html_writer::link($url, get_string('here', 'mod_collaborativefolders'))));
-        return $output;
-    }
-
     /**
-     * Render an informational table.
+     * Render an informational table, showing an overview of the instance.
      *
      * @param statusinfo $statusinfo
      * @return string

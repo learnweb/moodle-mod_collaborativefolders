@@ -24,7 +24,6 @@
  */
 namespace mod_collaborativefolders;
 
-use core\output\notification;
 use mod_collaborativefolders\local\clients\system_folder_access;
 use mod_collaborativefolders\local\clients\user_folder_access;
 use mod_collaborativefolders\output\statusinfo;

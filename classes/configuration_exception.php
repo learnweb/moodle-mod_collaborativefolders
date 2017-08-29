@@ -26,6 +26,13 @@ namespace mod_collaborativefolders;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Exception for when a client configuration data is missing.
+ *
+ * @package    mod_collaborativefolders
+ * @copyright  2017 Project seminar (Learnweb, University of Münster)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class configuration_exception extends \moodle_exception {
 
     /**
