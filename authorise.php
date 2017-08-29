@@ -52,7 +52,7 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
 if ($action === 'logout') {
     // Remove access token.
     $userclient->log_out();
-    redirect($nextpage, '@logged out from remote system!!');
+    redirect($nextpage, '@logged out from remote system!!', null, \core\output\notification::NOTIFY_SUCCESS);
     exit;
 }
 
@@ -60,7 +60,7 @@ if ($action === 'login') {
     // Callback from remote system. Use received authorisation code to convert it into an access token.
     if ($userclient->check_login()) {
         // Token received! Continuing...
-        redirect($nextpage, '@authorised at remote system!!');
+        redirect($nextpage, '@authorised at remote system!!', null, \core\output\notification::NOTIFY_SUCCESS);
     } else {
         // Authorisation failed for some reason.
         redirect($nextpage, '@not authorised at remote system!!', null, \core\output\notification::NOTIFY_ERROR);
