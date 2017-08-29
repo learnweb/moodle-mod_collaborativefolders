@@ -59,6 +59,7 @@ class view_controller {
         $isteacher = has_capability('mod/collaborativefolders:isteacher', $context, null, false);
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm, $isteacher);
+        $userfolders = self::obtain_folders($statusinfo, $cm, $isteacher);
         $userclient = new user_folder_access(new \moodle_url('/mod/collaborativefolders/authorise.php', [
                 'action' => 'login',
                 'id' => $cm->id,
@@ -70,6 +71,8 @@ class view_controller {
         } catch (configuration_exception $e) {
             $systemclient = null;
         }
+
+        // TODO process submitted folder forms from $userfolders!
 
         // Start output.
         echo $OUTPUT->header();
@@ -104,11 +107,7 @@ class view_controller {
         if ($userclient->check_login()) {
             echo $OUTPUT->heading('@access', 3);
             if ($statusinfo->creationstatus === 'created') {
-                if ($isteacher) {
-                    echo self::view_folder_teacher($statusinfo, $userclient, $renderer, $cm);
-                } else {
-                    echo self::view_folders_student($statusinfo, $userclient, $renderer, $cm);
-                }
+                echo self::share_and_view_folders($userfolders, $statusinfo, $renderer, $isteacher);
             } else {
                 // Folders are not yet created and can therefore not be shared.
                 echo $renderer->render_widget_notcreatedyet();
@@ -124,7 +123,7 @@ class view_controller {
      * @param \stdClass $collaborativefolder Collaborativefolder instance
      * @param \cm_info $cm Corresponding course module
      * @param bool $asteacher Assume a teacher's perspective (additional output).
-     * @return output\statusinfo
+     * @return statusinfo
      */
     private static function get_instance_status($collaborativefolder, \cm_info $cm, $asteacher) {
         global $USER;
@@ -156,63 +155,66 @@ class view_controller {
      * # Defining a user-local name and generating a share
      * # Display the selected name, a link, and a button for problem solving (aka re-share).
      *
+     * @param $folderforms
      * @param statusinfo $statusinfo
-     * @param user_folder_access $userclient
      * @param mod_collaborativefolders_renderer $renderer
+     * @param $isteacher
      * @return string Rendered view
+     * @internal param user_folder_access $userclient
      */
-    private static function view_folders_student(statusinfo $statusinfo, user_folder_access $userclient,
-                                                 mod_collaborativefolders_renderer $renderer, \cm_info $cm) {
-        echo 'student view!'; // TODO remove debug statement.
-        // Get applicable groups from $statusinfo.
-        $folders = array();
-        if (!$statusinfo->groupmode) {
-            $folders = [0 => 'coursemodule-root']; // TODO Might change.
-        } else {
-            // One folder per applicable group.
-            $folders = $statusinfo->groups;
+    private static function share_and_view_folders($folderforms, statusinfo $statusinfo,
+                                                   mod_collaborativefolders_renderer $renderer, $isteacher) {
+        if ($isteacher && !$statusinfo->teachermayaccess) {
+            echo $renderer->render_widget_teachermaynotaccess();
+            return;
         }
 
-        // Per group: Either define user-local name or access share.
-        foreach ($folders as $f) {
-            $form = new name_form(qualified_me(), [// TODO move to front and do something.
-                'id' => $f->id,
-                'namefield' => sprintf("%s (%s)", $cm->name, $f->name),
-                ]
-            );
-
+        // Per group/folder: Either define user-local name or access share.
+        foreach ($folderforms as $groupid => $form) {
             // Show form to define user-local name.
             if ($fromform = $form->get_data()) {
                 // TODO move to front and do something.
                 echo "submitted and validated!";
                 var_dump($fromform);
             } else {
-                $renderer->output_name_form($f, $form);
+                if ($groupid === 0) {
+                    $group = toolbox::fake_course_group();
+                } else {
+                    $group = $statusinfo->groups[$groupid];
+                }
+                $renderer->output_name_form($group, $form);
             }
 
             // TODO Access share.
         }
+        // TODO replace echo by string variables (and return that).
     }
 
-    /**
-     * Render the view that is used for interactions with a folder as a teacher.
-     * # Defining a user-local name and generating a share
-     * # Display the selected name, a link, and a button for problem solving (aka re-share).
-     *
-     * @param statusinfo $statusinfo
-     * @param user_folder_access $userclient
-     * @param mod_collaborativefolders_renderer $renderer
-     * @return string Rendered view
-     */
-    private static function view_folder_teacher(statusinfo $statusinfo, user_folder_access $userclient,
-                                                mod_collaborativefolders_renderer $renderer, \cm_info $cm) {
-        echo 'teacher view!'; // TODO remove debug statement.
-        if (!$statusinfo->teachermayaccess) {
-            echo $renderer->render_widget_teachermaynotaccess();
-            return;
+    private static function obtain_folders(statusinfo $statusinfo, \cm_info $cm, $isteacher) {
+        // Get applicable groups from $statusinfo.
+        $folders = array();
+        if ($isteacher && !$statusinfo->teachermayaccess) {
+            // Refuse access for teacher.
+            return array();
+        } else if ($isteacher || !$statusinfo->groupmode) {
+            // One folder for the entire course.
+            $fakegroup = toolbox::fake_course_group();
+            $folders = [$fakegroup];
+        } else {
+            // Student; one folder per applicable group.
+            $folders = $statusinfo->groups;
         }
 
-        // TODO Define name / access share.
-        $folders = [0 => 'coursemodule-root']; // TODO Might change.
+        $forms = array();
+        // Per group: Either define user-local name or access share.
+        foreach ($folders as $f) {
+            $form = new name_form(qualified_me(), [
+                    'id' => $f->id,
+                    'namefield' => sprintf("%s (%s)", $cm->name, $f->name),
+                ]
+            );
+            $forms[$f->id] = $form;
+        }
+        return $forms;
     }
 }

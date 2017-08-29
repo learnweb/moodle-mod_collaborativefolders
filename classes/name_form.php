@@ -47,7 +47,8 @@ class name_form extends \moodleform {
         $errors = parent::validation($data, $files);
 
         if ($data['namefield'] !== clean_param($data['namefield'], PARAM_PATH)) {
-            $errors['namefield'] = '@A valid folder or path name must be entered. Use \'/\' (slash) to delimit directories of a path.';
+            $errors['namefield'] = '@A valid folder or path name must be entered. Use \'/\' (slash) to ' .
+                'delimit directories of a path.';
         }
 
         return $errors;

@@ -109,4 +109,15 @@ class toolbox {
         $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
         $cmviewed->trigger();
     }
+
+    /**
+     * Create a fake group. Used for representing course-wide groups of users.
+     * @return \stdClass faking a simple group object; with attributes id=0 and name='Course'.
+     */
+    public static function fake_course_group() {
+        $group = new \stdClass();
+        $group->name = 'Course'; // TODO maybe replace with localisable string.
+        $group->id = 0;
+        return $group;
+    }
 }
