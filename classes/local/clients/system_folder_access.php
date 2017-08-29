@@ -42,6 +42,7 @@ use repository_owncloud\ocs_client;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class system_folder_access {
+    use webdav_client_trait;
 
     /**
      * client instance for server access using the system account
@@ -103,48 +104,8 @@ class system_folder_access {
             throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
         }
 
-        $this->initiate_webdavclient();
+        $this->initiate_webdavclient($this->systemclient);
         $this->ocsclient = new ocs_client($this->systemclient);
-    }
-
-    /**
-     * Initiates the webdav client.
-     * @return \repository_owncloud\owncloud_client An initialised WebDAV client for ownCloud.
-     * @throws configuration_exception If configuration is missing (endpoints).
-     */
-    public function initiate_webdavclient() {
-        if ($this->webdav !== null) {
-            return $this->webdav;
-        }
-
-        $url = $this->issuer->get_endpoint_url('webdav');
-        if (empty($url)) {
-            throw new configuration_exception('Endpoint webdav not defined.');
-        }
-        $webdavendpoint = parse_url($url);
-
-        // Selects the necessary information (port, type, server) from the path to build the webdavclient.
-        $server = $webdavendpoint['host'];
-        if ($webdavendpoint['scheme'] === 'https') {
-            $webdavtype = 'ssl://';
-            $webdavport = 443;
-        } else if ($webdavendpoint['scheme'] === 'http') {
-            $webdavtype = '';
-            $webdavport = 80;
-        }
-
-        // Override default port, if a specific one is set.
-        if (isset($webdavendpoint['port'])) {
-            $webdavport = $webdavendpoint['port'];
-        }
-
-        // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
-        $this->webdav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
-            $this->systemclient, $webdavendpoint['path']);
-
-        $this->webdav->port = $webdavport;
-        $this->webdav->debug = false;
-        return $this->webdav;
     }
 
     /**

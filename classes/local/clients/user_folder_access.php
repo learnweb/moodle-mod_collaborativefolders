@@ -36,6 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_folder_access {
+    use webdav_client_trait;
     /**
      * Additional scopes needed by the user account. Currently, ownCloud does not actually support/use scopes, so
      * this is intended as a hint at required functionality and will help declare future scopes.
@@ -83,7 +84,7 @@ class user_folder_access {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        $this->initiate_webdavclient();
+        $this->initiate_webdavclient($this->userclient);
     }
 
     /**
@@ -101,46 +102,6 @@ class user_folder_access {
 
         $this->userclient = \core\oauth2\api::get_user_oauth_client($this->issuer, $returnurl, self::SCOPES);
         return $this->userclient;
-    }
-
-    /**
-     * Initiates the webdav client.
-     * @return \repository_owncloud\owncloud_client An initialised WebDAV client for ownCloud.
-     * @throws configuration_exception If configuration is missing (endpoints).
-     */
-    public function initiate_webdavclient() {
-        if ($this->webdav !== null) {
-            return $this->webdav;
-        }
-
-        $url = $this->issuer->get_endpoint_url('webdav');
-        if (empty($url)) {
-            throw new configuration_exception('Endpoint webdav not defined.');
-        }
-        $webdavendpoint = parse_url($url);
-
-        // Selects the necessary information (port, type, server) from the path to build the webdavclient.
-        $server = $webdavendpoint['host'];
-        if ($webdavendpoint['scheme'] === 'https') {
-            $webdavtype = 'ssl://';
-            $webdavport = 443;
-        } else if ($webdavendpoint['scheme'] === 'http') {
-            $webdavtype = '';
-            $webdavport = 80;
-        }
-
-        // Override default port, if a specific one is set.
-        if (isset($webdavendpoint['port'])) {
-            $webdavport = $webdavendpoint['port'];
-        }
-
-        // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
-        $this->webdav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
-            $this->userclient, $webdavendpoint['path']);
-
-        $this->webdav->port = $webdavport;
-        $this->webdav->debug = false;
-        return $this->webdav;
     }
 
     /**
