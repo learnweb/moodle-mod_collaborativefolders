@@ -173,6 +173,7 @@ class view_controller {
 
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
+            // TODO if $userclient->get_entry('link', $cm->id, $USER->id) is not null, show link to access share instead.
             // Show form to define user-local name.
             $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
             $renderer->output_name_form($group, $form);

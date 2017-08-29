@@ -49,6 +49,3 @@ if ($action === 'reset') {
     redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
     exit;
 }
-
-$privatlink = $userclient->get_entry('link', $cmid, $USER->id);
-echo $renderer->print_link($privatelink, 'access');
