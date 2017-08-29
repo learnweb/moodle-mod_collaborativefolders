@@ -72,7 +72,9 @@ class view_controller {
             $systemclient = null;
         }
 
-        // TODO process submitted folder forms from $userfolders!
+        // If a folder form (that is inside $userfolders) is submitted, validate it and maybe create the share.
+        // Redirects to self if something interesting has happened.
+        self::handle_folder_form_submitted($cm, $userfolders);
 
         // Start output.
         echo $OUTPUT->header();
@@ -155,15 +157,16 @@ class view_controller {
      * # Defining a user-local name and generating a share
      * # Display the selected name, a link, and a button for problem solving (aka re-share).
      *
-     * @param $folderforms
+     * @param array $folderforms
      * @param statusinfo $statusinfo
      * @param mod_collaborativefolders_renderer $renderer
-     * @param $isteacher
+     * @param bool $isteacher
      * @return string Rendered view
      * @internal param user_folder_access $userclient
      */
     private static function share_and_view_folders($folderforms, statusinfo $statusinfo,
                                                    mod_collaborativefolders_renderer $renderer, $isteacher) {
+        // TODO replace echoes by string variable concatenations (and return that string).
         if ($isteacher && !$statusinfo->teachermayaccess) {
             echo $renderer->render_widget_teachermaynotaccess();
             return;
@@ -172,22 +175,12 @@ class view_controller {
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
             // Show form to define user-local name.
-            if ($fromform = $form->get_data()) {
-                // TODO move to front and do something.
-                echo "submitted and validated!";
-                var_dump($fromform);
-            } else {
-                if ($groupid === 0) {
-                    $group = toolbox::fake_course_group();
-                } else {
-                    $group = $statusinfo->groups[$groupid];
-                }
-                $renderer->output_name_form($group, $form);
-            }
+            $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
+            $renderer->output_name_form($group, $form);
 
-            // TODO Access share.
+            // TODO XOR Access share.
         }
-        // TODO replace echo by string variables (and return that).
+
     }
 
     private static function obtain_folders(statusinfo $statusinfo, \cm_info $cm, $isteacher) {
@@ -216,5 +209,22 @@ class view_controller {
             $forms[$f->id] = $form;
         }
         return $forms;
+    }
+
+    /**
+     * @param \cm_info $cm
+     * @param $userfolders
+     */
+    public static function handle_folder_form_submitted(\cm_info $cm, $userfolders) {
+        foreach ($userfolders as $groupid => $form) {
+            // Show form to define user-local name.
+            if ($fromform = $form->get_data()) {
+                // TODO do something with the validated name!
+                redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, [
+                    'id' => $cm->id,
+                ]), sprintf('@share information for %s received', $groupid), null, \core\output\notification::NOTIFY_SUCCESS);
+                exit;
+            }
+        }
     }
 }

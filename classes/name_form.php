@@ -40,7 +40,7 @@ class name_form extends \moodleform {
         $mform->setDefault('namefield', $this->_customdata['namefield']);
         $mform->setType('namefield', PARAM_RAW_TRIMMED);
 
-        $mform->addElement('submit', 'enter', get_string('save', 'mod_collaborativefolders'));
+        $mform->addElement('submit', 'enter', get_string('getaccess', 'mod_collaborativefolders'));
     }
 
     public function validation($data, $files) {
