@@ -73,7 +73,7 @@ class view_controller {
 
         // If a folder form (that is inside $userfolders) is submitted, validate it and maybe create the share.
         // Redirects to self if something interesting has happened.
-        self::handle_folder_form_submitted($cm, $userfolders);
+        self::handle_folder_form_submitted($userfolders, $cm, $userclient, $USER->id);
 
         // Start output.
         echo $OUTPUT->header();
@@ -211,19 +211,49 @@ class view_controller {
     }
 
     /**
+     * @param array $userfolders
      * @param \cm_info $cm
-     * @param $userfolders
      */
-    public static function handle_folder_form_submitted(\cm_info $cm, $userfolders) {
+    public static function handle_folder_form_submitted($userfolders, \cm_info $cm, user_folder_access $userclient,
+                                                        $currentuserid) {
         foreach ($userfolders as $groupid => $form) {
             // Show form to define user-local name.
             if ($fromform = $form->get_data()) {
-                // TODO do something with the validated name!
+                $userclient->set_entry('name', $cm->id, $currentuserid, $fromform->namefield);
+
+                self::share_folder_with_user();
+
+                $generatedevent = \mod_collaborativefolders\event\link_generated::create([
+                    'context' => $context,
+                    'objectid' => $cm->instance
+                ]);
+                $generatedevent->trigger();
+
                 redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, [
                     'id' => $cm->id,
                 ]), sprintf('@share information for %s received', $groupid), null, \core\output\notification::NOTIFY_SUCCESS);
                 exit;
             }
         }
+    }
+
+    private static function share_folder_with_user($folder, $targetuser, system_folder_access $systemclient,
+                                                   user_folder_access $userclient, $context, $cm) {
+        // TODO derive $sharepath from $folder.
+        // TODO derive $finalpath and $name.
+        // Share from system to user.
+        $shared = $systemclient->generate_share($sharepath, $targetuser);
+        if (!$shared) {
+            // Share was unsuccessful.
+            throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
+        }
+
+        $renamed = $userclient->rename($finalpath, $name, $cmid, $USER->id);
+        if ($renamed['status'] === false) {
+            // Rename was unsuccessful.
+            throw new share_failed_exception($renamed['content']);
+        }
+
+        // Sharing and renaming operations were successful.
     }
 }

@@ -24,6 +24,8 @@
  */
 namespace mod_collaborativefolders\local\clients;
 
+defined('MOODLE_INTERNAL') || die();
+
 use mod_collaborativefolders\configuration_exception;
 
 /**

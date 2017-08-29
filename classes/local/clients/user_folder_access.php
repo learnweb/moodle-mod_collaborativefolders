@@ -119,7 +119,7 @@ class user_folder_access {
 
         $ret = array();
 
-        if (!$this->user_loggedin()) { // TODO supposed to be done elsewhere (we may assume that user is logged in)
+        if (!$this->check_login()) { // TODO supposed to be done elsewhere (we may assume that user is logged in)
             // If the user is not logged in, a suitable error message is returned.
             $ret['status'] = false;
             $ret['content'] = get_string('usernotloggedin', 'mod_collaborativefolders');
