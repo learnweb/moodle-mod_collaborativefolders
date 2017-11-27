@@ -73,7 +73,7 @@ class view_controller {
 
         // If a folder form (that is inside $userfolders) is submitted, validate it and maybe create the share.
         // Redirects to self if something interesting has happened.
-        self::handle_folder_form_submitted($userfolders, $cm, $userclient, $USER->id);
+        self::handle_folder_form_submitted($userfolders, $cm, $userclient, $systemclient, $USER->id, $context);
 
         // Start output.
         echo $OUTPUT->header();
@@ -108,7 +108,7 @@ class view_controller {
         if ($userclient->check_login()) {
             echo $OUTPUT->heading('@access', 3);
             if ($statusinfo->creationstatus === 'created') {
-                echo self::share_and_view_folders($userfolders, $statusinfo, $renderer, $isteacher);
+                echo self::share_and_view_folders($cm->id, $userfolders, $statusinfo, $renderer, $isteacher, $systemclient !== null, $userclient);
             } else {
                 // Folders are not yet created and can therefore not be shared.
                 echo $renderer->render_widget_notcreatedyet();
@@ -156,29 +156,55 @@ class view_controller {
      * # Defining a user-local name and generating a share
      * # Display the selected name, a link, and a button for problem solving (aka re-share).
      *
+     * @param int $cmid Course module ID
      * @param array $folderforms
      * @param statusinfo $statusinfo
      * @param mod_collaborativefolders_renderer $renderer
-     * @param bool $isteacher
+     * @param bool $isteacher true if the viewing user is a teacher
+     * @param bool $systemclientcanshare true if there is a connected system account that could create a share
+     * @param user_folder_access $userclient connected client for the current user.
      * @return string Rendered view
      * @internal param user_folder_access $userclient
      */
-    private static function share_and_view_folders($folderforms, statusinfo $statusinfo,
-                                                   mod_collaborativefolders_renderer $renderer, $isteacher) {
+    private static function share_and_view_folders(int $cmid, $folderforms, statusinfo $statusinfo,
+                                                   mod_collaborativefolders_renderer $renderer, bool $isteacher,
+                                                   bool $systemclientcanshare, user_folder_access $userclient) {
+        global $USER;
+
         // TODO replace echoes by string variable concatenations (and return that string).
         if ($isteacher && !$statusinfo->teachermayaccess) {
             echo $renderer->render_widget_teachermaynotaccess();
             return;
         }
 
+        // Counter for sharing forms that were suppressed because no sysaccount was connected.
+        $sharessuppressed = 0;
+
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
-            // TODO if $userclient->get_entry('link', $cm->id, $USER->id) is not null, show link to access share instead.
-            // Show form to define user-local name.
-            $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
-            $renderer->output_name_form($group, $form);
+            $link = $userclient->get_entry('link' , $cmid, $USER->id);
+            if ($link === null) {
+                // User does not have a share yet; create it now.
 
-            // TODO XOR Access share.
+                // Show notice if there is a general problem with the system account (and skip form).
+                if (!$systemclientcanshare) {
+                    $sharessuppressed++;
+                    continue;
+                }
+
+                // Show form to define user-local name.
+                $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
+                $renderer->output_name_form($group, $form);
+            } else {
+                // XOR Access share.
+                // TODO show $link
+                // TODO show solve problems button
+            }
+        }
+
+        // Show notice if there is a general problem with the system account.
+        if ($sharessuppressed > 0) {
+            echo $renderer->render_widget_noconnection_suppressed_share($sharessuppressed);
         }
 
     }
@@ -212,17 +238,23 @@ class view_controller {
     }
 
     /**
-     * @param array $userfolders
-     * @param \cm_info $cm
+     * @param array $userfolders array of folders applicable for the user
+     * @param \cm_info $cm current coursemodule
+     * @param user_folder_access $userclient connected client of the user
+     * @param system_folder_access $systemclient connected system client
+     * @param int|Name $currentuserid Name of the user that the form will be shared with
+     * @param \context_module $context context of the current coursemodule
      */
     public static function handle_folder_form_submitted($userfolders, \cm_info $cm, user_folder_access $userclient,
-                                                        $currentuserid) {
+                                                        system_folder_access $systemclient, int $currentuserid,
+                                                        \context_module $context) {
         foreach ($userfolders as $groupid => $form) {
             // Show form to define user-local name.
             if ($fromform = $form->get_data()) {
                 $userclient->set_entry('name', $cm->id, $currentuserid, $fromform->namefield);
 
-                self::share_folder_with_user();
+                self::share_folder_with_user($groupid, $fromform->namefield, $systemclient,
+                                                   $userclient, $cm->id, $currentuserid);
 
                 $generatedevent = \mod_collaborativefolders\event\link_generated::create([
                     'context' => $context,
@@ -238,23 +270,26 @@ class view_controller {
         }
     }
 
-    private static function share_folder_with_user($folder, $targetuser, system_folder_access $systemclient,
-                                                   user_folder_access $userclient, $context, $cm) {
-        // TODO derive $sharepath from $folder.
-        // TODO derive $finalpath and $name.
+    private static function share_folder_with_user($groupid, $chosenname, system_folder_access $systemclient,
+                                                   user_folder_access $userclient, int $cmid, int $withuser) {
+        global $USER;
+
+        // TODO derive $sharepath (original path) from $groupid.
         // Share from system to user.
-        $shared = $systemclient->generate_share($sharepath, $targetuser);
+        $shared = $systemclient->generate_share($sharepath, $withuser);
         if (!$shared) {
             // Share was unsuccessful.
             throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
         }
 
-        $renamed = $userclient->rename($finalpath, $name, $cmid, $USER->id);
+        // TODO $finalpath <=> path after share
+        $finalpath = $sharepath;
+
+        $renamed = $userclient->rename($finalpath, $chosenname, $cmid, $USER->id);
         if ($renamed['status'] === false) {
             // Rename was unsuccessful.
             throw new share_failed_exception($renamed['content']);
         }
-
         // Sharing and renaming operations were successful.
     }
 }

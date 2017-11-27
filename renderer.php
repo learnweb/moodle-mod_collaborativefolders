@@ -80,6 +80,13 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    public function render_widget_noconnection_suppressed_share(int $sharessuppressed) {
+        $notification = new notification(sprintf('@noconnection (cannot create %s shares. talk to admin!)', $sharessuppressed),
+            notification::NOTIFY_WARNING);
+        $notification->set_show_closebutton(false);
+        return $this->render($notification);
+    }
+
     /**
      * @param name_form $form
      */

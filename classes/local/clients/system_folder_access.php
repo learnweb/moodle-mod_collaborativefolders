@@ -112,7 +112,6 @@ class system_folder_access {
             throw new configuration_exception(get_string('technicalnotloggedin', 'mod_collaborativefolders'));
         }
 
-        $this->initiate_webdavclient($this->systemclient);
         $this->ocsclient = new ocs_client($this->systemclient);
     }
 
@@ -157,6 +156,7 @@ class system_folder_access {
      * @throws \moodle_exception on connection error.
      */
     public function make_folder($path): int {
+        $this->initiate_webdavclient($this->systemclient);
         if (!$this->webdav->open()) {
             throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }

@@ -91,7 +91,6 @@ class user_folder_access {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
-        $this->initiate_webdavclient($this->userclient);
     }
 
     /**
@@ -122,6 +121,8 @@ class user_folder_access {
      *              link or error message) of the result.
      */
     public function rename($pathtofolder, $newname, $cmid, $userid) {
+        $this->initiate_webdavclient($this->userclient);
+
         $renamed = null;
 
         $ret = array();
