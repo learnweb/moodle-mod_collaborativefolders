@@ -24,9 +24,10 @@
  */
 namespace mod_collaborativefolders\local\clients;
 
-use mod_collaborativefolders\configuration_exception;
-
 defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir . '/webdavlib.php');
+use mod_collaborativefolders\configuration_exception;
 
 /**
  * ownCloud client wrapper, intended for operations on a user's private storage.
@@ -45,9 +46,15 @@ class user_folder_access {
 
     /**
      * client instance for server access using the user's personal account
-     * @var \repository_owncloud\owncloud_client
+     * @var \webdav_client
      */
     private $webdav = null;
+
+    /**
+     * Basepath for WebDAV operations
+     * @var string
+     */
+    private $davbasepath;
 
     /**
      * OAuth 2 user account client
@@ -130,7 +137,8 @@ class user_folder_access {
 
             // After the socket's opening, the WebDAV MOVE method has to be performed in
             // order to rename the folder.
-            $renamed = $this->webdav->move($pathtofolder, '/' . $newname, false);
+            // TODO check number of slashes in `dst_path`.
+            $renamed = $this->webdav->move($this->davbasepath . $pathtofolder,  $this->davbasepath . '/' . $newname, false);
         } else {
 
             // If the socket could not be opened, a socket error needs to be returned.

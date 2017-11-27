@@ -29,6 +29,7 @@ namespace mod_collaborativefolders\local\clients;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->libdir . '/webdavlib.php');
 use mod_collaborativefolders\configuration_exception;
 use repository_owncloud\ocs_client;
 
@@ -46,9 +47,15 @@ class system_folder_access {
 
     /**
      * client instance for server access using the system account
-     * @var \repository_owncloud\owncloud_client
+     * @var \webdav_client
      */
     private $webdav = null;
+
+    /**
+     * Basepath for WebDAV operations
+     * @var string
+     */
+    private $davbasepath;
 
     /**
      * OCS Rest client for a system account
@@ -76,6 +83,7 @@ class system_folder_access {
 
     /**
      * Construct the wrapper and initialise the clients.
+     * @throws \mod_collaborativefolders\configuration_exception if essential data is missing.
      */
     public function __construct () {
         // Get issuer and system account client. Fail early, if needed.
@@ -115,7 +123,7 @@ class system_folder_access {
      * @param $userid string Receiving username.
      * @return bool Success/Failure of sharing.
      */
-    public function generate_share($path, $userid) {
+    public function generate_share($path, $userid): bool {
         $response = $this->ocsclient->call('create_share', [
             'path' => $path,
             'shareType' => ocs_client::SHARE_TYPE_USER,
@@ -146,12 +154,13 @@ class system_folder_access {
      *
      * @param string $path specific path of the groupfolder.
      * @return int status code received from the client.
+     * @throws \moodle_exception on connection error.
      */
-    public function make_folder($path) {
+    public function make_folder($path): int {
         if (!$this->webdav->open()) {
             throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }
-        $result = $this->webdav->mkcol($path);
+        $result = $this->webdav->mkcol($this->davbasepath . $path);
         $this->webdav->close();
         return $result;
     }

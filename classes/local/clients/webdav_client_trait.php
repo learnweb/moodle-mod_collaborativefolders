@@ -26,6 +26,7 @@ namespace mod_collaborativefolders\local\clients;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->libdir . '/webdavlib.php');
 use mod_collaborativefolders\configuration_exception;
 
 /**
@@ -39,10 +40,10 @@ trait webdav_client_trait {
     /**
      * Initiates the webdav client.
      * @param \core\oauth2\client $client User or system account client
-     * @return \repository_owncloud\owncloud_client An initialised WebDAV client for ownCloud.
+     * @return \webdav_client An initialised WebDAV client for ownCloud.
      * @throws configuration_exception If configuration is missing (endpoints).
      */
-    private function initiate_webdavclient($client) {
+    private function initiate_webdavclient($client): \webdav_client {
         if ($this->webdav !== null) {
             return $this->webdav;
         }
@@ -71,8 +72,10 @@ trait webdav_client_trait {
         }
 
         // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
-        $this->webdav = new \repository_owncloud\owncloud_client($server, '', '', 'bearer', $webdavtype,
-            $client, $webdavendpoint['path']);
+        $this->webdav = new \webdav_client($server, '', '', 'bearer', $webdavtype,
+            $client->get_accesstoken()->token);
+
+        $this->davbasepath = $webdavendpoint['path'];
 
         $this->webdav->port = $webdavport;
         $this->webdav->debug = false;
