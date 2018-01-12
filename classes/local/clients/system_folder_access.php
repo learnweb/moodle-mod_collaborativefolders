@@ -120,9 +120,9 @@ class system_folder_access {
      *
      * @param $path string path to the folder (relative to sharing private storage).
      * @param $userid string Receiving username.
-     * @return bool Success/Failure of sharing.
+     * @return \SimpleXMLElement|bool Part of the XML response on success or false on failure of sharing.
      */
-    public function generate_share($path, $userid): bool {
+    public function generate_share($path, $userid) {
         $response = $this->ocsclient->call('create_share', [
             'path' => $path,
             'shareType' => ocs_client::SHARE_TYPE_USER,
@@ -137,10 +137,13 @@ class system_folder_access {
 
         if ((string)$xml->meta->status === 'ok') {
             // Share successfully created.
-            return true;
-        } else if ((string)$xml->meta->code === 403) {
+            return $xml->data;
+        }
+
+        if ((string)$xml->meta->statuscode === '403') {
             // Already shared with the specific user.
-            return true;
+            // TODO Throw meaningful exception instead, data is empty :( but this was not really unsuccessful.
+            return false;
         }
 
         return false;
@@ -155,7 +158,7 @@ class system_folder_access {
      * @return int status code received from the client.
      * @throws \moodle_exception on connection error.
      */
-    public function make_folder($path): int {
+    public function make_folder($path) : int {
         $this->initiate_webdavclient($this->systemclient);
         if (!$this->webdav->open()) {
             throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));

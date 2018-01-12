@@ -153,6 +153,7 @@ class user_folder_access {
             // After the folder having been renamed, a specific link has been generated, which is to
             // be stored for each user individually.
             $link = $this->issuer->get('baseurl') . 'index.php/apps/files/?dir=' . $newname;
+            // TODO Urlencode $newname.
             $this->set_entry('link', $cmid, $userid, $link);
 
             // Afterwards, the generated link is returned.
@@ -254,5 +255,9 @@ class user_folder_access {
         } else {
             return $record->$field;
         }
+    }
+
+    public function get_userinfo() {
+        return $this->userclient->get_userinfo();
     }
 }

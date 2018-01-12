@@ -43,7 +43,7 @@ trait webdav_client_trait {
      * @return \webdav_client An initialised WebDAV client for ownCloud.
      * @throws configuration_exception If configuration is missing (endpoints).
      */
-    private function initiate_webdavclient($client): \webdav_client {
+    private function initiate_webdavclient($client) : \webdav_client {
         if ($this->webdav !== null) {
             return $this->webdav;
         }

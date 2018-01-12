@@ -108,7 +108,8 @@ class view_controller {
         if ($userclient->check_login()) {
             echo $OUTPUT->heading('@access', 3);
             if ($statusinfo->creationstatus === 'created') {
-                echo self::share_and_view_folders($cm->id, $userfolders, $statusinfo, $renderer, $isteacher, $systemclient !== null, $userclient);
+                echo self::share_and_view_folders($cm->id, $userfolders, $statusinfo, $renderer, $isteacher,
+                    $systemclient !== null, $userclient);
             } else {
                 // Folders are not yet created and can therefore not be shared.
                 echo $renderer->render_widget_notcreatedyet();
@@ -171,11 +172,11 @@ class view_controller {
                                                    bool $systemclientcanshare, user_folder_access $userclient) {
         global $USER;
 
-        // TODO replace echoes by string variable concatenations (and return that string).
         if ($isteacher && !$statusinfo->teachermayaccess) {
-            echo $renderer->render_widget_teachermaynotaccess();
-            return;
+            return $renderer->render_widget_teachermaynotaccess();
         }
+
+        // TODO replace echoes by string variable concatenations (and return that string).
 
         // Counter for sharing forms that were suppressed because no sysaccount was connected.
         $sharessuppressed = 0;
@@ -274,20 +275,26 @@ class view_controller {
                                                    user_folder_access $userclient, int $cmid, int $withuser) {
         global $USER;
 
-        // TODO derive $sharepath (original path) from $groupid.
+        // Derive $sharepath (original path) from $groupid.
+        $sharepath = '/'.$cmid;
+        if ($groupid !== toolbox::fake_course_group()->id) {
+            $sharepath .= '/'.$groupid;
+        }
         // Share from system to user.
-        $shared = $systemclient->generate_share($sharepath, $withuser);
-        if (!$shared) {
+        $userinfo = $userclient->get_userinfo();
+        $shareusername = $userinfo['username'];
+        $shared = $systemclient->generate_share($sharepath, $shareusername);
+        if ($shared === false) {
             // Share was unsuccessful.
             throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
         }
 
-        // TODO $finalpath <=> path after share
-        $finalpath = $sharepath;
-
+        // Get newly created share (in user space) and move it to the chosen location.
+        $finalpath = $shared->file_target;
         $renamed = $userclient->rename($finalpath, $chosenname, $cmid, $USER->id);
         if ($renamed['status'] === false) {
             // Rename was unsuccessful.
+            // TODO rollback sharing (unless successfully shared and moved before).
             throw new share_failed_exception($renamed['content']);
         }
         // Sharing and renaming operations were successful.
