@@ -31,10 +31,10 @@ matrix:
   - env: DB=pgsql MOODLE_BRANCH=master
   - env: DB=mysqli MOODLE_BRANCH=master
  exclude:
-  - php: 5.6
-    env: DB=pgsql MOODLE_BRANCH=master
-  - php: 5.6
-    env: DB=mysqli MOODLE_BRANCH=master
+  #- php: 5.6
+  #  env: DB=pgsql MOODLE_BRANCH=master
+  #- php: 5.6
+  #  env: DB=mysqli MOODLE_BRANCH=master
  fast_finish: true
 
 before_install:
@@ -47,18 +47,32 @@ before_install:
 
 install:
   - moodle-plugin-ci add-plugin --branch otherplugins learnweb/moodle-repository_owncloud
-  - moodle-plugin-ci install
 
+jobs:
+  include:
+    # Prechecks against latest Moodle stable only.
+    - stage: static
+      php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+      script:
+      - moodle-plugin-ci install --no-init
+      - moodle-plugin-ci phplint
+      - moodle-plugin-ci phpcpd
+      - moodle-plugin-ci phpmd
+      - moodle-plugin-ci codechecker
+      - moodle-plugin-ci savepoints
+      - moodle-plugin-ci mustache
+      - moodle-plugin-ci grunt
+      - moodle-plugin-ci validate
+
+# Unit tests and behat tests against full matrix.
 script:
-  - moodle-plugin-ci phplint
-  - moodle-plugin-ci phpcpd
-  - moodle-plugin-ci phpmd
-  - moodle-plugin-ci codechecker
-  - moodle-plugin-ci savepoints
-  - moodle-plugin-ci mustache
-  - moodle-plugin-ci grunt
-  - moodle-plugin-ci validate
+  - moodle-plugin-ci install
   #- moodle-plugin-ci phpunit --coverage-clover
   - moodle-plugin-ci behat
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+stages:
+  - static
+  - test
