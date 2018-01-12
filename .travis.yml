@@ -45,17 +45,15 @@ before_install:
   - composer create-project -n --no-dev --prefer-dist moodlerooms/moodle-plugin-ci ci ^2
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
 
-install:
-  - moodle-plugin-ci add-plugin --branch otherplugins learnweb/moodle-repository_owncloud
-
 jobs:
   include:
     # Prechecks against latest Moodle stable only.
     - stage: static
       php: 7.1
       env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
-      script:
+      install:
       - moodle-plugin-ci install --no-init
+      script:
       - moodle-plugin-ci phplint
       - moodle-plugin-ci phpcpd
       - moodle-plugin-ci phpmd
@@ -65,9 +63,12 @@ jobs:
       - moodle-plugin-ci grunt
       - moodle-plugin-ci validate
 
+install:
+  - moodle-plugin-ci add-plugin --branch otherplugins learnweb/moodle-repository_owncloud
+  - moodle-plugin-ci install
+
 # Unit tests and behat tests against full matrix.
 script:
-  - moodle-plugin-ci install
   #- moodle-plugin-ci phpunit --coverage-clover
   - moodle-plugin-ci behat
 after_success:
