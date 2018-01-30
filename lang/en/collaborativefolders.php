@@ -59,8 +59,16 @@ $string['groupname'] = 'Group name';
 $string['members'] = 'Members';
 $string['here'] = 'here';
 
+// View: remote system (+authorise.php)
+$string['remotesystem'] = 'Connection to ownCloud';
+$string['btnlogin'] = 'Login';
+$string['btnlogout'] = 'Logout';
+$string['logoutsuccess'] = 'Successfully logged out from ownCloud.';
+$string['loginsuccess'] = 'Successfully authorised Moodle to connect to ownCloud.';
+$string['loginfailure'] = 'A problem occurred: Moodle is not authorised to connect to ownCloud.';
+
 // View: access folders
-$string['accessfolders'] = 'Access';
+$string['accessfolders'] = 'Folder access';
 $string['grouplabel'] = 'Group: {$a}';
 
 // View: name_form

@@ -94,14 +94,14 @@ class view_controller {
         echo $renderer->render($statusinfo);
 
         // Login / logout form.
-        echo $OUTPUT->heading('@remote system', 3);
+        echo $OUTPUT->heading(get_string('remotesystem', 'mod_collaborativefolders'), 3);
         if ($userclient->check_login()) {
             echo $renderer->render(new \single_button(
                 new \moodle_url('/mod/collaborativefolders/authorise.php', [
                     'action' => 'logout',
                     'id' => $cm->id,
                     'sesskey' => sesskey()
-                ]), '@logout'));
+                ]), get_string('btnlogout', 'mod_collaborativefolders')));
         } else {
             echo $renderer->render_widget_login($userclient->get_login_url());
         }

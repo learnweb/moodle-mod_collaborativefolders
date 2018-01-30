@@ -58,7 +58,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
          * $this->render(new \single_button($loginurl, '@login'));
          * ... Maybe this function can even be inlined and removed then.
          */
-        return html_writer::link($loginurl, '@login', ['class' => 'btn btn-primary']);
+        return html_writer::link($loginurl, get_string('btnlogin', 'mod_collaborativefolders'), ['class' => 'btn btn-primary']);
     }
 
     public function render_widget_notcreatedyet() {
