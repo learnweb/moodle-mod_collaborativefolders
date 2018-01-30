@@ -83,18 +83,11 @@ $string['resetpressed'] = 'Share reset. You can now obtain access to your folder
 $string['problem_nosystemconnection'] = 'The system account is unable to connect to ownCloud, so folders for this activity will not be created. Please inform the administrator about this.';
 $string['problem_sharessuppressed'] = 'The system account is unable to connect to ownCloud, so {$a} folders were not displayed. Please inform the administrator about this.';
 
-// Error messages.
-$string['retry'] = 'An error occured. Please logout from your ownCloud account and try again later.';
-$string['retry_rename'] = 'The concerning folder could not be renamed. Please logout from your ownCloud account and try again later.';
-$string['retry_shared'] = 'The concerning folder could not be shared with you. Please check if you already have a copy of the folder. Otherwise, logout from your ownCloud account and try again later.';
-$string['code'] = 'Error message: {$a}';
-$string['error'] = 'An error occurred';
-$string['noviewpermission'] = 'You are currently not allowed to see that content.';
+// Configuration/connection error messages.
 $string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
 $string['webdaverror'] = 'WebDAV error code {$a}';
 $string['socketerror'] = 'The WebDAV socket could not be opened.';
 $string['ocserror'] = 'An error with the OCS sharing API occurred.';
-$string['wrongintention'] = 'The intention argument \'{$a}\' is not valid';
 $string['notcreated'] = 'Folder {$a} not created. ';
 $string['unexpectedcode'] = 'An unexpected response status code ({$a}) was received.';
 $string['technicalnotloggedin'] = 'The system account is not logged in or does not have authorisation in the remote system.';
@@ -110,7 +103,6 @@ $string['issuervalidation_notconnected'] = 'Currently the valid {$a} issuer is a
 $string['right_issuers'] = 'The following issuers implement the required endpoints: {$a}';
 $string['no_right_issuers'] = 'None of the existing issuers implement all required endpoints. Please register an appropriate issuer.';
 
-
 // Adding an instance (mod_form).
 $string['collaborativefoldersname'] = 'Collaborative folder name';
 $string['collaborativefoldersname_help'] = 'Enter a new name that will be shown in the course homepage.';
@@ -122,7 +114,6 @@ $string['edit_after_creation'] = 'Please consider that teacher access and group-
 // Events.
 $string['eventfolderscreated'] = 'The ad-hoc task successfully created all necessary folders for a collaborativefolders instance.';
 $string['eventlinkgenerated'] = 'A user-specific share to a collaborative folder was created successfully.';
-$string['eventloggedout'] = 'The technical user of collaborativefolders logged out.';
 
 // Exceptions.
 $string['configuration_exception'] = 'An error in the configuration of the OAuth 2 client occurred: {$a}';
