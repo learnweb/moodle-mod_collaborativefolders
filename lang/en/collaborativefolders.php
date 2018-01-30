@@ -38,34 +38,16 @@ $string['pluginname'] = 'Collaborative folders';
 
 // View.php.
 $string['activityoverview'] = 'Collaborative folder';
-$string['notallowed'] = 'Sorry, you are currently not allowed to view this content.';
-$string['introoverview'] = 'Overview of all participating groups';
 $string['infotextnogroups'] = 'This activity is available for all participants of the course.';
 $string['foldernotcreatedyet'] = 'The folder has not been created in ownCloud, yet. Please contact the administrator if this message persists more than a few hours.';
-$string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use this {$a}.';
-$string['logout_heading'] = 'Logout from ownCloud';
-$string['logoutpressed'] = 'You are now logged out from your ownCloud account.';
-$string['generate'] = 'To generate a link to the collaborative folder, please use this {$a}.';
-$string['generate_heading'] = 'Generate link to folder';
-$string['generate_change_name'] = 'Change folder name';
-$string['access'] = 'Click {$a} to access the folder.';
-$string['access_heading'] = 'Access to the folder';
-$string['folder_name'] = 'Your chosen foldername is {$a}.';
-$string['naming_folder'] = 'Choose a folder name';
-$string['reset'] = 'You may reset your chosen foldername {$a}.';
-$string['resetpressed'] = 'Share reset. You can now obtain access to your folder again.';
-$string['groupid'] = 'Group ID';
-$string['groupname'] = 'Group name';
-$string['members'] = 'Members';
-$string['here'] = 'here';
 
 // View: remote system (+authorise.php)
 $string['remotesystem'] = 'Connection to ownCloud';
 $string['btnlogin'] = 'Login';
 $string['btnlogout'] = 'Logout';
 $string['logoutsuccess'] = 'Successfully logged out from ownCloud.';
-$string['loginsuccess'] = 'Successfully authorised Moodle to connect to ownCloud.';
-$string['loginfailure'] = 'A problem occurred: Moodle is not authorised to connect to ownCloud.';
+$string['loginsuccess'] = 'Successfully authorised to connect to ownCloud.';
+$string['loginfailure'] = 'A problem occurred: Not authorised to connect to ownCloud.';
 
 // View: access folders
 $string['accessfolders'] = 'Folder access';
@@ -76,16 +58,15 @@ $string['namefield'] = 'Name';
 $string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your ownCloud.';
 $string['getaccess'] = 'Get access';
 
-
-
-// groupfolderinfo.mustache
-//$string[''] = '';
+// View: information about shared folder
 $string['sharedtoowncloud'] = 'This folder has already been shared to your ownCloud.';
 $string['folder'] = 'Folder';
 $string['cannotaccessheader'] = 'No access?';
 $string['cannotaccess'] = 'If the above link does not work, and you cannot find the folder, click the button on the left to reset the share. This helps you regain access without making changes to the files within that folder.';
 $string['openinowncloud'] = 'Open in ownCloud';
 $string['solveproblems'] = 'Solve problems';
+$string['resetpressed'] = 'Share reset. You can now obtain access to your folder again.';
+
 
 // Error messages.
 $string['retry'] = 'An error occured. Please logout from your ownCloud account and try again later.';

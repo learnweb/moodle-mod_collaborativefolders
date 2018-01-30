@@ -112,10 +112,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
                 'groupid' => $group->id,
                 'sesskey' => sesskey()
             ]);
-        $openfolder = html_writer::link($folderlink, get_string('openinowncloud', 'mod_collaborativefolders'),
-            ['class' => 'btn btn-primary']);
         $solveproblems = html_writer::link($solveproblemsurl, get_string('solveproblems', 'mod_collaborativefolders'),
             ['class' => 'btn']);
+        $openfolder = html_writer::link($folderlink, get_string('openinowncloud', 'mod_collaborativefolders'),
+            ['class' => 'btn btn-primary']);
 
         $groupfolderinfo = new \stdClass();
         $groupfolderinfo->foldername = $foldername;
@@ -124,7 +124,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         $groupfolderinfo->cmid = $cmid;
         $groupfolderinfo->solveproblems = $solveproblems;
         $groupfolderinfo->openfolder = $openfolder;
-        $groupfolderinfo->icon = $this->render(new pix_icon('i/folder', '@folder'));
+        $groupfolderinfo->icon = $this->render(new pix_icon('i/folder', get_string('folder', 'mod_collaborativefolders')));
 
         return $this->render_from_template('mod_collaborativefolders/groupfolderinfo', $groupfolderinfo);
 
