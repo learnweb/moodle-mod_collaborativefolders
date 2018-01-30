@@ -68,20 +68,21 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     public function render_widget_teachermaynotaccess() {
-        $notification = new notification('@teachermaynotaccess', notification::NOTIFY_INFO);
+        $notification = new notification(get_string('teachersnotallowed', 'mod_collaborativefolders'),
+            notification::NOTIFY_INFO);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
     }
 
     public function render_widget_noconnection() {
-        $notification = new notification('@noconnection (may affect creation of folders/ability to access. talk to admin!)',
+        $notification = new notification(get_string('problem_nosystemconnection'),
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
     }
 
     public function render_widget_noconnection_suppressed_share(int $sharessuppressed) {
-        $notification = new notification(sprintf('@noconnection (cannot create %s shares. talk to admin!)', $sharessuppressed),
+        $notification = new notification(get_string('problem_sharessuppressed', $sharessuppressed),
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);

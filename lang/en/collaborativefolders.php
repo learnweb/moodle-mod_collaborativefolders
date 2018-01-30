@@ -49,6 +49,7 @@ $string['groupmode'] = 'Mode';
 $string['groupmode_on'] = 'One folder per group';
 $string['groupmode_off'] = 'One folder for the entire course';
 $string['groups'] = 'Groups';
+$string['teachersnotallowed'] = 'Sorry, teachers are not allowed to view this content.';
 
 // View: remote system (+authorise.php)
 $string['remotesystem'] = 'Connection to ownCloud';
@@ -66,6 +67,8 @@ $string['grouplabel'] = 'Group: {$a}';
 $string['namefield'] = 'Name';
 $string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your ownCloud.';
 $string['getaccess'] = 'Get access';
+$string['error_illegalpathchars'] = 'A valid folder or path name must be entered. Use \'/\' (slash) to delimit directories of a path.';
+$string['foldershared'] = 'The folder was successfully shared to your ownCloud.';
 
 // View: information about shared folder
 $string['sharedtoowncloud'] = 'This folder has already been shared to your ownCloud.';
@@ -76,6 +79,9 @@ $string['openinowncloud'] = 'Open in ownCloud';
 $string['solveproblems'] = 'Solve problems';
 $string['resetpressed'] = 'Share reset. You can now obtain access to your folder again.';
 
+// Systemic error messages.
+$string['problem_nosystemconnection'] = 'The system account is unable to connect to ownCloud, so folders for this activity will not be created. Please inform the administrator about this.';
+$string['problem_sharessuppressed'] = 'The system account is unable to connect to ownCloud, so {$a} folders were not displayed. Please inform the administrator about this.';
 
 // Error messages.
 $string['retry'] = 'An error occured. Please logout from your ownCloud account and try again later.';
@@ -110,7 +116,7 @@ $string['collaborativefoldersname'] = 'Collaborative folder name';
 $string['collaborativefoldersname_help'] = 'Enter a new name that will be shown in the course homepage.';
 $string['teacher_access'] = 'Teacher access';
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
-$string['teacher_mode_help'] = 'Usually, only students have access to their folders. However, if this checkbox is checked, teachers will also be granted access. Note that this setting cannot be changed after creation.';
+$string['teacher_mode_help'] = 'Usually only students have access to their folders. However, if this checkbox is checked, teachers will also be granted access. Note that this setting cannot be changed after creation.';
 $string['edit_after_creation'] = 'Please consider that teacher access and group-related settings cannot be changed after this activity is created.';
 
 // Events.

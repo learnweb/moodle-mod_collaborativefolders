@@ -13,7 +13,7 @@ Nevertheless, we are actively working on a release. We would be extremely happy 
 This Activity Module allows teachers to create folders in [ownCloud](https://owncloud.org/), 
 which can be allocated to groups of students who can then voluntarily subscribe work collaboratively in these folders.
 
-Written by project seminar sciebo@Leanrweb of the University of Münster.
+Written by project seminar sciebo@Learnweb of the University of Münster.
 
 ## Information
 
@@ -50,47 +50,3 @@ the activity instance or from the personal ownCloud directory.
  ![Student view](https://user-images.githubusercontent.com/432117/27693597-2b2f0106-5cea-11e7-8f40-705980c8e055.png)
 
 Further information can be found in our [documentation](https://pssl16.github.io).
-
-# Deutsch
-
-Dieses Aktivitätsmodul ermöglicht Lehrenden eines Kurses Ordner in [ownCloud](https://owncloud.org/) zu erstellen, welche Gruppen von Sudierenden
-zugeornet werden können, die anschließend freiwillig kollaborativ darin arbeiten können.
-
-Erstellt von dem Projektseminar Sciebo@Leanrweb der Universität Münster.
-
-## Information
-
-Diese Modul ist abhängig von dem [`oauth2owncloud` Plugin](https://github.com/learnweb/moodle-tool_oauth2owncloud) und
-kann nicht separat genutzt werden.
-
-## Installation
-
-Plazieren Sie das Plugin bitte in den Ordner `mod/collaborativefolders` Ihres Moodle Verzeichnisses.
-Bevor das Plugin genutzt werden kann, muss ein technischer Nutzer Account in ownCloud authentifiziert werden. Die betreffenden Einstellungen
-können unter `Site administration ► Plugins ► Activity modules ► collaborativefolders` vorgefunden werden.
-Im laufenden Betrieb dieses Plugins sollte der technischer Nutzer nicht gewechselt werden, da dies zu Synchronisierungsproblemen führen könnte.
-Aktivitäten, welche zuvor erstellt worden sind, könnten unbrauchbar werden.
-
-## Sicht des Lehrenden
-
-Zunächst muss der Lehrende eine Instanz der `collaborativefolders` Aktivität zum Kurs hinzufügen.
-Beim Erstellen wählt der Lehrende einen Namen für die Instanz aus, welcher im Kurs angezeigt wird.
-Darüber hinaus kann der Lehrende entscheiden ob er selbst Zugriff zu dem/den Ordner/-n haben soll.
-Zuletzt kann der Lehrende auch wählen, ob er den Gruppenmodus für die betreffende Instanz aktivieren möchte.
-Eine Aktivierung des Gruppenmodus bewirkt die Erstellung einzelner Gruppenordner in ownCloud.
-
-## Sicht der Studierenden
-
-Nachdem der/die Ordner von einem Cron Task erstellt worden sind, werden die Nutzer dazu aufgefordert, 
-einen individuellen Namen für den Ordner anzugeben.
-
- ![Choose a folder name](https://user-images.githubusercontent.com/432117/27693591-28c99eda-5cea-11e7-9214-62d736d45273.png)
- 
-Der Name kann anschließend wieder von den Nutzern geändert werden und bei Bedarf können diese sich in ownCloud ausloggen.
-Hat ein Nutzer einen validen Namen für den Ordner eingegeben und ist bereits in ownCloud authentifiziert,
-so hat er die Möglichkeit den kollaborativen Ordner für sich freizugeben. Danach kann auf den Ordner entweder
-über die Instanz der Aktivität oder das persönliche ownCloud Verzeichnis zugegriffen werden.
- 
- ![Student view](https://user-images.githubusercontent.com/432117/27693597-2b2f0106-5cea-11e7-8f40-705980c8e055.png)
-
-Nähere Informationen zu dem Plugin finden Sie in unserer [Dokumentation](https://pssl16.github.io).

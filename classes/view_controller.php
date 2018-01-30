@@ -266,7 +266,7 @@ class view_controller {
 
                 redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, [
                     'id' => $cm->id,
-                ]), sprintf('@share information for %s received', $groupid), null, \core\output\notification::NOTIFY_SUCCESS);
+                ]), get_string('foldershared', 'mod_collaborativefolders'), null, \core\output\notification::NOTIFY_SUCCESS);
                 exit;
             }
         }
