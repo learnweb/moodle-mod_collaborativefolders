@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2017112700;
+$plugin->version = 2018013000;
 $plugin->release = 'v3.4-r1';
-$plugin->requires = 2017111300; // TODO Should be 3.4.0+; change to 3.4.1 on publication (basic auth supported by oauth clients).
+$plugin->requires = 2017111301;
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->dependencies = array(
     'repository_owncloud' => 2017102300

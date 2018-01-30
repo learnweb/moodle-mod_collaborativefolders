@@ -185,7 +185,7 @@ class view_controller {
 
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
-            $link = $userclient->get_entry('link' , $cmid, $USER->id);
+            $link = $userclient->get_link($cmid, $groupid, $USER->id);
             if ($link === null) {
                 // User does not have a share yet; create it now.
 
@@ -260,10 +260,9 @@ class view_controller {
                                                         system_folder_access $systemclient, int $currentuserid,
                                                         \context_module $context) {
         foreach ($userfolders as $groupid => $form) {
-            // Show form to define user-local name.
+            /* @var $form name_form */
+            // Iterate over forms to find the submitted one (is_submitted() is implicit in get_data()).
             if ($fromform = $form->get_data()) {
-                $userclient->set_entry('name', $cm->id, $currentuserid, $fromform->namefield);
-
                 self::share_folder_with_user($groupid, $fromform->namefield, $systemclient,
                                                    $userclient, $cm->id, $currentuserid);
 
@@ -309,7 +308,7 @@ class view_controller {
             throw new share_failed_exception($renamed['content']);
         }
         // Sharing and renaming operations were successful.
-        // Store path for reference.
-        $userclient->set_entry('link', $cmid, $USER->id, $chosenname);
+        // Store resulting path for future reference.
+        $userclient->store_link($cmid, $groupid, $USER->id, $renamed['content']);
     }
 }

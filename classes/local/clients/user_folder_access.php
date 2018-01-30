@@ -153,8 +153,6 @@ class user_folder_access {
             // After the folder having been renamed, a specific link has been generated, which is to
             // be stored for each user individually.
             $link = $this->issuer->get('baseurl') . 'index.php/apps/files/?dir=' . $newname;
-            // TODO Urlencode $newname.
-            $this->set_entry('link', $cmid, $userid, $link);
 
             // Afterwards, the generated link is returned.
             $ret['status'] = true;
@@ -192,7 +190,7 @@ class user_folder_access {
      *
      * @return bool false, if no Access Token is set or can be requested.
      */
-    public function check_login() {
+    public function check_login() : bool {
         return $this->userclient->is_logged_in();
     }
 
@@ -201,23 +199,24 @@ class user_folder_access {
      * database table. If the specific record already exists, it gets updated in the concerning field. Otherwise,
      * a new record is inserted into the table.
      *
-     * @param $field string the specific field, which value needs to be set.
-     * @param $cmid int ID of the course module, which the value needs to be set for.
+     * @param $cmid int ID of the course module. Needed to specify the concrete activity instance.
+     * @param $groupid int the group ID to specify one particular folder.
      * @param $userid string ID of the user, which the value needs to be set for.
      * @param $value string the specific value, which needs to be set or updated.
      */
-    public function set_entry($field, $cmid, $userid, $value) {
+    public function store_link($cmid, $groupid, $userid, $value) {
         // TODO use persistent API instead.
         global $DB;
 
         $params = array(
+                'cmid' => $cmid,
+                'groupid' => $groupid,
                 'userid' => $userid,
-                'cmid' => $cmid
         );
 
         $record = $DB->get_record('collaborativefolders_link', $params);
 
-        $params[$field] = $value;
+        $params['link'] = $value;
         $params = (object) $params;
 
         // If the record already exists, it gets updated. Otherwise, a new record is inserted.
@@ -234,18 +233,19 @@ class user_folder_access {
      * database table. It is used to get a stored folder name or link for a specific user and course
      * module.
      *
-     * @param $field string the field, which value has to be returned.
      * @param $cmid int the course module ID. Needed to specify the concrete activity instance.
+     * @param $groupid int the group ID to specify one particular folder.
      * @param $userid string ID of the user, which the value needs to be gotten for.
      * @return mixed null, if the record does not exist or the field is null. Otherwise, the field's value.
      */
-    public function get_entry($field, $cmid, $userid) {
+    public function get_link($cmid, $groupid, $userid) {
         // TODO use persistent API instead.
         global $DB;
 
         $params = array(
+            'cmid' => $cmid,
+            'groupid' => $groupid,
             'userid' => $userid,
-            'cmid' => $cmid
         );
 
         $record = $DB->get_record('collaborativefolders_link', $params);
@@ -253,7 +253,7 @@ class user_folder_access {
         if (!$record) {
             return null;
         } else {
-            return $record->$field;
+            return $record->link;
         }
     }
 
