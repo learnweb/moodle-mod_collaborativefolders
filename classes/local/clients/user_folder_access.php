@@ -115,12 +115,10 @@ class user_folder_access {
      *
      * @param $pathtofolder string path, which leads to the folder that needs to be renamed.
      * @param $newname string the name which needs to be set instead of the old.
-     * @param $cmid int course module ID, which is used to identify specific user preferences.
-     * @param $userid string the ID of the current user. Needed to set the concerning table entry.
      * @return array contains status (true means success, false failure) and content (generated
      *              link or error message) of the result.
      */
-    public function rename($pathtofolder, $newname, $cmid, $userid) {
+    public function rename($pathtofolder, $newname) {
         $this->initiate_webdavclient($this->userclient);
 
         $renamed = null;
@@ -149,14 +147,8 @@ class user_folder_access {
         }
 
         if ($renamed == 201) {
-
-            // After the folder having been renamed, a specific link has been generated, which is to
-            // be stored for each user individually.
-            $link = $this->issuer->get('baseurl') . 'index.php/apps/files/?dir=' . $newname;
-
-            // Afterwards, the generated link is returned.
+            // Folder successfully renamed. Name not returned because it is already known ($newname).
             $ret['status'] = true;
-            $ret['content'] = $link;
             return $ret;
         } else {
 
@@ -257,7 +249,22 @@ class user_folder_access {
         }
     }
 
+    /**
+     * Query ownCloud for information about the authorised user (cf. the /cloud/user endpoint of ownCloud OCS),
+     * using the userinfo mappings defined in Moodle.
+     * @return array|false Mapped information from the /cloud/user OCS endpoint (or false on error).
+     */
     public function get_userinfo() {
         return $this->userclient->get_userinfo();
+    }
+
+    /**
+     * For a given folder name, generate an HTTP URL where a browser would find the folder.
+     * It is not checked whether that folder would actually exist.
+     * @param string $foldername Name of a folder
+     * @return string URL where the folder should be found
+     */
+    public function link_from_foldername($foldername) : string {
+        return sprintf('%sindex.php/apps/files/?dir=/%s', $this->issuer->get('baseurl'), urlencode($foldername));
     }
 }

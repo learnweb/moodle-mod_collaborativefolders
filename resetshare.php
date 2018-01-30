@@ -30,7 +30,7 @@ require_sesskey();
 
 // Parameters.
 $cmid = required_param('id', PARAM_INT);
-$group = required_param('group', PARAM_INT);
+$groupid = required_param('groupid', PARAM_INT);
 
 // Headers to make it not cacheable.
 header('Cache-Control: no-cache, must-revalidate');

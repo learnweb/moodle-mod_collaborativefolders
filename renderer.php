@@ -37,7 +37,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 class mod_collaborativefolders_renderer extends plugin_renderer_base {
     /**
-     * Render an informational table, showing an overview of the instance.
+     * Render a status table that is the intro to user-facing pages of collaborative folder instances.
      *
      * @param statusinfo $statusinfo
      * @return string
@@ -94,6 +94,37 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         echo $this->output->heading(sprintf('@Group: %s', $group->name), 4);
         echo $this->output->box('@define the name under which the shared folder will be stored in your ownCloud.');
         $form->display();
+    }
+
+    /**
+     * Render information about a folder that had been shared successfully.
+     *
+     * @param stdClass $group Group object containing ID and name
+     * @param int $cmid Course module ID
+     * @param string $foldername Chosen (and assumed) name of the folder
+     * @param string $link Link into ownCloud instance
+     * @return bool|string rendered template.
+     */
+    public function output_shared_folder($group, $cmid, $foldername, $folderlink) {
+        $solveproblems = new \single_button(
+            new \moodle_url('/mod/collaborativefolders/resetshare.php', [
+                'id' => $cmid,
+                'groupid' => $group->id,
+                'sesskey' => sesskey()
+            ]), '@Solve problems');
+        $openfolder = html_writer::link($folderlink, '@Open in ownCloud', ['class' => 'btn btn-primary']);
+
+        $groupfolderinfo = new \stdClass();
+        $groupfolderinfo->foldername = $foldername;
+        $groupfolderinfo->folderlink = $folderlink;
+        $groupfolderinfo->group = $group;
+        $groupfolderinfo->cmid = $cmid;
+        $groupfolderinfo->solveproblems = $solveproblems->export_for_template($this);
+        $groupfolderinfo->openfolder = $openfolder;
+        $groupfolderinfo->icon = $this->render(new pix_icon('i/folder', '@folder'));
+
+        return $this->render_from_template('mod_collaborativefolders/groupfolderinfo', $groupfolderinfo);
+
     }
 
 }

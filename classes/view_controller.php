@@ -74,7 +74,7 @@ class view_controller {
         if ($systemclient !== null) {
             // If a folder form (that is inside $userfolders) is submitted, validate it and maybe create the share.
             // Redirects to self if something interesting has happened.
-            self::handle_folder_form_submitted($userfolders, $cm, $userclient, $systemclient, $USER->id, $context);
+            self::handle_folder_form_submitted($userfolders, $cm, $userclient, $systemclient, $context);
         }
 
         // Start output.
@@ -108,7 +108,7 @@ class view_controller {
 
         // Interaction with instance.
         if ($userclient->check_login()) {
-            echo $OUTPUT->heading('@access', 3);
+            echo $OUTPUT->heading('@access folders', 3);
             if ($statusinfo->creationstatus === 'created') {
                 echo self::share_and_view_folders($cm->id, $userfolders, $statusinfo, $renderer, $isteacher,
                     $systemclient !== null, $userclient);
@@ -185,8 +185,9 @@ class view_controller {
 
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
-            $link = $userclient->get_link($cmid, $groupid, $USER->id);
-            if ($link === null) {
+            $foldername = $userclient->get_link($cmid, $groupid, $USER->id);
+            $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
+            if ($foldername === null) {
                 // User does not have a share yet; create it now.
 
                 // Show notice if there is a general problem with the system account (and skip form).
@@ -196,20 +197,11 @@ class view_controller {
                 }
 
                 // Show form to define user-local name.
-                $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
                 $renderer->output_name_form($group, $form);
             } else {
                 // XOR Access share.
-                // TODO make link more appealing.
-                var_dump($link);
-                // Show solve problems button.
-                // TODO add description
-                echo $renderer->render(new \single_button(
-                    new \moodle_url('/mod/collaborativefolders/resetshare.php', [
-                        'id' => $cmid,
-                        'group' => $groupid,
-                        'sesskey' => sesskey()
-                    ]), '@solve problems'));
+                echo $renderer->output_shared_folder($group, $cmid, $foldername,
+                    $userclient->link_from_foldername($foldername));
             }
         }
 
@@ -257,14 +249,14 @@ class view_controller {
      * @param \context_module $context context of the current coursemodule
      */
     public static function handle_folder_form_submitted($userfolders, \cm_info $cm, user_folder_access $userclient,
-                                                        system_folder_access $systemclient, int $currentuserid,
+                                                        system_folder_access $systemclient,
                                                         \context_module $context) {
         foreach ($userfolders as $groupid => $form) {
             /* @var $form name_form */
             // Iterate over forms to find the submitted one (is_submitted() is implicit in get_data()).
             if ($fromform = $form->get_data()) {
                 self::share_folder_with_user($groupid, $fromform->namefield, $systemclient,
-                                                   $userclient, $cm->id, $currentuserid);
+                                                   $userclient, $cm->id);
 
                 $generatedevent = \mod_collaborativefolders\event\link_generated::create([
                     'context' => $context,
@@ -281,7 +273,7 @@ class view_controller {
     }
 
     private static function share_folder_with_user($groupid, $chosenname, system_folder_access $systemclient,
-                                                   user_folder_access $userclient, int $cmid, int $withuser) {
+                                                   user_folder_access $userclient, int $cmid) {
         global $USER;
 
         // Derive $sharepath (original path) from $groupid.
@@ -301,7 +293,7 @@ class view_controller {
 
         // Get newly created share (in user space) and move it to the chosen location.
         $finalpath = (string)$shared->file_target;
-        $renamed = $userclient->rename($finalpath, $chosenname, $cmid, $USER->id);
+        $renamed = $userclient->rename($finalpath, $chosenname);
         if ($renamed['status'] === false) {
             // Rename was unsuccessful.
             // TODO rollback sharing (unless successfully shared and moved before).
@@ -309,6 +301,6 @@ class view_controller {
         }
         // Sharing and renaming operations were successful.
         // Store resulting path for future reference.
-        $userclient->store_link($cmid, $groupid, $USER->id, $renamed['content']);
+        $userclient->store_link($cmid, $groupid, $USER->id, $chosenname);
     }
 }
