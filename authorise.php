@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of collaborativefolders. What is shown depends
- * on the current user.
+ * Handles login / logout of the user client.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
