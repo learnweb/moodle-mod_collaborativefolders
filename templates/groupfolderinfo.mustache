@@ -30,45 +30,38 @@
     * foldername
     * cmid
     * solveproblems
+    * openfolder
 
     Example context (json):
     {
         "group": [{ "id": 1, "name": "Group 1" }],
         "foldername": "Hello world",
         "cmid": 20,
-        "solveproblems": {
-            "method" : "post",
-            "url" : "/mod/collaborativefolders/resetshare.php",
-            "params" : [
-                {"name": "id", "value": 20},
-                {"name": "groupid", "value":  1},
-                {"name": "sesskey", "value": "abcdxyz"}
-            ],
-            "primary" : false,
-            "label" : "Solve problems"
-        },
+        "solveproblems": "<a class="btn" href="http://moodle.example/mod/collaborativefolders/resetshare.php?id=77&amp;groupid=2&amp;sesskey=abcdxyz">Solve problems</a>",
         "openfolder": "<a class=\"btn btn-primary\" href=\"https://owncloud.example/index.php/apps/files/?dir=/Hello+World\">@Open in ownCloud</a>"
     }
 }}
-<h4>@Group: {{group.name}}</h4>
-<div class="groupfolderinfo explanation">@you find this folder in ownCloud</div>
+<h4 id="folder-{{group.id}}">{{#str}}grouplabel, mod_collaborativefolders, {{group.name}}{{/str}}</h4>
+<div class="groupfolderinfo explanation">{{#str}}sharedtoowncloud, mod_collaborativefolders{{/str}}</div>
 <table class="groupfolderinfo details generaltable fullwidth">
     <tbody>
     <tr>
-        <th scope="row">@folder</th>
+        <th scope="row">{{#str}}folder, mod_collaborativefolders{{/str}}</th>
         <td>
             {{{openfolder}}}
+        </td>
+        <td>
             {{{icon}}}
             {{foldername}}
         </td>
     </tr>
     <tr>
-        <th scope="row">@cannotaccessheader</th>
+        <th scope="row">{{#str}}cannotaccessheader, mod_collaborativefolders{{/str}}</th>
         <td>
-            {{#solveproblems}}
-                {{> core/single_button}}
-            {{/solveproblems}}
-            @cannotaccess
+            {{{solveproblems}}}
+        </td>
+        <td>
+            {{#str}}cannotaccess, mod_collaborativefolders{{/str}}
         </td>
     </tr>
     </tbody>

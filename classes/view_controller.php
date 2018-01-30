@@ -108,7 +108,7 @@ class view_controller {
 
         // Interaction with instance.
         if ($userclient->check_login()) {
-            echo $OUTPUT->heading('@access folders', 3);
+            echo $OUTPUT->heading(get_string('accessfolders', 'mod_collaborativefolders'), 3);
             if ($statusinfo->creationstatus === 'created') {
                 echo self::share_and_view_folders($cm->id, $userfolders, $statusinfo, $renderer, $isteacher,
                     $systemclient !== null, $userclient);

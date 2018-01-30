@@ -52,14 +52,32 @@ $string['access'] = 'Click {$a} to access the folder.';
 $string['access_heading'] = 'Access to the folder';
 $string['folder_name'] = 'Your chosen foldername is {$a}.';
 $string['naming_folder'] = 'Choose a folder name';
-$string['namefield'] = 'Name';
 $string['reset'] = 'You may reset your chosen foldername {$a}.';
 $string['resetpressed'] = 'Share reset. You can now obtain access to your folder again.';
-$string['getaccess'] = 'Get access';
 $string['groupid'] = 'Group ID';
 $string['groupname'] = 'Group name';
 $string['members'] = 'Members';
 $string['here'] = 'here';
+
+// View: access folders
+$string['accessfolders'] = 'Access';
+$string['grouplabel'] = 'Group: {$a}';
+
+// View: name_form
+$string['namefield'] = 'Name';
+$string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your ownCloud.';
+$string['getaccess'] = 'Get access';
+
+
+
+// groupfolderinfo.mustache
+//$string[''] = '';
+$string['sharedtoowncloud'] = 'This folder has already been shared to your ownCloud.';
+$string['folder'] = 'Folder';
+$string['cannotaccessheader'] = 'No access?';
+$string['cannotaccess'] = 'If the above link does not work, and you cannot find the folder, click the button on the left to reset the share. This helps you regain access without making changes to the files within that folder.';
+$string['openinowncloud'] = 'Open in ownCloud';
+$string['solveproblems'] = 'Solve problems';
 
 // Error messages.
 $string['retry'] = 'An error occured. Please logout from your ownCloud account and try again later.';

@@ -40,7 +40,7 @@ header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 core_php_time_limit::raise();
 
 // Predefine URL used for all redirects.
-$nextpage = new \moodle_url('/mod/collaborativefolders/view.php', ['id' => $cmid]);
+$nextpage = new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, ['id' => $cmid]);
 $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
     new \moodle_url('/mod/collaborativefolders/resetshare.php', [
         'action' => 'login',

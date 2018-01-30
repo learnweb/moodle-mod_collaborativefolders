@@ -91,8 +91,9 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
      * @param name_form $form
      */
     public function output_name_form($group, name_form $form) {
-        echo $this->output->heading(sprintf('@Group: %s', $group->name), 4);
-        echo $this->output->box('@define the name under which the shared folder will be stored in your ownCloud.');
+        echo $this->output->heading(get_string('grouplabel', 'mod_collaborativefolders', $group->name), 4,
+            null, 'folder-'.$group->id);
+        echo $this->output->box(get_string('namefield_explanation', 'mod_collaborativefolders'));
         $form->display();
     }
 
@@ -106,20 +107,22 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
      * @return bool|string rendered template.
      */
     public function output_shared_folder($group, $cmid, $foldername, $folderlink) {
-        $solveproblems = new \single_button(
-            new \moodle_url('/mod/collaborativefolders/resetshare.php', [
+        $solveproblemsurl = new \moodle_url('/mod/collaborativefolders/resetshare.php', [
                 'id' => $cmid,
                 'groupid' => $group->id,
                 'sesskey' => sesskey()
-            ]), '@Solve problems');
-        $openfolder = html_writer::link($folderlink, '@Open in ownCloud', ['class' => 'btn btn-primary']);
+            ]);
+        $openfolder = html_writer::link($folderlink, get_string('openinowncloud', 'mod_collaborativefolders'),
+            ['class' => 'btn btn-primary']);
+        $solveproblems = html_writer::link($solveproblemsurl, get_string('solveproblems', 'mod_collaborativefolders'),
+            ['class' => 'btn']);
 
         $groupfolderinfo = new \stdClass();
         $groupfolderinfo->foldername = $foldername;
         $groupfolderinfo->folderlink = $folderlink;
         $groupfolderinfo->group = $group;
         $groupfolderinfo->cmid = $cmid;
-        $groupfolderinfo->solveproblems = $solveproblems->export_for_template($this);
+        $groupfolderinfo->solveproblems = $solveproblems;
         $groupfolderinfo->openfolder = $openfolder;
         $groupfolderinfo->icon = $this->render(new pix_icon('i/folder', '@folder'));
 
