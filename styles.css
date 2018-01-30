@@ -1,4 +1,4 @@
 .groupfolderinfo.details.generaltable th,
-.groupfolderinfo.details.generaltable th+td {
+.groupfolderinfo.details.generaltable th + td {
     width: 17%;
 }
