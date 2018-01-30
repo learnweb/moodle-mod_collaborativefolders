@@ -51,7 +51,7 @@ $string['groupmode_off'] = 'One folder for the entire course';
 $string['groups'] = 'Groups';
 $string['teachersnotallowed'] = 'Sorry, teachers are not allowed to view this content.';
 
-// View: remote system (+authorise.php)
+// View: remote system (+authorise.php).
 $string['remotesystem'] = 'Connection to ownCloud';
 $string['btnlogin'] = 'Login';
 $string['btnlogout'] = 'Logout';
@@ -59,18 +59,18 @@ $string['logoutsuccess'] = 'Successfully logged out from ownCloud.';
 $string['loginsuccess'] = 'Successfully authorised to connect to ownCloud.';
 $string['loginfailure'] = 'A problem occurred: Not authorised to connect to ownCloud.';
 
-// View: access folders
+// View: access folders.
 $string['accessfolders'] = 'Folder access';
 $string['grouplabel'] = 'Group: {$a}';
 
-// View: name_form
+// View: name_form.
 $string['namefield'] = 'Name';
 $string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your ownCloud.';
 $string['getaccess'] = 'Get access';
 $string['error_illegalpathchars'] = 'A valid folder or path name must be entered. Use \'/\' (slash) to delimit directories of a path.';
 $string['foldershared'] = 'The folder was successfully shared to your ownCloud.';
 
-// View: information about shared folder
+// View: information about shared folder.
 $string['sharedtoowncloud'] = 'This folder has already been shared to your ownCloud.';
 $string['folder'] = 'Folder';
 $string['cannotaccessheader'] = 'No access?';

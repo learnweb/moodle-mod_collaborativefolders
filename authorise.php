@@ -51,7 +51,8 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
 if ($action === 'logout') {
     // Remove access token.
     $userclient->log_out();
-    redirect($nextpage, get_string('logoutsuccess', 'mod_collaborativefolders'), null, \core\output\notification::NOTIFY_SUCCESS);
+    redirect($nextpage, get_string('logoutsuccess', 'mod_collaborativefolders'), null,
+        \core\output\notification::NOTIFY_SUCCESS);
     exit;
 }
 
@@ -59,10 +60,12 @@ if ($action === 'login') {
     // Callback from remote system. Use received authorisation code to convert it into an access token.
     if ($userclient->check_login()) {
         // Token received! Continuing...
-        redirect($nextpage,  get_string('loginsuccess', 'mod_collaborativefolders'), null, \core\output\notification::NOTIFY_SUCCESS);
+        redirect($nextpage,  get_string('loginsuccess', 'mod_collaborativefolders'), null,
+            \core\output\notification::NOTIFY_SUCCESS);
     } else {
         // Authorisation failed for some reason.
-        redirect($nextpage,  get_string('loginfailure', 'mod_collaborativefolders'), null, \core\output\notification::NOTIFY_ERROR);
+        redirect($nextpage,  get_string('loginfailure', 'mod_collaborativefolders'), null,
+            \core\output\notification::NOTIFY_ERROR);
     }
     exit;
 }
