@@ -41,11 +41,3 @@ require_capability('mod/collaborativefolders:view', $context);
 
 \mod_collaborativefolders\view_controller::handle_request(
     $collaborativefolder, $cm, $context, $PAGE->get_renderer('mod_collaborativefolders'));
-exit;
-
-// If the reset link was used, the chosen foldername is reset.
-if ($action === 'reset') {
-    $userclient->set_entry('name', $cmid, $USER->id, null);
-    redirect(qualified_me(), get_string('resetpressed', 'mod_collaborativefolders'));
-    exit;
-}

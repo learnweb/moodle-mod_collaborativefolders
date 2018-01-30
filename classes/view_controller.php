@@ -71,9 +71,11 @@ class view_controller {
             $systemclient = null;
         }
 
-        // If a folder form (that is inside $userfolders) is submitted, validate it and maybe create the share.
-        // Redirects to self if something interesting has happened.
-        self::handle_folder_form_submitted($userfolders, $cm, $userclient, $systemclient, $USER->id, $context);
+        if ($systemclient !== null) {
+            // If a folder form (that is inside $userfolders) is submitted, validate it and maybe create the share.
+            // Redirects to self if something interesting has happened.
+            self::handle_folder_form_submitted($userfolders, $cm, $userclient, $systemclient, $USER->id, $context);
+        }
 
         // Start output.
         echo $OUTPUT->header();
@@ -198,8 +200,16 @@ class view_controller {
                 $renderer->output_name_form($group, $form);
             } else {
                 // XOR Access share.
-                // TODO show $link
-                // TODO show solve problems button
+                // TODO make link more appealing.
+                var_dump($link);
+                // Show solve problems button.
+                // TODO add description
+                echo $renderer->render(new \single_button(
+                    new \moodle_url('/mod/collaborativefolders/resetshare.php', [
+                        'id' => $cmid,
+                        'group' => $groupid,
+                        'sesskey' => sesskey()
+                    ]), '@solve problems'));
             }
         }
 
@@ -286,11 +296,12 @@ class view_controller {
         $shared = $systemclient->generate_share($sharepath, $shareusername);
         if ($shared === false) {
             // Share was unsuccessful.
+            // TODO reason can be that it was already shared before!
             throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
         }
 
         // Get newly created share (in user space) and move it to the chosen location.
-        $finalpath = $shared->file_target;
+        $finalpath = (string)$shared->file_target;
         $renamed = $userclient->rename($finalpath, $chosenname, $cmid, $USER->id);
         if ($renamed['status'] === false) {
             // Rename was unsuccessful.
@@ -298,5 +309,7 @@ class view_controller {
             throw new share_failed_exception($renamed['content']);
         }
         // Sharing and renaming operations were successful.
+        // Store path for reference.
+        $userclient->set_entry('link', $cmid, $USER->id, $chosenname);
     }
 }
