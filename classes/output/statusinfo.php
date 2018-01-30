@@ -38,7 +38,7 @@ use stdClass;
  */
 class statusinfo implements \renderable, \templatable {
 
-    /** @var string General creation status in created/pending */
+    /** @var string General creation status; in created/pending */
     public $creationstatus;
     /** @var int 0 if teacher may not access folder; 1 otherwise */
     public $teachermayaccess;
@@ -80,6 +80,7 @@ class statusinfo implements \renderable, \templatable {
         foreach ($this->groups as $group) {
             $export->groups[] = $group;
         }
+        $export->creationstatus = get_string('creationstatus_' . $export->creationstatus, 'mod_collaborativefolders');
         return $export;
     }
 }

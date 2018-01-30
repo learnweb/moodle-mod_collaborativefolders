@@ -39,32 +39,32 @@
         "groups": [{ "id": 1, "name": "Group 1" }]
     }
 }}
-<h3>@Overview</h3>
-<table class="generaltable fullwidth">
+<h3>{{#str}}overview, mod_collaborativefolders{{/str}}</h3>
+<table class="statusinfo generaltable fullwidth">
     <tbody>
     <tr>
-        <th scope="row">@creationstatus</th>
-        <td>@{{creationstatus}}
+        <th scope="row">{{#str}}creationstatus, mod_collaborativefolders{{/str}}</th>
+        <td>{{creationstatus}}
             {{! display problem info if applicable}}
         </td>
     </tr>
     <tr>
         <th scope="row">{{#str}}teacher_access, mod_collaborativefolders{{/str}}</th>
         <td>
-            {{#teachermayaccess}}@yes{{/teachermayaccess}}
-            {{^teachermayaccess}}@no{{/teachermayaccess}}
+            {{#teachermayaccess}}{{#str}}teacheraccess_yes, mod_collaborativefolders{{/str}}{{/teachermayaccess}}
+            {{^teachermayaccess}}{{#str}}teacheraccess_no, mod_collaborativefolders{{/str}}{{/teachermayaccess}}
         </td>
     </tr>
     <tr>
-        <th scope="row">@groupmode</th>
+        <th scope="row">{{#str}}groupmode, mod_collaborativefolders{{/str}}</th>
         <td>
-            {{#groupmode}}@one folder per group{{/groupmode}}
-            {{^groupmode}}@one folder per course{{/groupmode}}
+            {{#groupmode}}{{#str}}groupmode_on, mod_collaborativefolders{{/str}}{{/groupmode}}
+            {{^groupmode}}{{#str}}groupmode_off, mod_collaborativefolders{{/str}}{{/groupmode}}
         </td>
     </tr>
     {{#groupmode}}{{!TODO do something special if #groups is empty!}}
         <tr>
-            <th scope="row">@groups</th>
+            <th scope="row">{{#str}}groups, mod_collaborativefolders{{/str}}</th>
             <td>
                 <ul>
                     {{#groups}}

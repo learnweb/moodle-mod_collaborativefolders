@@ -36,10 +36,19 @@ $string['nocollaborativefolders'] = 'No instance of collaborative folders is act
 $string['pluginadministration'] = 'Administration of collaborative folders';
 $string['pluginname'] = 'Collaborative folders';
 
-// View.php.
+// View: Overview.
 $string['activityoverview'] = 'Collaborative folder';
-$string['infotextnogroups'] = 'This activity is available for all participants of the course.';
+$string['overview'] = 'Overview';
 $string['foldernotcreatedyet'] = 'The folder has not been created in ownCloud, yet. Please contact the administrator if this message persists more than a few hours.';
+$string['creationstatus'] = 'Folder status';
+$string['creationstatus_created'] = 'Folder(s) created';
+$string['creationstatus_pending'] = 'Folder(s) will be created soon';
+$string['teacheraccess_yes'] = 'Teachers have access to all folders';
+$string['teacheraccess_no'] = 'Folders remain private from teachers';
+$string['groupmode'] = 'Mode';
+$string['groupmode_on'] = 'One folder per group';
+$string['groupmode_off'] = 'One folder for the entire course';
+$string['groups'] = 'Groups';
 
 // View: remote system (+authorise.php)
 $string['remotesystem'] = 'Connection to ownCloud';
