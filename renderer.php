@@ -75,14 +75,14 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     public function render_widget_noconnection() {
-        $notification = new notification(get_string('problem_nosystemconnection'),
+        $notification = new notification(get_string('problem_nosystemconnection', 'mod_collaborativefolders'),
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
     }
 
     public function render_widget_noconnection_suppressed_share(int $sharessuppressed) {
-        $notification = new notification(get_string('problem_sharessuppressed', $sharessuppressed),
+        $notification = new notification(get_string('problem_sharessuppressed', 'mod_collaborativefolders', $sharessuppressed),
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
