@@ -95,4 +95,39 @@ class issuer_management {
         return $issuer;
     }
 
+    /**
+     * Check if an issuer provides all endpoints that are required by mod_collaborativefolders.
+     * @param \core\oauth2\issuer $issuer An issuer.
+     * @return bool True, if all endpoints exist; false otherwise.
+     */
+    public static function is_valid_issuer(\core\oauth2\issuer $issuer): bool
+    {
+        $endpointwebdav = false;
+        $endpointocs = false;
+        $endpointtoken = false;
+        $endpointauth = false;
+        $endpointuserinfo = false;
+        $endpoints = \core\oauth2\api::get_endpoints($issuer);
+        foreach ($endpoints as $endpoint) {
+            $name = $endpoint->get('name');
+            switch ($name) {
+                case 'webdav_endpoint':
+                    $endpointwebdav = true;
+                    break;
+                case 'ocs_endpoint':
+                    $endpointocs = true;
+                    break;
+                case 'token_endpoint':
+                    $endpointtoken = true;
+                    break;
+                case 'authorization_endpoint':
+                    $endpointauth = true;
+                    break;
+                case 'userinfo_endpoint':
+                    $endpointuserinfo = true;
+                    break;
+            }
+        }
+        return $endpointwebdav && $endpointocs && $endpointtoken && $endpointauth && $endpointuserinfo;
+    }
 }

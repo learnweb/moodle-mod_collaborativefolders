@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_collaborativefolders\issuer_management;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
@@ -32,7 +34,7 @@ if ($ADMIN->fulltree) {
     // Validates which issuers implement the needed endpoints.
     $validissuers = [];
     foreach ($issuers as $issuer) {
-        if (\mod_collaborativefolders\toolbox::is_valid_issuer($issuer)) {
+        if (issuer_management::is_valid_issuer($issuer)) {
             $validissuers[] = $issuer->get('id');
         }
         $availableissuers[$issuer->get('id')] = $issuer->get('name');

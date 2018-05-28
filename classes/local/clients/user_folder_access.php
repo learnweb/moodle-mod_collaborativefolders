@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/webdavlib.php');
 use mod_collaborativefolders\configuration_exception;
+use mod_collaborativefolders\issuer_management;
 
 /**
  * ownCloud client wrapper, intended for operations on a user's private storage.
@@ -83,6 +84,10 @@ class user_folder_access {
             $this->issuer = \core\oauth2\api::get_issuer($selectedissuer);
         } catch (\dml_missing_record_exception $e) {
             // Issuer does not exist anymore.
+            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
+        }
+
+        if (!issuer_management::is_valid_issuer($this->issuer)) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
 
