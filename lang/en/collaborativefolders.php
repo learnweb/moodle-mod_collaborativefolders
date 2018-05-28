@@ -102,6 +102,7 @@ $string['issuervalidation_invalid'] = 'Currently the {$a} issuer is active, howe
 $string['issuervalidation_notconnected'] = 'Currently the valid {$a} issuer is active, but no system account is connected. The repository will not work. Please connect a system account.';
 $string['right_issuers'] = 'The following issuers implement the required endpoints: {$a}';
 $string['no_right_issuers'] = 'None of the existing issuers implement all required endpoints. Please register an appropriate issuer.';
+$string['issuer_choice_unconfigured'] = '(unconfigured)';
 
 // Adding an instance (mod_form).
 $string['collaborativefoldersname'] = 'Collaborative folder name';

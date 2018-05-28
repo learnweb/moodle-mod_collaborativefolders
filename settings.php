@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
     // Collect available issuers.
     $issuers = core\oauth2\api::get_all_issuers();
-    $availableissuers = array();
+    $availableissuers = [0 => get_string('issuer_choice_unconfigured', 'collaborativefolders')];
 
     // Validates which issuers implement the needed endpoints.
     $validissuers = [];
@@ -73,7 +73,4 @@ if ($ADMIN->fulltree) {
             $issuervalidation,
         ]),
         0, $availableissuers));
-
-
-
 }
