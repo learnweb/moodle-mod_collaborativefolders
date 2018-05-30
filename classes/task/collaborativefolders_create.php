@@ -40,7 +40,7 @@ class collaborativefolders_create extends \core\task\adhoc_task {
             $ocaccess = new system_folder_access();
         } catch (configuration_exception $e) {
             mtrace(sprintf('System client not configured: %s', $e->getMessage()));
-            // Re-throw so that task is not marked as finished. End.
+            // Re-throw so that task is not marked as finished. Automatically re-queues this task for later execution. End.
             throw $e;
         }
 
