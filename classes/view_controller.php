@@ -59,12 +59,16 @@ class view_controller {
 
         $statusinfo = self::get_instance_status($collaborativefolder, $cm, $isteacher);
         $userfolders = self::obtain_folders($statusinfo, $cm, $isteacher);
-        $userclient = new user_folder_access(new \moodle_url('/mod/collaborativefolders/authorise.php', [
-                'action' => 'login',
-                'id' => $cm->id,
-                'sesskey' => sesskey()
-            ])
-        );
+        try {
+            $userclient = new user_folder_access(new \moodle_url('/mod/collaborativefolders/authorise.php', [
+                    'action' => 'login',
+                    'id' => $cm->id,
+                    'sesskey' => sesskey()
+                ])
+            );
+        } catch (configuration_exception $e) {
+            $userclient = null;
+        }
         try {
             $systemclient = new system_folder_access();
         } catch (configuration_exception $e) {
@@ -84,10 +88,18 @@ class view_controller {
             echo $OUTPUT->box(format_module_intro('collaborativefolder', $collaborativefolder, $cm->id), 'generalbox', 'intro');
         }
 
+        // Show notice if the plugin is not configured correctly.
+        if ($userclient === null) {
+            echo $renderer->render_widget_misconfiguration();
+            echo $OUTPUT->footer();
+            return;
+        }
+
+
         // Show notice if there is a general problem with the system account.
         // Show to someone who can add/configure this instance (i.e. teachers).
         if ($systemclient === null && has_capability('mod/collaborativefolders:addinstance', $context)) {
-            echo $renderer->render_widget_noconnection();
+            echo $renderer->render_widget_nosystemconnection();
         }
 
         // Show status info table.

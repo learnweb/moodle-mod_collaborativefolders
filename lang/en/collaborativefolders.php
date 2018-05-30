@@ -81,6 +81,7 @@ $string['resetpressed'] = 'Share reset. You can now obtain access to your folder
 
 // Systemic error messages.
 $string['problem_nosystemconnection'] = 'The system account is unable to connect to ownCloud, so folders for this activity will not be created. Please inform the administrator about this.';
+$string['problem_misconfiguration'] = 'The plugin is not configured correctly or the server is not reachable. Please contact your administrator to resolve this issue.';
 $string['problem_sharessuppressed'] = 'The system account is unable to connect to ownCloud, so {$a} folders were not displayed. Please inform the administrator about this.';
 
 // Configuration/connection error messages.
