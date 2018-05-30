@@ -75,11 +75,12 @@ class toolbox {
 
     /**
      * Create a fake group. Used for representing course-wide groups of users.
-     * @return \stdClass faking a simple group object; with attributes id=0 and name='Course'.
+     * @param string $coursetitle Name of the course. Could be e.g. the shortname attribute.
+     * @return \stdClass faking a simple group object; with attributes id=0 and name as passed.
      */
-    public static function fake_course_group() {
+    public static function fake_course_group(string $coursetitle): \stdClass {
         $group = new \stdClass();
-        $group->name = 'Course'; // TODO maybe replace with localisable string.
+        $group->name = $coursetitle;
         $group->id = 0;
         return $group;
     }

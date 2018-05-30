@@ -122,7 +122,7 @@ class view_controller {
         if ($userclient->check_login()) {
             echo $OUTPUT->heading(get_string('accessfolders', 'mod_collaborativefolders'), 3);
             if ($statusinfo->creationstatus === 'created') {
-                echo self::share_and_view_folders($cm->id, $userfolders, $statusinfo, $renderer, $isteacher,
+                echo self::share_and_view_folders($cm, $userfolders, $statusinfo, $renderer, $isteacher,
                     $systemclient !== null, $userclient);
             } else {
                 // Folders are not yet created and can therefore not be shared.
@@ -171,7 +171,7 @@ class view_controller {
      * # Defining a user-local name and generating a share
      * # Display the selected name, a link, and a button for problem solving (aka re-share).
      *
-     * @param int $cmid Course module ID
+     * @param \cm_info $cmid Course module info
      * @param array $folderforms
      * @param statusinfo $statusinfo
      * @param mod_collaborativefolders_renderer $renderer
@@ -181,7 +181,7 @@ class view_controller {
      * @return string Rendered view
      * @internal param user_folder_access $userclient
      */
-    private static function share_and_view_folders(int $cmid, $folderforms, statusinfo $statusinfo,
+    private static function share_and_view_folders(\cm_info $cm, $folderforms, statusinfo $statusinfo,
                                                    mod_collaborativefolders_renderer $renderer, bool $isteacher,
                                                    bool $systemclientcanshare, user_folder_access $userclient) {
         global $USER;
@@ -197,8 +197,8 @@ class view_controller {
 
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
-            $foldername = $userclient->get_link($cmid, $groupid, $USER->id);
-            $group = $groupid === 0 ? toolbox::fake_course_group() : $statusinfo->groups[$groupid];
+            $foldername = $userclient->get_link($cm->id, $groupid, $USER->id);
+            $group = $groupid === 0 ? toolbox::fake_course_group($cm->get_course()->shortname) : $statusinfo->groups[$groupid];
             if ($foldername === null) {
                 // User does not have a share yet; create it now.
 
@@ -212,7 +212,7 @@ class view_controller {
                 $renderer->output_name_form($group, $form);
             } else {
                 // XOR Access share.
-                echo $renderer->output_shared_folder($group, $cmid, $foldername,
+                echo $renderer->output_shared_folder($group, $cm->id, $foldername,
                     $userclient->link_from_foldername($foldername));
             }
         }
@@ -226,13 +226,15 @@ class view_controller {
 
     private static function obtain_folders(statusinfo $statusinfo, \cm_info $cm, $isteacher) {
         // Get applicable groups from $statusinfo.
-        $folders = array();
         if ($isteacher && !$statusinfo->teachermayaccess) {
-            // Refuse access for teacher.
+            // Refuse access for teacher because user config says so.
             return array();
-        } else if ($isteacher || !$statusinfo->groupmode) {
+        }
+
+        $folders = array();
+        if ($isteacher || !$statusinfo->groupmode) {
             // One folder for the entire course.
-            $fakegroup = toolbox::fake_course_group();
+            $fakegroup = toolbox::fake_course_group($cm->get_course()->shortname);
             $folders = [$fakegroup];
         } else {
             // Student; one folder per applicable group.
@@ -290,7 +292,7 @@ class view_controller {
 
         // Derive $sharepath (original path) from $groupid.
         $sharepath = '/'.$cmid;
-        if ($groupid !== toolbox::fake_course_group()->id) {
+        if ($groupid !== toolbox::fake_course_group('')->id) {
             $sharepath .= '/'.$groupid;
         }
         // Share from system to user.
