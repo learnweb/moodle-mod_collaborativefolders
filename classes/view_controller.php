@@ -269,6 +269,7 @@ class view_controller {
             /* @var name_form $form */
             // Iterate over forms to find the submitted one (is_submitted() is implicit in get_data()).
             if ($fromform = $form->get_data()) {
+                // TODO handle exception cases properly!
                 self::share_folder_with_user($groupid, $fromform->namefield, $systemclient,
                                                    $userclient, $cm->id);
 
@@ -286,7 +287,17 @@ class view_controller {
         }
     }
 
-    private static function share_folder_with_user($groupid, $chosenname, system_folder_access $systemclient,
+    /**
+     * Create a share of a specific folder to the current user, and rename it to the name the user choses.
+     *
+     * @param int $groupid ID of the group whose folder is being shared
+     * @param string $chosenname Name that the folder is supposed to have, from the user point of view.
+     * @param system_folder_access $systemclient ownCloud client for the system user
+     * @param user_folder_access $userclient ownCloud client in the user's name
+     * @param int $cmid ID of the coursemodule of this activity
+     * @throws share_failed_exception An error occurred when using the ownCloud API
+     */
+    private static function share_folder_with_user(int $groupid, string $chosenname, system_folder_access $systemclient,
                                                    user_folder_access $userclient, int $cmid) {
         global $USER;
 
@@ -295,26 +306,33 @@ class view_controller {
         if ($groupid !== toolbox::fake_course_group('')->id) {
             $sharepath .= '/'.$groupid;
         }
+
         // Share from system to user.
         $userinfo = $userclient->get_userinfo();
+        // TODO handle case if $userinfo is null or false (= API error!).
         $shareusername = $userinfo['username'];
-        $shared = $systemclient->generate_share($sharepath, $shareusername);
-        if ($shared === false) {
-            // Share was unsuccessful.
-            // TODO reason can be that it was already shared before!
-            throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
+
+        try {
+            // Either $shared contains the `data` part of the response, or the method throws an exception.
+            // The only exception we handle is `share_exists_exception, because we can recover from that.
+            $shared = $systemclient->generate_share($sharepath, $shareusername);
+
+            // Get newly created share (in user space) and move it to the chosen location.
+            $finalpath = (string)$shared->file_target;
+            $renamed = $userclient->rename($finalpath, $chosenname);
+            if ($renamed['status'] === false) {
+                // Rename was unsuccessful.
+                // TODO rollback sharing.
+                throw new share_failed_exception($renamed['content']);
+            }
+            // Sharing and renaming operations were successful.
+            // Store resulting path for future reference.
+            $userclient->store_link($cmid, $groupid, $USER->id, $chosenname);
+        } catch (share_exists_exception $e) {
+            // TODO instead of throwing the exception, find out the new name and display it to the user (maybe store it even!).
+            throw $e;
         }
 
-        // Get newly created share (in user space) and move it to the chosen location.
-        $finalpath = (string)$shared->file_target;
-        $renamed = $userclient->rename($finalpath, $chosenname);
-        if ($renamed['status'] === false) {
-            // Rename was unsuccessful.
-            // TODO rollback sharing (unless successfully shared and moved before).
-            throw new share_failed_exception($renamed['content']);
-        }
-        // Sharing and renaming operations were successful.
-        // Store resulting path for future reference.
-        $userclient->store_link($cmid, $groupid, $USER->id, $chosenname);
+
     }
 }

@@ -32,6 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/webdavlib.php');
 use mod_collaborativefolders\configuration_exception;
 use mod_collaborativefolders\issuer_management;
+use mod_collaborativefolders\share_exists_exception;
+use mod_collaborativefolders\share_failed_exception;
 use repository_owncloud\ocs_client;
 
 /**
@@ -125,7 +127,9 @@ class system_folder_access {
      *
      * @param $path string path to the folder (relative to sharing private storage).
      * @param $userid string Receiving username.
-     * @return \SimpleXMLElement|bool Part of the XML response on success or false on failure of sharing.
+     * @return \SimpleXMLElement Excerpt from the XML response on success.
+     * @throws share_exists_exception If the folder had already been shared prior.
+     * @throws share_failed_exception If calling the OCS API resulted in an unknown state.
      */
     public function generate_share($path, $userid) {
         $response = $this->ocsclient->call('create_share', [
@@ -137,7 +141,7 @@ class system_folder_access {
         $xml = simplexml_load_string($response);
 
         if ($xml === false) {
-            return false;
+            throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
         }
 
         if ((string)$xml->meta->status === 'ok') {
@@ -146,12 +150,11 @@ class system_folder_access {
         }
 
         if ((string)$xml->meta->statuscode === '403') {
-            // Already shared with the specific user.
-            // TODO Throw meaningful exception instead, data is empty :( but this was not really unsuccessful.
-            return false;
+            // Already shared with the specific user; require calling code to find out its name.
+            throw new share_exists_exception();
         }
 
-        return false;
+        throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
 
     }
 

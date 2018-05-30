@@ -130,13 +130,6 @@ class user_folder_access {
 
         $ret = array();
 
-        if (!$this->check_login()) { // TODO supposed to be done elsewhere (we may assume that user is logged in)
-            // If the user is not logged in, a suitable error message is returned.
-            $ret['status'] = false;
-            $ret['content'] = get_string('usernotloggedin', 'mod_collaborativefolders');
-            return $ret;
-        }
-
         if ($this->webdav->open()) {
 
             // After the socket's opening, the WebDAV MOVE method has to be performed in

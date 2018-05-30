@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Exception for when sharing and/or renaming has failed
+ * Exception for when sharing has failed because a folder has *already* been shared prior to that.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
+ * @copyright  2018 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,13 +27,13 @@ namespace mod_collaborativefolders;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Exception for when sharing and/or renaming has failed
+ * Exception for when sharing has failed because a folder has *already* been shared prior to that.
  *
  * @package    mod_collaborativefolders
- * @copyright  2017 Jan Dageförde (Learnweb, University of Münster)
+ * @copyright  2018 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class share_failed_exception extends \moodle_exception {
+class share_exists_exception extends \moodle_exception {
 
     /**
      * Constructor
@@ -41,6 +41,6 @@ class share_failed_exception extends \moodle_exception {
      * @param string $debuginfo detailed information how to fix problem
      */
     public function __construct($hint = '', $debuginfo = null) {
-        parent::__construct('share_failed_exception', 'mod_collaborativefolders', '', $hint, $debuginfo);
+        parent::__construct('share_exists_exception', 'mod_collaborativefolders', '', $hint, $debuginfo);
     }
 }

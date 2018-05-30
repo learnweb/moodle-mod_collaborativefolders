@@ -121,3 +121,4 @@ $string['eventlinkgenerated'] = 'A user-specific share to a collaborative folder
 $string['configuration_exception'] = 'An error in the configuration of the OAuth 2 client occurred: {$a}';
 $string['webdav_response_exception'] = 'WebDAV responded with an error: {$a}';
 $string['share_failed_exception'] = 'Unable to share the folder with you: {$a}';
+$string['share_exists_exception'] = 'The folder is already shared with you. {$a}';
