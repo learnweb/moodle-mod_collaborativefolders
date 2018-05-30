@@ -125,17 +125,17 @@ class system_folder_access {
     /**
      * Method for share creation in ownCloud. A folder is shared privately with a specific user.
      *
-     * @param $path string path to the folder (relative to sharing private storage).
-     * @param $userid string Receiving username.
+     * @param string $path path to the folder (relative to sharing private storage).
+     * @param string $username Receiving ownCloud username.
      * @return \SimpleXMLElement Excerpt from the XML response on success.
      * @throws share_exists_exception If the folder had already been shared prior.
      * @throws share_failed_exception If calling the OCS API resulted in an unknown state.
      */
-    public function generate_share($path, $userid) {
+    public function generate_share(string $path, string $username) {
         $response = $this->ocsclient->call('create_share', [
             'path' => $path,
             'shareType' => ocs_client::SHARE_TYPE_USER,
-            'shareWith' => $userid,
+            'shareWith' => $username,
         ]); // TODO consider permissions (default vs. wanted).
 
         $xml = simplexml_load_string($response);
