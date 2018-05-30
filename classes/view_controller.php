@@ -97,7 +97,6 @@ class view_controller {
             return;
         }
 
-
         // Show notice if there is a general problem with the system account.
         // Show to someone who can add/configure this instance (i.e. teachers).
         if ($systemclient === null && has_capability('mod/collaborativefolders:addinstance', $context)) {
@@ -334,7 +333,6 @@ class view_controller {
             // TODO instead of throwing the exception, find out the new name and display it to the user (maybe store it even!).
             throw $e;
         }
-
 
     }
 }

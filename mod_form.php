@@ -45,7 +45,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Name of the activity, which is chosen by the teacher.
-        $mform->addElement('text', 'name', get_string('collaborativefoldersname', 'mod_collaborativefolders'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('collaborativefoldersname', 'mod_collaborativefolders'), ['size' => '64']);
         $mform->setType('name', PARAM_RAW_TRIMMED);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
