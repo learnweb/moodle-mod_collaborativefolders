@@ -32,8 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/webdavlib.php');
 use mod_collaborativefolders\configuration_exception;
 use mod_collaborativefolders\issuer_management;
-use mod_collaborativefolders\share_exists_exception;
-use mod_collaborativefolders\share_failed_exception;
+use mod_collaborativefolders\local\sharing\share_exists_exception;
+use mod_collaborativefolders\local\sharing\share_failed_exception;
 use repository_owncloud\ocs_client;
 
 /**

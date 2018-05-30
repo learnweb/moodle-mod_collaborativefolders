@@ -26,6 +26,8 @@ namespace mod_collaborativefolders;
 
 use mod_collaborativefolders\local\clients\system_folder_access;
 use mod_collaborativefolders\local\clients\user_folder_access;
+use mod_collaborativefolders\local\sharing\share_exists_exception;
+use mod_collaborativefolders\local\sharing\share_failed_exception;
 use mod_collaborativefolders\output\statusinfo;
 use mod_collaborativefolders_renderer;
 
