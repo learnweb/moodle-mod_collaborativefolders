@@ -64,8 +64,11 @@ class mod_collaborativefolders_issuer_management_testcase extends \advanced_test
      */
     public function test_validate_issuer() {
         static::setAdminUser();
+        /* @var mod_collaborativefolders_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
+
         // Validate a correct issuer first.
-        $issuer1 = issuer_management::create_issuer('nextcloud', 'https://nextcloud.local');
+        $issuer1 = $generator->create_test_issuer('nextcloud');
         $this->assertTrue(issuer_management::is_valid_issuer($issuer1), 'Validation of a known-to-be-correct issuer.');
 
         // Validate some other issuer.
