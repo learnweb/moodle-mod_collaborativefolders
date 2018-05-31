@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This testcase contains tests for the system_folder_access class, which is part of the
- * collaborativefolders activity module.
+ * Tests for the system account client class.
  *
  * @package    mod_collaborativefolders
  * @group      mod_collaborativefolders
@@ -30,11 +29,54 @@ require_once($CFG->libdir . '/webdavlib.php');
 
 class mod_collaborativefolders_system_folder_access_testcase extends \advanced_testcase {
 
+    /**
+     * Data generator
+     * @var mod_collaborativefolders_generator
+     */
+    private $generator;
+
     /** @var \mod_collaborativefolders\local\clients\system_folder_access owncloud access object. */
     private $oc;
 
     protected function setUp() {
         $this->resetAfterTest(true);
+        $this->generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
+    }
+
+
+    /**
+     * Test correct response if configuration is erroneous.
+     */
+    public function test_erroneous_configuration() {
+        // First: No issuer exists.
+        $this->expectException(\mod_collaborativefolders\configuration_exception::class);
+        new \mod_collaborativefolders\local\clients\system_folder_access();
+
+        // Second: Issuer exists, but is not configured.
+        $nextcloud = $this->generator->create_test_issuer('nextcloud');
+        $this->expectException(\mod_collaborativefolders\configuration_exception::class);
+        new \mod_collaborativefolders\local\clients\system_folder_access();
+
+        // Third: Issuer is configured, but removed afterwards.
+        set_config("issuerid", $nextcloud->get('id'), "collaborativefolders");
+        assertTrue($nextcloud->delete());
+        $this->expectException(\mod_collaborativefolders\configuration_exception::class);
+        new \mod_collaborativefolders\local\clients\system_folder_access();
+
+        // Fourth: Wrong issuer was configured.
+        $facebook = \core\oauth2\api::create_standard_issuer('facebook');
+        set_config("issuerid", $facebook->get('id'), "collaborativefolders");
+        $this->expectException(\mod_collaborativefolders\configuration_exception::class);
+        new \mod_collaborativefolders\local\clients\system_folder_access();
+
+        // Fifth: Issuer is configured correctly, but no system account is connected.
+        $nextcloud2 = $this->generator->create_test_issuer('nextcloud');
+        set_config("issuerid", $nextcloud2->get('id'), "collaborativefolders");
+        $this->expectException(\mod_collaborativefolders\configuration_exception::class);
+        new \mod_collaborativefolders\local\clients\system_folder_access();
+
+        // Testing a correct validation would require that an access token could be redeemed. That's hard.
+        // Let's assume that the Moodle OAuth API does that part correctly without us testing it.
     }
 
     protected function connect_system_account() {

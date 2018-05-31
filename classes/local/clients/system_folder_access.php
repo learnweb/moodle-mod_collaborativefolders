@@ -110,7 +110,7 @@ class system_folder_access {
         }
 
         try {
-            // Returns a client on success, otherwise false or throws an exception.
+            // Returns a client if access token valid (or successfully redeems refresh token), otherwise false/exception.
             $this->systemclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
         } catch (\moodle_exception $e) {
             $this->systemclient = false;

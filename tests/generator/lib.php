@@ -34,9 +34,22 @@ defined('MOODLE_INTERNAL') || die();
  */
 class mod_collaborativefolders_generator extends testing_module_generator {
     /**
-     * Creates Course, course members, groups and groupings to test the module.
+     * Create an issuer for testing purposes.
+     * @param string $name Name; used as a name in the testing issuer and as its mock URL
+     * @return \core\oauth2\issuer
      */
-    public function create_preparation ($groupmode, $grouping) {
+    public function create_test_issuer(string $name): \core\oauth2\issuer {
+        return \mod_collaborativefolders\issuer_management::create_issuer($name, sprintf('https://%s.local', $name));
+    }
+
+    /**
+     * Creates Course, course members, groups and groupings to test the module.
+     * @param $groupmode
+     * @param $grouping
+     * @return array
+     * @throws coding_exception
+     */
+    public function create_preparation ($groupmode, $grouping): array {
         $generator = advanced_testcase::getDataGenerator();
         $data = array();
         $course = $generator->create_course(array('name' => 'A course'));
