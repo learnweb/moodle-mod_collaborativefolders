@@ -74,7 +74,7 @@ class user_folder_access {
      * @param \moodle_url $oauthloginreturnurl URL that will be redirected to after the login callback has succeeded.
      * @throws configuration_exception If essential data is missing.
      */
-    public function __construct ($oauthloginreturnurl) {
+    public function __construct (\moodle_url $oauthloginreturnurl) {
         // Get issuer and system account client. Fail early, if needed.
         $selectedissuer = get_config("collaborativefolders", "issuerid");
         if (empty($selectedissuer)) {
