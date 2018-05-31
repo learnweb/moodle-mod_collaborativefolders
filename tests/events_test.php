@@ -98,8 +98,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
 
         $this->assertInstanceOf('\mod_collaborativefolders\event\folders_created', $event);
 
-        // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
-        // verify the event's correctness.
+        // Verify the event's correctness by testing its fields.
         $this->assertEquals($context->id, $event->contextid);
         $this->assertEquals($this->data['course']->id, $event->courseid);
         $this->assertEquals('collaborativefolders', $event->objecttable);
@@ -133,8 +132,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
 
         $this->assertInstanceOf('\mod_collaborativefolders\event\link_generated', $event);
 
-        // Test the fields 'crud', 'edulevel', 'contextid', 'courseid', 'objecttable' and 'obejctid' to
-        // verify the event's correctness.
+        // Verify the event's correctness by testing its fields.
         $this->assertEquals($context->id, $event->contextid);
         $this->assertEquals($this->data['course']->id, $event->courseid);
         $this->assertEquals('collaborativefolders', $event->objecttable);
