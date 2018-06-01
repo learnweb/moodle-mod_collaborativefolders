@@ -18,7 +18,7 @@ namespace mod_collaborativefolders;
 
 defined('MOODLE_INTERNAL') || die();
 
-require($CFG->libdir . '/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 
 /**
@@ -33,16 +33,29 @@ class name_form extends \moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'name', get_string('naming_folder', 'mod_collaborativefolders'));
         // Name field.
         $mform->addElement('text', 'namefield', get_string('namefield', 'mod_collaborativefolders'), array('size' => '64'));
         $mform->addRule('namefield', get_string('required'), 'required', null, 'client');
-        $mform->addRule('namefield', get_string('err_alphanumeric', 'form'), 'alphanumeric', null, 'client');
         // The default value is the name of the activity, chosen by it's creator.
         $mform->setDefault('namefield', $this->_customdata['namefield']);
-        $mform->setType('namefield', PARAM_ALPHANUM);
+        $mform->setType('namefield', PARAM_RAW_TRIMMED);
 
-        $mform->addElement('submit', 'enter', get_string('save', 'mod_collaborativefolders'));
+        $mform->addElement('submit', 'enter', get_string('getaccess', 'mod_collaborativefolders'));
+    }
+
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+
+        if ($data['namefield'] !== clean_param($data['namefield'], PARAM_PATH)) {
+            $errors['namefield'] = get_string('error_illegalpathchars', 'mod_collaborativefolders');
+        }
+
+        return $errors;
+    }
+
+    protected function get_form_identifier() {
+        $formid = $this->_customdata['id'] . '_' . get_class($this);
+        return $formid;
     }
 
 }

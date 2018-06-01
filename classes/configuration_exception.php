@@ -15,61 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Event for when a new technical user logs out.
+ * Exception for when a client configuration data is missing.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_collaborativefolders\event;
+namespace mod_collaborativefolders;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Describes the technical user logout event.
+ * Exception for when a client configuration data is missing.
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class technical_user_loggedout extends  \core\event\base {
+class configuration_exception extends \moodle_exception {
 
     /**
-     * Init method.
-     *
-     * @return void
+     * Constructor
+     * This exception is used when the configuration of the plugin can not be processed or database entries are
+     * missing.
+     * @param string $hint optional param for additional information of the problem
+     * @param string $debuginfo detailed information how to fix problem
      */
-    protected function init() {
-        $this->data['crud'] = 'u';
-        $this->data['edulevel'] = self::LEVEL_OTHER;
-        $this->data['objecttable'] = '';
-    }
-
-    /**
-     * Returns description of what happened.
-     *
-     * @return string
-     */
-    public function get_description() {
-        return "The technical user of collaborativefolders logged out.";
-    }
-
-    /**
-     * Return localised event name.
-     *
-     * @return string
-     */
-    public static function get_name() {
-        return get_string('eventloggedout', 'mod_collaborativefolders');
-    }
-
-    /**
-     * Get URL related to the action
-     *
-     * @return \moodle_url
-     */
-    public function get_url() {
-        return new \moodle_url('/admin/settings.php?section=modsettingcollaborativefolders');
+    public function __construct($hint = '', $debuginfo = null) {
+        parent::__construct('configuration_exception', 'mod_collaborativefolders', '', $hint, $debuginfo);
     }
 }

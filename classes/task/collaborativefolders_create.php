@@ -18,11 +18,9 @@ namespace mod_collaborativefolders\task;
 
 defined('MOODLE_INTERNAL') || die;
 
+use mod_collaborativefolders\configuration_exception;
 use mod_collaborativefolders\event\folders_created;
-use mod_collaborativefolders\owncloud_access;
-use moodle_url;
-use tool_oauth2owncloud\configuration_exception;
-use tool_oauth2owncloud\webdav_response_exception;
+use mod_collaborativefolders\local\clients\system_folder_access;
 
 /**
  * Ad hoc task for the creation of group folders in ownCloud.
@@ -33,46 +31,55 @@ use tool_oauth2owncloud\webdav_response_exception;
  */
 class collaborativefolders_create extends \core\task\adhoc_task {
 
+    /**
+     * Create one folder per group, as specified by \mod_collaborativefolders\observer::collaborativefolders_created.
+     */
     public function execute() {
-
-        $context = \context_system::instance();
-
-        $returnurl = new moodle_url('/admin/settings.php?section=modsettingcollaborativefolders', [
-                'callback'  => 'yes',
-                'sesskey'   => sesskey(),
-        ]);
-
-        $oc = new owncloud_access($returnurl);
-        $folderpaths = $this->get_custom_data();
-
-        if (!$oc->check_data()) {
-            throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
+        // Get a client logged in as the system user.
+        try {
+            $ocaccess = new system_folder_access();
+        } catch (configuration_exception $e) {
+            mtrace(sprintf('System client not configured: %s', $e->getMessage()));
+            // Re-throw so that task is not marked as finished. Automatically re-queues this task for later execution. End.
+            throw $e;
         }
 
-        foreach ($folderpaths as $key => $path) {
+        $errors = array();
+        $customdata = $this->get_custom_data();
 
-            if ($key != 'instance') {
+        foreach ($customdata->paths as $path) {
+            // If a request or something along the way fails badly, make_folders throws an exception.
+            // TODO treat this identical to wrong status codes!
+            $statuscode = $ocaccess->make_folder($path);
+            mtrace('Folder: ' . $path . ', Code: ' . $statuscode);
 
-                // If any non-responsetype related errors occur, a fitting exception is thrown beforehand.
-                $code = $oc->handle_folder('make', $path);
-                mtrace('Folder: ' . $path . ', Code: ' . $code);
+            // Legend:
+            // 201: Created. (Expected regularly.)
+            // 405: Method not allowed. Will be raised if folder already exists. Also expected, although less regularly.
+            $requestok = $statuscode == 201 || $statuscode == 405;
 
-                if (($code != 201) && ($code != 405)) {
-
-                    // If the folder could not be created, an exception is thrown.
-                    $error = get_string('notcreated', 'mod_collaborativefolders', $path) .
-                            get_string('unexpectedcode', 'mod_collaborativefolders');
-                    throw new webdav_response_exception($error);
-                }
+            // Request failed; record.
+            if (!$requestok) {
+                // If the folder could not be created, record it for later logging.
+                $errors[] = get_string('notcreated', 'mod_collaborativefolders', $path) .
+                        get_string('unexpectedcode', 'mod_collaborativefolders', $statuscode);
             }
         }
 
-        $params = array(
-                'objectid' => $folderpaths->instance,
-                'context' => $context
-        );
+        if (!empty($errors)) {
+            // TODO Not happy with this! Handle such cases appropriately! e.g. new task, message to someone, ...?
+            $errorsformatted = implode('; ', $errors);
+            mtrace(sprintf('The following errors occurred: %s', $errorsformatted));
+            throw new \moodle_exception($errorsformatted);
+        }
 
-        $done = folders_created::create($params);
+        // Record successful run.
+        $cm = get_coursemodule_from_instance('collaborativefolders', $customdata->instance);
+        $done = folders_created::create([
+            'objectid' => $customdata->instance,
+            'context' => \context_module::instance($cm->id)
+            ]
+        );
         $done->trigger();
     }
 }

@@ -25,81 +25,100 @@
 defined('MOODLE_INTERNAL') || die();
 
 // General.
-$string['modulename'] = 'Collaborative Folder';
-$string['modulenameplural'] = 'Collaborative Folders';
-$string['modulename_help'] = 'Use Collaborative Folders to create folders in ownCloud for students for collaborative Work. The folder is created on a technical user\'s ownCloud account and then shared with members of the chosen groups, as soon as they like.';
-$string['collaborativefolders:addinstance'] = 'Add a new Collaborative Folder';
-$string['collaborativefolders:view'] = 'View a Collaborative Folder';
-$string['collaborativefolders:viewstudent'] = 'View a Collaborative Folder as a student';
-$string['collaborativefolders:viewteacher'] = 'View a Collaborative Folder as a teacher or manager';
-$string['collaborativefolders'] = 'Collaborative Folder';
-$string['nocollaborativefolders'] = 'No instance of Collaborative Folders is active in this course.';
-$string['pluginadministration'] = 'Administration of Collaborative Folders';
-$string['pluginname'] = 'Collaborative Folder';
+$string['modulename'] = 'Collaborative folders';
+$string['modulenameplural'] = 'Collaborative folders';
+$string['modulename_help'] = 'Use collaborative folders to create folders in ownCloud for students for collaborative work. The folder is shared individually with members of the chosen groups as soon as they like. You do not need to collect ownCloud email addresses from your participants, everything is automated!';
+$string['collaborativefolders:addinstance'] = 'Add a new collaborative folder';
+$string['collaborativefolders:view'] = 'View a collaborative folder';
+$string['collaborativefolders:isteacher'] = 'When viewing, be considered a non-student (with restricted access)';
+$string['collaborativefolders'] = 'Collaborative folders';
+$string['nocollaborativefolders'] = 'No instance of collaborative folders is active in this course.';
+$string['pluginadministration'] = 'Administration of collaborative folders';
+$string['pluginname'] = 'Collaborative folders';
 
-// View.php.
-$string['activityoverview'] = 'Overview of Collaborative Folders';
-$string['notallowed'] = 'Sadly your are currently not allowed to view this content.';
-$string['introoverview'] = 'Overview of all participating groups';
-$string['infotextnogroups'] = 'This activity is available for all participants of the course.';
-$string['foldernotcreatedyet'] = 'The folder has not been created yet. If this message remains in a few hours please contact the administrator.';
-$string['logout'] = 'If you wish to logout from the ownCloud account you are currently logged in to, use this {$a}.';
-$string['logout_heading'] = 'Logout from ownCloud';
-$string['logoutpressed'] = 'You now are logged out from your ownCloud account.';
-$string['generate'] = 'To generate a link to the Collaborative Folder, please use this {$a}.';
-$string['generate_heading'] = 'Generate Link to folder';
-$string['generate_change_name'] = 'Change Folder Name';
-$string['access'] = 'Click {$a} to access the folder.';
-$string['access_heading'] = 'Access to the folder';
-$string['folder_name'] = 'Your chosen foldername is {$a}.';
-$string['naming_folder'] = 'Choose a folder name';
+// View: Overview.
+$string['activityoverview'] = 'Collaborative folder';
+$string['overview'] = 'Overview';
+$string['foldernotcreatedyet'] = 'The folder has not been created in ownCloud, yet. Please contact the administrator if this message persists more than a few hours.';
+$string['creationstatus'] = 'Folder status';
+$string['creationstatus_created'] = 'Folder(s) created';
+$string['creationstatus_pending'] = 'Folder(s) will be created soon';
+$string['teacheraccess_yes'] = 'Teachers have access to all folders';
+$string['teacheraccess_no'] = 'Folders remain private from teachers';
+$string['groupmode'] = 'Mode';
+$string['groupmode_on'] = 'One folder per group';
+$string['groupmode_off'] = 'One folder for the entire course';
+$string['groups'] = 'Groups';
+$string['teachersnotallowed'] = 'Sorry, teachers are not allowed to view this content.';
+
+// View: remote system (+authorise.php).
+$string['remotesystem'] = 'Connection to ownCloud';
+$string['btnlogin'] = 'Login';
+$string['btnlogout'] = 'Logout';
+$string['logoutsuccess'] = 'Successfully logged out from ownCloud.';
+$string['loginsuccess'] = 'Successfully authorised to connect to ownCloud.';
+$string['loginfailure'] = 'A problem occurred: Not authorised to connect to ownCloud.';
+
+// View: access folders.
+$string['accessfolders'] = 'Folder access';
+$string['grouplabel'] = 'Group: {$a}';
+
+// View: name_form.
 $string['namefield'] = 'Name';
-$string['reset'] = 'You may reset your chosen foldername {$a}.';
-$string['resetpressed'] = 'Your chosen name is set back to default.';
-$string['save'] = 'Save name';
-$string['groupid'] = 'Group ID';
-$string['groupname'] = 'Groupname';
-$string['members'] = 'Members';
-$string['here'] = 'here';
+$string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your ownCloud.';
+$string['getaccess'] = 'Get access';
+$string['error_illegalpathchars'] = 'A valid folder or path name must be entered. Use \'/\' (slash) to delimit directories of a path.';
+$string['foldershared'] = 'The folder was successfully shared to your ownCloud.';
 
-// Error messages.
-$string['retry'] = 'An Error occured. Please logout from your ownCloud account and try again later.';
-$string['retry_rename'] = 'The concerning folder could not be renamed. Please logout from your ownCloud account and try again later.';
-$string['retry_shared'] = 'The concerning folder could not be shared with you. Please check if you already have a copy of the folder.
-Otherwise logout from your ownCloud account and try again later.';
-$string['code'] = 'Error message: {$a}';
-$string['error'] = 'An error occurred';
-$string['noviewpermission'] = 'You are currently not allowed to see that content.';
+// View: information about shared folder.
+$string['sharedtoowncloud'] = 'This folder has already been shared to your ownCloud.';
+$string['folder'] = 'Folder';
+$string['cannotaccessheader'] = 'No access?';
+$string['cannotaccess'] = 'If the above link does not work, and you cannot find the folder, click the button on the left to reset the share. This helps you regain access without making changes to the files within that folder.';
+$string['openinowncloud'] = 'Open in ownCloud';
+$string['solveproblems'] = 'Solve problems';
+$string['resetpressed'] = 'Share reset. You can now obtain access to your folder again.';
+
+// Systemic error messages.
+$string['problem_nosystemconnection'] = 'The system account is unable to connect to ownCloud, so folders for this activity will not be created. Please inform the administrator about this.';
+$string['problem_misconfiguration'] = 'The plugin is not configured correctly or the server is not reachable. Please contact your administrator to resolve this issue.';
+$string['problem_sharessuppressed'] = 'The system account is unable to connect to ownCloud, so {$a} folders were not displayed. Please inform the administrator about this.';
+
+// Configuration/connection error messages.
 $string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
 $string['webdaverror'] = 'WebDAV error code {$a}';
-$string['technicalnotloggedin'] = 'The technical user is not logged in.';
 $string['socketerror'] = 'The WebDAV socket could not be opened.';
-$string['ocserror'] = 'An error with the OCS Share API occurred.';
-$string['wrongintention'] = 'The intention argument \'{$a}\' is not valid';
-$string['incompletedata'] = 'Some configuration data might be missing. Please check the client settings.';
+$string['ocserror'] = 'An error with the OCS sharing API occurred.';
 $string['notcreated'] = 'Folder {$a} not created. ';
-$string['unexpectedcode'] = 'An unexpected status code was received.';
+$string['unexpectedcode'] = 'An unexpected response status code ({$a}) was received.';
+$string['technicalnotloggedin'] = 'The system account is not logged in or does not have authorisation in the remote system.';
+$string['incompletedata'] = 'Please check the module settings. Either no OAuth 2 issuer is selected or no corresponding system account is connected.';
 
-// Global technical user.
-$string['strong_recommendation'] = 'If you log out with a technical user, although there are instances of the activity, this might lead to diverse problems with synchronization.
- It is recommended that you change the technical user as infrequently as possible.';
-$string['informationtechnicaluser'] = 'You can login and logout the technical user on this page. All folders that will be created will be saved
-in the storage space of the technical user. Therefore, please consider the available memory of the user.';
-$string['areyousure'] = 'Are you sure you want to proceed?';
-$string['logouttechnicaluser'] = 'Logout the technical user';
-$string['logoutlabel'] = 'Logout';
-$string['loginlabel'] = 'Login';
-$string['manageheading'] = 'Manage the technical user';
+// Settings.
+$string['chooseissuer'] = 'Issuer';
+$string['oauth2serviceslink'] = '<a href="{$a}" title="Link to OAuth 2 services configuration">OAuth 2 services configuration</a>';
+$string['issuervalidation_without'] = 'You have not selected an ownCloud server as the OAuth 2 issuer yet.';
+$string['issuervalidation_valid'] = 'Currently the {$a} issuer is valid and active.';
+$string['issuervalidation_invalid'] = 'Currently the {$a} issuer is active, however it does not implement all necessary endpoints. The repository will not work. Please choose a valid issuer.';
+$string['issuervalidation_notconnected'] = 'Currently the valid {$a} issuer is active, but no system account is connected. The repository will not work. Please connect a system account.';
+$string['right_issuers'] = 'The following issuers implement the required endpoints: {$a}';
+$string['no_right_issuers'] = 'None of the existing issuers implement all required endpoints. Please register an appropriate issuer.';
+$string['issuer_choice_unconfigured'] = '(unconfigured)';
 
 // Adding an instance (mod_form).
 $string['collaborativefoldersname'] = 'Collaborative folder name';
 $string['collaborativefoldersname_help'] = 'Enter a new name that will be shown in the course homepage.';
 $string['teacher_access'] = 'Teacher access';
 $string['teacher_mode'] = 'Enable the teacher to have access to the folder.';
-$string['teacher_mode_help'] = 'Usually, only students have access to their folders. However, if this checkbox is checked, teachers will also be granted access. Note that this setting cannot be changed after creation.';
+$string['teacher_mode_help'] = 'Usually only students have access to their folders. However, if this checkbox is checked, teachers will also be granted access. Note that this setting cannot be changed after creation.';
 $string['edit_after_creation'] = 'Please consider that teacher access and group-related settings cannot be changed after this activity is created.';
 
 // Events.
-$string['eventfolderscreated'] = 'The ad hoc task successfully created all necessary folders for an collaborativefolders instance.';
-$string['eventlinkgenerated'] = 'A user specific link to a Collaborative Folder was created successfully.';
-$string['eventloggedout'] = 'The technical user of collaborativefolders logged out.';
+$string['eventfolderscreated'] = 'The ad-hoc task successfully created all necessary folders for a collaborativefolders instance.';
+$string['eventlinkgenerated'] = 'A user-specific share to a collaborative folder was created successfully.';
+
+// Exceptions.
+$string['configuration_exception'] = 'An error in the configuration of the OAuth 2 client occurred: {$a}';
+$string['webdav_response_exception'] = 'WebDAV responded with an error: {$a}';
+$string['share_failed_exception'] = 'Unable to share the folder with you: {$a}';
+$string['share_exists_exception'] = 'The folder is already shared with you. {$a}';

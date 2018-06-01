@@ -45,7 +45,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Name of the activity, which is chosen by the teacher.
-        $mform->addElement('text', 'name', get_string('collaborativefoldersname', 'collaborativefolders'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('collaborativefoldersname', 'mod_collaborativefolders'), ['size' => '64']);
         $mform->setType('name', PARAM_RAW_TRIMMED);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
@@ -56,7 +56,7 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Reminder for groupsettings.
         $mform->addElement('warning', null, 'notifyproblem', get_string('edit_after_creation', 'mod_collaborativefolders'));
 
-        // Checkbox, which indicates whether the course's should have access to the folder.
+        // Checkbox, which indicates whether the course's teacher(s) should have access to the folder.
         $mform->addElement('advcheckbox', 'teacher',
             get_string('teacher_access', 'mod_collaborativefolders'),
             get_string('teacher_mode', 'mod_collaborativefolders'),
