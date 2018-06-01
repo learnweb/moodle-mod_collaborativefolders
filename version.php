@@ -30,6 +30,6 @@ $plugin->release = 'v3.4-r1';
 $plugin->requires = 2017111301;
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->dependencies = array(
-    'repository_owncloud' => 2017102300
+    'repository_owncloud' => 2018060100
 );
 
