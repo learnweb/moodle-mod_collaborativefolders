@@ -1,28 +1,29 @@
 # Do not use in production
-Please be aware that this is a pre-release. **  Do not use in production! **  Plugins and their structure **will** be subject to change. We will **NOT** support any upgrade paths from this release.
+Please be aware that this is a pre-release. ** **Do not use in production!** ** 
 
 Nevertheless, we are actively working on a release. We would be extremely happy for (non-production) test users and developer contributions!
 
-# Moodle Activity Module `collaborativefolders`
+# Collaborative folders
 
 [![Build Status](https://travis-ci.org/learnweb/moodle-mod_collaborativefolders.svg?branch=master)](https://travis-ci.org/learnweb/moodle-mod_collaborativefolders)
 [![codecov](https://codecov.io/gh/learnweb/moodle-mod_collaborativefolders/branch/master/graph/badge.svg)](https://codecov.io/gh/learnweb/moodle-mod_collaborativefolders)
 
-# English
-
 This Activity Module allows teachers to create folders in [ownCloud](https://owncloud.org/), 
-which can be allocated to groups of students who can then voluntarily subscribe work collaboratively in these folders.
+which may be allocated to groups of students who can then work collaboratively in these folders.
 
-Written by project seminar sciebo@Learnweb of the University of Münster.
+This plugin has originally been developed for ownCloud, but works with Nextcloud just as well. For simplicity we will refer to both as "ownCloud".
 
-## Information
 
-This module is depending on the [`oauth2owncloud` plugin](https://github.com/learnweb/moodle-tool_oauth2owncloud) and
-can not be used separately.
-
+**Acknowledgement:** This plugin was originally created by Information Systems students of the project seminar sciebo@Learnweb 
+at the University of Münster in 2016-17; see https://github.com/pssl16 for an archive(!) of their great work.
+Learnweb (University of Münster) took over maintenance in 2017.
+  
 ## Installation
 
-Please place this plugin under `mod/collaborativefolders` in your Moodle directory.
+Place this plugin at `mod/collaborativefolders` in your Moodle directory.
+In addition, install the [ownCloud repository](https://moodle.org/plugins/repository_owncloud) 
+and configure it according to its documentation. The repository does *not* need to be publicly enabled,
+though.
 Before being able to use the plugin, a technical user account has to be authenticated in ownCloud. The regarding settings can be found under 
 `Site administration ► Plugins ► Activity modules ► collaborativefolders`. 
 While using the plugin the technical user should not be changed, because it could result in synchronization problems.
