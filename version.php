@@ -25,10 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2018013000;
-$plugin->release = 'v3.4-r1';
+$plugin->version = 2018060100;
+$plugin->release = 'v3.5-r1';
 $plugin->requires = 2017111301;
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->maturity = MATURITY_BETA;
 $plugin->dependencies = array(
     'repository_owncloud' => 2018060100
 );
