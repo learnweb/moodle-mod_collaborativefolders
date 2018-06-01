@@ -51,7 +51,7 @@ class view_controller {
      */
     public static function handle_request($collaborativefolder, \cm_info $cm, \context_module $context,
                                           mod_collaborativefolders_renderer $renderer) {
-        global $OUTPUT, $USER;
+        global $OUTPUT;
 
         \mod_collaborativefolders\toolbox::coursemodule_viewed($context, $cm);
 
@@ -284,6 +284,7 @@ class view_controller {
                 redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, [
                     'id' => $cm->id,
                 ]), get_string('foldershared', 'mod_collaborativefolders'), null, \core\output\notification::NOTIFY_SUCCESS);
+                // Intentional exit; to make sure that other methods/scripts don't continue execution.
                 exit;
             }
         }
