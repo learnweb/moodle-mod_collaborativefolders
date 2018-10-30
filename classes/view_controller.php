@@ -122,13 +122,8 @@ class view_controller {
         // Interaction with instance.
         if ($userclient->check_login()) {
             echo $OUTPUT->heading(get_string('accessfolders', 'mod_collaborativefolders'), 3);
-            if ($statusinfo->creationstatus === 'created') {
                 echo self::share_and_view_folders($cm, $userfolders, $statusinfo, $renderer, $isteacher,
                     $systemclient !== null, $userclient);
-            } else {
-                // Folders are not yet created and can therefore not be shared.
-                echo $renderer->render_widget_notcreatedyet();
-            }
         }
 
         echo $OUTPUT->footer();
@@ -158,13 +153,10 @@ class view_controller {
             }
         }
 
-        // Check the state of asynchronous folder creation.
-        $creationstatus = \mod_collaborativefolders\toolbox::is_create_task_running($cm->id) ? 'pending' : 'created';
-
         // Determine whether teachers may also access the share.
         $teachermayaccess = $collaborativefolder->teacher;
 
-        return new statusinfo($creationstatus, $teachermayaccess, $groupmode, $groups);
+        return new statusinfo($teachermayaccess, $groupmode, $groups);
     }
 
     /**
@@ -319,22 +311,22 @@ class view_controller {
             // Either $shared contains the `data` part of the response, or the method throws an exception.
             // The only exception we handle is `share_exists_exception, because we can recover from that.
             $shared = $systemclient->generate_share($sharepath, $shareusername);
-
-            // Get newly created share (in user space) and move it to the chosen location.
             $finalpath = (string)$shared->file_target;
+
+        } catch (share_exists_exception $e) {
+            $finalpath = $systemclient->get_existing_share_path($sharepath, $shareusername);
+        }
+
+        // Get newly created share (in user space) and move it to the chosen location.
+        if (ltrim($finalpath, '/') !== $chosenname) {
             $renamed = $userclient->rename($finalpath, $chosenname);
             if ($renamed['status'] === false) {
                 // Rename was unsuccessful.
-                // TODO rollback sharing.
                 throw new share_failed_exception($renamed['content']);
             }
-            // Sharing and renaming operations were successful.
-            // Store resulting path for future reference.
-            $userclient->store_link($cmid, $groupid, $USER->id, $chosenname);
-        } catch (share_exists_exception $e) {
-            // TODO instead of throwing the exception, find out the new name and display it to the user (maybe store it even!).
-            throw $e;
         }
-
+        // Sharing and renaming operations were successful.
+        // Store resulting path for future reference.
+        $userclient->store_link($cmid, $groupid, $USER->id, $chosenname);
     }
 }

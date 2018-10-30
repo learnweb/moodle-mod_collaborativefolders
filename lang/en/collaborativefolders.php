@@ -40,7 +40,6 @@ $string['pluginname'] = 'Collaborative folders';
 // View: Overview.
 $string['activityoverview'] = 'Collaborative folder';
 $string['overview'] = 'Overview';
-$string['foldernotcreatedyet'] = 'The folder has not been created in ownCloud, yet. Please contact the administrator if this message persists more than a few hours.';
 $string['creationstatus'] = 'Folder status';
 $string['creationstatus_created'] = 'Folder(s) created';
 $string['creationstatus_pending'] = 'Folder(s) will be created soon';

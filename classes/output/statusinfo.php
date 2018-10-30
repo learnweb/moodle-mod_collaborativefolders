@@ -38,8 +38,6 @@ use stdClass;
  */
 class statusinfo implements \renderable, \templatable {
 
-    /** @var string General creation status; in created/pending */
-    public $creationstatus;
     /** @var int 0 if teacher may not access folder; 1 otherwise */
     public $teachermayaccess;
     /** @var int 0 if whole course (NOGROUPS), >0 otherwise */
@@ -49,13 +47,11 @@ class statusinfo implements \renderable, \templatable {
 
     /**
      * statusinfo constructor.
-     * @param string $creationstatus
      * @param int $teachermayaccess
      * @param int $groupmode
      * @param array $groups
      */
-    public function __construct($creationstatus, $teachermayaccess, $groupmode, array $groups) {
-        $this->creationstatus = $creationstatus;
+    public function __construct($teachermayaccess, $groupmode, array $groups) {
         $this->teachermayaccess = $teachermayaccess;
         $this->groupmode = $groupmode;
         $this->groups = $groups;
@@ -75,12 +71,11 @@ class statusinfo implements \renderable, \templatable {
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        $export = clone($this);
+        $export = (object)(array)$this;
         $export->groups = array();
         foreach ($this->groups as $group) {
             $export->groups[] = $group;
         }
-        $export->creationstatus = get_string('creationstatus_' . $export->creationstatus, 'mod_collaborativefolders');
         return $export;
     }
 }

@@ -61,12 +61,6 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return html_writer::link($loginurl, get_string('btnlogin', 'mod_collaborativefolders'), ['class' => 'btn btn-primary']);
     }
 
-    public function render_widget_notcreatedyet() {
-        $notification = new notification(get_string('foldernotcreatedyet', 'mod_collaborativefolders'), notification::NOTIFY_INFO);
-        $notification->set_show_closebutton(false);
-        return $this->render($notification);
-    }
-
     public function render_widget_teachermaynotaccess() {
         $notification = new notification(get_string('teachersnotallowed', 'mod_collaborativefolders'),
             notification::NOTIFY_INFO);

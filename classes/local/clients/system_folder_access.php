@@ -182,6 +182,10 @@ class system_folder_access {
     public function generate_share(string $path, string $username) {
         $this->verify_system_access();
 
+        if (!$this->make_folder($path)) {
+            throw new share_failed_exception('webdaverror', 'mod_collaborativefolders');
+        }
+
         $response = $this->ocsclient->call('create_share', [
             'path' => $path,
             'shareType' => ocs_client::SHARE_TYPE_USER,
@@ -209,21 +213,110 @@ class system_folder_access {
     }
 
     /**
+     * Get the existing share for the given path to the given user
+     * @param string $path
+     * @param string $username
+     * @return string|null
+     */
+    public function get_existing_share_path(string $path, string $username) {
+
+        // Get all the shares for the given path.
+        $response = $this->ocsclient->call('get_shares', [
+            'path' => $path,
+            'reshares' => false,
+            'subfiles' => false,
+        ]);
+        $xml = simplexml_load_string($response);
+        if ($xml === false) {
+            return null;
+        }
+        if ((string)$xml->meta->status !== 'ok') {
+            return null;
+        }
+
+        // Loop through each of the shares.
+        foreach ($xml->data->element as $share) {
+            if ((string)$share->share_with !== $username) {
+                // Share isn't to the user we're interested in - skip it.
+                continue;
+            }
+            // We've found the share we wanted - return the path it is shared to.
+            return (string)$share->file_target;
+        }
+        // Not found the requested user in the list of shares.
+        return null;
+    }
+
+    /**
      * Method for creation of folders for collaborative work. It is only meant to be called by the
      * concerning ad hoc task from collaborativefolders.
      *
      * @param string $path specific path of the groupfolder.
+     * @param bool $recursive set to true to check + create all folders in the path
      * @return int status code received from the client.
      * @throws \moodle_exception on connection error.
      */
-    public function make_folder($path) : int {
+    public function make_folder($path, $recursive = true) : int {
         $this->initiate_webdavclient($this->systemclient);
         if (!$this->webdav->open()) {
             throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));
         }
-        $result = $this->webdav->mkcol($this->davbasepath . $path);
+        if ($recursive) {
+            $result = true;
+            $parts = array_filter(explode('/', $path));
+            $currpath = $this->davbasepath;
+            foreach ($parts as $part) {
+                $currpath .= '/'.$part;
+                if (!$this->webdav->is_dir($currpath)) {
+                    // Folder doesn't already exist.
+                    if (!$this->rename_by_id($currpath)) {
+                        // Couldn't fix by renaming an existing folder - create a new folder.
+                        $result = $result && $this->webdav->mkcol($currpath);
+                    }
+                }
+            }
+        } else {
+            $result = $this->webdav->mkcol($this->davbasepath.$path);
+        }
         $this->webdav->close();
         return $result;
     }
 
+    /**
+     * See if the given folder does exist, but the course / activity has been renamed.
+     * If it has been renamed, then rename the webdav folder.
+     * @param string $path the path to check
+     * @return bool true if we managed to locate a suitable folder
+     */
+    public function rename_by_id($path) {
+        $idregex = '|_id_(\d+)$|';
+        if (!preg_match($idregex, $path, $matches)) {
+            return false;
+        }
+        list(, $id) = $matches;
+        $idmatch = "|_id_{$id}$|";
+        $dir = dirname($path);
+        $files = $this->webdav->ls($dir);
+        if (!$files) {
+            return false;
+        }
+        foreach ($files as $file) {
+            $filepath = urldecode(rtrim($file['href'], '/'));
+            if ($filepath === $dir) {
+                continue;
+            }
+            if ($file['resourcetype'] !== 'collection') {
+                continue;
+            }
+            if (preg_match($idmatch, $filepath)) {
+                // We've found a folder with the same id, but a different name - rename the folder.
+                if (!$this->webdav->move($filepath, $path, false)) {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
