@@ -132,12 +132,12 @@ function collaborativefolders_refresh_events($courseid = 0) {
  */
 function collaborativefolders_delete_instance($id) {
     global $DB;
-
-    if (!$collaborativefolders = $DB->get_record('collaborativefolders', array('id' => $id))) {
-        return false;
-    } else {
-        return $DB->delete_records('collaborativefolders', array('id' => $collaborativefolders->id));
+    $cm = get_coursemodule_from_instance('collaborativefolders', $id);
+    if (!empty($cm->id)) {
+        $DB->delete_records('collaborativefolders_link', ['cmid' => $cm->id]);
     }
+    $DB->delete_records('collaborativefolders', array('id' => $id));
+    return true;
 }
 
 
