@@ -111,7 +111,7 @@ class system_folder_access {
 
         try {
             // Returns a client if access token valid (or successfully redeems refresh token), otherwise false/exception.
-            $this->systemclient = \core\oauth2\api::get_system_oauth_client($this->issuer);
+            $this->systemclient = self::get_system_oauth_client($this->issuer);
         } catch (\moodle_exception $e) {
             $this->systemclient = false;
         }
@@ -120,6 +120,54 @@ class system_folder_access {
         }
 
         $this->ocsclient = new ocs_client($this->systemclient);
+    }
+
+    /**
+     * Get an authenticated oauth2 client using the system account.
+     * This call uses the refresh token to get an access token.
+     *
+     * Modified from \core\oauth2\api::get_system_oauth_client() to create a
+     * \mod_collaborateivefolders\local\client\system_client() instance, that stores the access token in the
+     * application cache, to be shared by all users (not just linked to the current user).
+     *
+     * @param \core\oauth2\issuer $issuer
+     * @return \core\oauth2\client|false An authenticated client (or false if the token could not be upgraded)
+     * @throws \moodle_exception Request for token upgrade failed for technical reasons
+     */
+    private static function get_system_oauth_client(\core\oauth2\issuer $issuer) {
+        $systemaccount = \core\oauth2\api::get_system_account($issuer);
+        if (empty($systemaccount)) {
+            return false;
+        }
+        // Get all the scopes!
+        $scopes = \core\oauth2\api::get_system_scopes_for_issuer($issuer);
+
+        $client = new system_client($issuer, null, $scopes, true);
+
+        if (!$client->is_logged_in()) {
+            if (!$client->upgrade_refresh_token($systemaccount)) {
+                return false;
+            }
+        }
+        return $client;
+    }
+
+    /**
+     * The cron process may have refreshed the system token in the background without telling us,
+     * so check to see if we need to generate a new token.
+     */
+    private function verify_system_access() {
+        $response = $this->ocsclient->call('get_shares', [
+            'path' => '/',
+            'reshares' => false,
+            'subfiles' => false,
+        ]);
+        $xml = simplexml_load_string($response);
+        if ($xml === false || (string)$xml->meta->status !== 'ok') {
+            // Connection not working - try refreshing the token.
+            $systemaccount = \core\oauth2\api::get_system_account($this->issuer);
+            $this->systemclient->upgrade_refresh_token($systemaccount);
+        }
     }
 
     /**
@@ -132,6 +180,8 @@ class system_folder_access {
      * @throws share_failed_exception If calling the OCS API resulted in an unknown state.
      */
     public function generate_share(string $path, string $username) {
+        $this->verify_system_access();
+
         $response = $this->ocsclient->call('create_share', [
             'path' => $path,
             'shareType' => ocs_client::SHARE_TYPE_USER,

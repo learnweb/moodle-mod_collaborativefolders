@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['modulename'] = 'Collaborative folders';
 $string['modulenameplural'] = 'Collaborative folders';
 $string['modulename_help'] = 'Use collaborative folders to create folders in ownCloud for students for collaborative work. The folder is shared individually with members of the chosen groups as soon as they like. You do not need to collect ownCloud email addresses from your participants, everything is automated!';
+$string['cachedef_token'] = 'OAuth system client token';
 $string['collaborativefolders:addinstance'] = 'Add a new collaborative folder';
 $string['collaborativefolders:view'] = 'View a collaborative folder';
 $string['collaborativefolders:isteacher'] = 'When viewing, be considered a non-student (with restricted access)';

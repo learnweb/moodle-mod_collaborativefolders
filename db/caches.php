@@ -15,21 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin.
+ * Cache definitions
  *
- * @package    mod_collaborativefolders
- * @copyright  2017 Project seminar (Learnweb, University of Münster)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_collaborativefolders
+ * @copyright 2018 Davo Smith, Synergy Learning
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2018060102;
-$plugin->release = 'v3.5-r1';
-$plugin->requires = 2017111301;
-$plugin->maturity = MATURITY_BETA;
-$plugin->dependencies = array(
-    'repository_owncloud' => 2018060100
-);
-
+$definitions = [
+    'token' => [
+        'mode' => cache_store::MODE_APPLICATION,
+    ]
+];
