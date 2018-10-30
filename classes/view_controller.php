@@ -305,7 +305,7 @@ class view_controller {
         global $USER;
 
         // Derive $sharepath (original path) from $groupid.
-        $sharepath = '/'.$cmid;
+        $sharepath = toolbox::get_base_path($cmid);
         if ($groupid !== toolbox::fake_course_group('')->id) {
             $sharepath .= '/'.$groupid;
         }

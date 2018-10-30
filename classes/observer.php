@@ -54,7 +54,16 @@ class observer {
         $taskdata = array();
         $taskdata['cmid'] = $cmid;
         $taskdata['instance'] = $other['instanceid'];
-        $taskdata['paths'] = array('0' => '/'.$cmid);
+        $taskdata['paths'] = [];
+
+        // Make sure each of the subdirectories is created in turn.
+        $basepath = toolbox::get_base_path($cmid);
+        $basepathparts = array_filter(explode('/', $basepath));
+        $path = '';
+        foreach ($basepathparts as $pathpart) {
+            $path .= '/'.$pathpart;
+            $taskdata['paths'][] = $path;
+        }
 
         list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
 
@@ -62,8 +71,8 @@ class observer {
             $groups = groups_get_all_groups($course->id, 0, $cm->groupingid);
             // TODO is a path for the CM created if groupmode is unused? check!
             foreach ($groups as $group) {
-                $path = '/' . $cmid . '/' . $group->id;
-                $taskdata['paths'][$group->id] = $path;
+                $path = $basepath . '/' . $group->id;
+                $taskdata['paths'][] = $path;
             }
         }
 

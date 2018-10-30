@@ -84,4 +84,37 @@ class toolbox {
         $group->id = 0;
         return $group;
     }
+
+    /**
+     * Based on the cmid, generate a full path to generate the system folder in.
+     * Code based on that used by OneDrive plugin.
+     * @param int $cmid
+     * @return string
+     */
+    public static function get_base_path(int $cmid) {
+        global $CFG, $SITE;
+        $context = \context_module::instance($cmid);
+        /** @var \context[] $contextlist */
+        $contextlist = array_reverse($context->get_parent_contexts(true));
+        $allfolders = [];
+        foreach ($contextlist as $context) {
+            // Prepare human readable context folders names, making sure they are still unique within the site.
+            $prevlang = force_current_language($CFG->lang);
+            $foldername = $context->get_context_name();
+            force_current_language($prevlang);
+            if ($context->contextlevel == CONTEXT_SYSTEM) {
+                // Append the site short name to the root folder.
+                $foldername .= '_'.$SITE->shortname;
+                // Append the relevant object id.
+            } else if ($context->instanceid) {
+                $foldername .= '_id_'.$context->instanceid;
+            } else {
+                // This does not really happen but just in case.
+                $foldername .= '_ctx_'.$context->id;
+            }
+            $foldername = urlencode(clean_param($foldername, PARAM_PATH));
+            $allfolders[] = $foldername;
+        }
+        return '/'.implode('/', $allfolders);
+    }
 }
