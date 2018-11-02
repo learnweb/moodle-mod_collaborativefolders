@@ -126,3 +126,11 @@ $string['configuration_exception'] = 'An error in the configuration of the OAuth
 $string['webdav_response_exception'] = 'WebDAV responded with an error: {$a}';
 $string['share_failed_exception'] = 'Unable to share the folder with you: {$a}';
 $string['share_exists_exception'] = 'The folder is already shared with you. {$a}';
+
+// Privacy data.
+$string['privacy:metadata:collaborativefolders_link'] = 'Information about folders that have been shared to users';
+$string['privacy:metadata:collaborativefolders_link:cmid'] = 'The course module this folder share is associated with';
+$string['privacy:metadata:collaborativefolders_link:groupid'] = 'The Moodle course group the shared folder relates to';
+$string['privacy:metadata:collaborativefolders_link:link'] = 'The name given to the folder when it was shared';
+$string['privacy:metadata:collaborativefolders_link:owncloudusername'] = 'The OwnCloud user that the folder was shared with';
+$string['privacy:metadata:collaborativefolders_link:userid'] = 'The Moodle user the folder was shared with';
