@@ -109,12 +109,13 @@ class view_controller {
         // Login / logout form.
         echo $OUTPUT->heading(get_string('remotesystem', 'mod_collaborativefolders'), 3);
         if ($userclient->check_login()) {
+            $username = $userclient->get_username();
             echo $renderer->render(new \single_button(
                 new \moodle_url('/mod/collaborativefolders/authorise.php', [
                     'action' => 'logout',
                     'id' => $cm->id,
                     'sesskey' => sesskey()
-                ]), get_string('btnlogout', 'mod_collaborativefolders')));
+                ]), get_string('btnlogout', 'mod_collaborativefolders', $username)));
         } else {
             echo $renderer->render_widget_login($userclient->get_login_url());
         }
@@ -183,18 +184,18 @@ class view_controller {
             return $renderer->render_widget_teachermaynotaccess();
         }
 
-        // TODO replace echoes by string variable concatenations (and return that string).
+        $out = '';
 
         // Counter for sharing forms that were suppressed because no sysaccount was connected.
         $sharessuppressed = 0;
+        $currentusername = $userclient->get_username();
 
         // Per group/folder: Either define user-local name or access share.
         foreach ($folderforms as $groupid => $form) {
-            $foldername = $userclient->get_link($cm->id, $groupid, $USER->id);
+            $link = $userclient->get_link($cm->id, $groupid, $USER->id);
             $group = $groupid === 0 ? toolbox::fake_course_group($cm->get_course()->shortname) : $statusinfo->groups[$groupid];
-            if ($foldername === null) {
+            if (empty($link->link)) {
                 // User does not have a share yet; create it now.
-
                 // Show notice if there is a general problem with the system account (and skip form).
                 if (!$systemclientcanshare) {
                     $sharessuppressed++;
@@ -205,16 +206,22 @@ class view_controller {
                 $renderer->output_name_form($group, $form);
             } else {
                 // XOR Access share.
-                echo $renderer->output_shared_folder($group, $cm->id, $foldername,
-                    $userclient->link_from_foldername($foldername));
+                $warning = null;
+                if ($link->owncloudusername && $currentusername !== $link->owncloudusername) {
+                    $info = (object)['current' => $currentusername, 'link' => $link->owncloudusername];
+                    $warning = get_string('namemismatch', 'mod_collaborativefolders', $info);
+                }
+                $out .= $renderer->output_shared_folder($group, $cm->id, $link->link,
+                    $userclient->link_from_foldername($link->link), $warning);
             }
         }
 
         // Show notice if there is a general problem with the system account.
         if ($sharessuppressed > 0) {
-            echo $renderer->render_widget_noconnection_suppressed_share($sharessuppressed);
+            $out .= $renderer->render_widget_noconnection_suppressed_share($sharessuppressed);
         }
 
+        return $out;
     }
 
     private static function obtain_folders(statusinfo $statusinfo, \cm_info $cm, $isteacher) {
@@ -224,7 +231,6 @@ class view_controller {
             return array();
         }
 
-        $folders = array();
         if ($isteacher || !$statusinfo->groupmode) {
             // One folder for the entire course.
             $fakegroup = toolbox::fake_course_group($cm->get_course()->shortname);

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Cache definitions
+ * DB upgrade steps
  *
  * @package   mod_collaborativefolders
  * @copyright 2018 Davo Smith, Synergy Learning
@@ -24,11 +24,24 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$definitions = [
-    'token' => [
-        'mode' => cache_store::MODE_APPLICATION,
-    ],
-    'userinfo' => [
-        'mode' => cache_store::MODE_SESSION,
-    ],
-];
+function xmldb_collaborativefolders_upgrade($oldversion = 0) {
+    global $DB;
+    $dbman = $DB->get_manager();
+
+    if ($oldversion < 2018110200) {
+
+        // Define field owncloudusername to be added to collaborativefolders_link.
+        $table = new xmldb_table('collaborativefolders_link');
+        $field = new xmldb_field('owncloudusername', XMLDB_TYPE_CHAR, '254', null, null, null, null, 'link');
+
+        // Conditionally launch add field owncloudusername.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Collaborativefolders savepoint reached.
+        upgrade_mod_savepoint(true, 2018110200, 'collaborativefolders');
+    }
+
+    return true;
+}

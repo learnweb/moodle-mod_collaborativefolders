@@ -45,6 +45,8 @@ class user_folder_access {
      */
     const SCOPES = 'files';
 
+    const USERINFO_CACHE_KEY = 1;
+
     /**
      * client instance for server access using the user's personal account
      * @var \webdav_client
@@ -163,6 +165,7 @@ class user_folder_access {
      * Deletes the held access token.
      */
     public function log_out() {
+        self::clear_userinfo_cache();
         $this->userclient->log_out();
     }
 
@@ -181,7 +184,11 @@ class user_folder_access {
      * @return bool false, if no Access Token is set or can be requested.
      */
     public function check_login() : bool {
-        return $this->userclient->is_logged_in();
+        if (!$this->userclient->is_logged_in()) {
+            self::clear_userinfo_cache();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -207,6 +214,7 @@ class user_folder_access {
         $record = $DB->get_record('collaborativefolders_link', $params);
 
         $params['link'] = $value;
+        $params['owncloudusername'] = $this->get_username();
         $params = (object) $params;
 
         // If the record already exists, it gets updated. Otherwise, a new record is inserted.
@@ -226,7 +234,7 @@ class user_folder_access {
      * @param $cmid int the course module ID. Needed to specify the concrete activity instance.
      * @param $groupid int the group ID to specify one particular folder.
      * @param $userid string ID of the user, which the value needs to be gotten for.
-     * @return mixed null, if the record does not exist or the field is null. Otherwise, the field's value.
+     * @return object|false
      */
     public function get_link($cmid, $groupid, $userid) {
         // TODO use persistent API instead.
@@ -238,13 +246,22 @@ class user_folder_access {
             'userid' => $userid,
         );
 
-        $record = $DB->get_record('collaborativefolders_link', $params);
+        return $DB->get_record('collaborativefolders_link', $params);
+    }
 
-        if (!$record) {
-            return null;
-        } else {
-            return $record->link;
-        }
+    /**
+     * Get the session cache that stores the user info, to save on repeated webservice calls.
+     * @return \cache
+     */
+    private static function get_userinfo_cache() : \cache {
+        return \cache::make('mod_collaborativefolders', 'userinfo');
+    }
+
+    /**
+     * Clear the cached user info.
+     */
+    private static function clear_userinfo_cache() {
+        self::get_userinfo_cache()->delete(self::USERINFO_CACHE_KEY);
     }
 
     /**
@@ -253,7 +270,18 @@ class user_folder_access {
      * @return array|false Mapped information from the /cloud/user OCS endpoint (or false on error).
      */
     public function get_userinfo() {
-        return $this->userclient->get_userinfo();
+        $cache = self::get_userinfo_cache();
+        if ($user = $cache->get(self::USERINFO_CACHE_KEY)) {
+            return $user;
+        }
+        $user = $this->userclient->get_userinfo();
+        $cache->set(self::USERINFO_CACHE_KEY, $user);
+        return $user;
+    }
+
+    public function get_username() {
+        $userinfo = $this->get_userinfo();
+        return $userinfo['username'];
     }
 
     /**

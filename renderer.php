@@ -106,9 +106,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
      * @param int $cmid Course module ID
      * @param string $foldername Chosen (and assumed) name of the folder
      * @param string $link Link into ownCloud instance
+     * @param string $warning (optional) warning message to display beside folder details
      * @return bool|string rendered template.
      */
-    public function output_shared_folder($group, $cmid, $foldername, $folderlink) {
+    public function output_shared_folder($group, $cmid, $foldername, $folderlink, $warning = null) {
         $solveproblemsurl = new \moodle_url('/mod/collaborativefolders/resetshare.php', [
                 'id' => $cmid,
                 'groupid' => $group->id,
@@ -127,6 +128,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         $groupfolderinfo->solveproblems = $solveproblems;
         $groupfolderinfo->openfolder = $openfolder;
         $groupfolderinfo->icon = $this->render(new pix_icon('i/folder', get_string('folder', 'mod_collaborativefolders')));
+        $groupfolderinfo->warning = $warning;
 
         return $this->render_from_template('mod_collaborativefolders/groupfolderinfo', $groupfolderinfo);
 
