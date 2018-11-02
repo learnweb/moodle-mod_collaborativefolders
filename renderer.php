@@ -68,6 +68,13 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    public function render_widget_nogroups() : string {
+        $notification = new notification(get_string('notingroup', 'mod_collaborativefolders'),
+                                         notification::NOTIFY_INFO);
+        $notification->set_show_closebutton(false);
+        return $this->render($notification);
+    }
+
     public function render_widget_nosystemconnection() {
         $notification = new notification(get_string('problem_nosystemconnection', 'mod_collaborativefolders'),
             notification::NOTIFY_WARNING);

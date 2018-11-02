@@ -191,6 +191,10 @@ class view_controller {
         $currentusername = $userclient->get_username();
 
         // Per group/folder: Either define user-local name or access share.
+        if (!$folderforms) {
+            return $renderer->render_widget_nogroups();
+        }
+
         foreach ($folderforms as $groupid => $form) {
             $link = $userclient->get_link($cm->id, $groupid, $USER->id);
             $group = $groupid === 0 ? toolbox::fake_course_group($cm->get_course()->shortname) : $statusinfo->groups[$groupid];
@@ -305,7 +309,7 @@ class view_controller {
         // Derive $sharepath (original path) from $groupid.
         $sharepath = toolbox::get_base_path($cmid);
         if ($groupid !== toolbox::fake_course_group('')->id) {
-            $sharepath .= '/'.$groupid;
+            $sharepath .= '/'.toolbox::get_group_folder($groupid);
         }
 
         // Share from system to user.

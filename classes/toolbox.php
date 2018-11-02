@@ -117,4 +117,16 @@ class toolbox {
         }
         return '/'.implode('/', $allfolders);
     }
+
+    /**
+     * Based on the groupid, return the name of the group folder
+     * @param int $groupid
+     * @return string
+     */
+    public static function get_group_folder(int $groupid) : string {
+        global $DB;
+        $groupname = (string)$DB->get_field('groups', 'name', ['id' => $groupid]);
+        $groupname .= '_id_'.$groupid;
+        return urlencode(clean_param($groupname, PARAM_PATH));
+    }
 }

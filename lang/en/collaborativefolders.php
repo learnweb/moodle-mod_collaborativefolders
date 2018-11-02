@@ -50,6 +50,8 @@ $string['groupmode'] = 'Mode';
 $string['groupmode_on'] = 'One folder per group';
 $string['groupmode_off'] = 'One folder for the entire course';
 $string['groups'] = 'Groups';
+$string['nogroups'] = 'No groups';
+$string['notingroup'] = 'You are not in any groups, so you do not have access to any folders.';
 $string['teachersnotallowed'] = 'Sorry, teachers are not allowed to view this content.';
 
 // View: remote system (+authorise.php).
