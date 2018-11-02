@@ -43,5 +43,18 @@ function xmldb_collaborativefolders_upgrade($oldversion = 0) {
         upgrade_mod_savepoint(true, 2018110200, 'collaborativefolders');
     }
 
+    if ($oldversion < 2018110201) {
+
+        // Changing type of field teacher on table collaborativefolders to int.
+        $table = new xmldb_table('collaborativefolders');
+        $field = new xmldb_field('teacher', XMLDB_TYPE_INTEGER, '2', null, null, null, null, 'timemodified');
+
+        // Launch change of type for field teacher.
+        $dbman->change_field_type($table, $field);
+
+        // Collaborativefolders savepoint reached.
+        upgrade_mod_savepoint(true, 2018110201, 'collaborativefolders');
+    }
+
     return true;
 }
