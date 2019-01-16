@@ -320,7 +320,7 @@ class view_controller {
         try {
             // Either $shared contains the `data` part of the response, or the method throws an exception.
             // The only exception we handle is `share_exists_exception, because we can recover from that.
-            $shared = $systemclient->generate_share($sharepath, $shareusername);
+            $shared = $systemclient->generate_share($sharepath, $shareusername, $chosenname);
             $finalpath = (string)$shared->file_target;
 
         } catch (share_exists_exception $e) {
