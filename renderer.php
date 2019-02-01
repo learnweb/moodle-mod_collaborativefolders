@@ -76,7 +76,8 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     public function render_widget_nosystemconnection() {
-        $notification = new notification(get_string('problem_nosystemconnection', 'mod_collaborativefolders'),
+        $servicename = get_config('collaborativefolders', 'servicename');
+        $notification = new notification(get_string('problem_nosystemconnection', 'mod_collaborativefolders', $servicename),
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
@@ -90,7 +91,12 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     }
 
     public function render_widget_noconnection_suppressed_share(int $sharessuppressed) {
-        $notification = new notification(get_string('problem_sharessuppressed', 'mod_collaborativefolders', $sharessuppressed),
+        $info = (object)[
+            'sharessuppressed' => $sharessuppressed,
+            'servicename' => get_config('collaborativefolders', 'servicename'),
+        ];
+
+        $notification = new notification(get_string('problem_sharessuppressed', 'mod_collaborativefolders', $info),
             notification::NOTIFY_WARNING);
         $notification->set_show_closebutton(false);
         return $this->render($notification);
@@ -102,7 +108,8 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
     public function output_name_form($group, name_form $form) {
         echo $this->output->heading(get_string('grouplabel', 'mod_collaborativefolders', $group->name), 4,
             null, 'folder-'.$group->id);
-        echo $this->output->box(get_string('namefield_explanation', 'mod_collaborativefolders'));
+        $servicename = get_config('collaborativefolders', 'servicename');
+        echo $this->output->box(get_string('namefield_explanation', 'mod_collaborativefolders', $servicename));
         $form->display();
     }
 
@@ -124,7 +131,8 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
             ]);
         $solveproblems = html_writer::link($solveproblemsurl, get_string('solveproblems', 'mod_collaborativefolders'),
             ['class' => 'btn']);
-        $openfolder = html_writer::link($folderlink, get_string('openinowncloud', 'mod_collaborativefolders'),
+        $servicename = get_config('collaborativefolders', 'servicename');
+        $openfolder = html_writer::link($folderlink, get_string('openinowncloud', 'mod_collaborativefolders', $servicename),
             ['class' => 'btn btn-primary']);
 
         $groupfolderinfo = new \stdClass();
@@ -136,6 +144,7 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
         $groupfolderinfo->openfolder = $openfolder;
         $groupfolderinfo->icon = $this->render(new pix_icon('i/folder', get_string('folder', 'mod_collaborativefolders')));
         $groupfolderinfo->warning = $warning;
+        $groupfolderinfo->servicename = get_config('collaborativefolders', 'servicename');
 
         return $this->render_from_template('mod_collaborativefolders/groupfolderinfo', $groupfolderinfo);
 

@@ -107,7 +107,8 @@ class view_controller {
         echo $renderer->render($statusinfo);
 
         // Login / logout form.
-        echo $OUTPUT->heading(get_string('remotesystem', 'mod_collaborativefolders'), 3);
+        $servicename = get_config('collaborativefolders', 'servicename');
+        echo $OUTPUT->heading(get_string('remotesystem', 'mod_collaborativefolders', $servicename), 3);
         if ($userclient->check_login()) {
             $username = $userclient->get_username();
             echo $renderer->render(new \single_button(
@@ -283,9 +284,11 @@ class view_controller {
                 ]);
                 $generatedevent->trigger();
 
-                redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, [
+                $servicename = get_config('collaborativefolders', 'servicename');
+                redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-'.$groupid, [
                     'id' => $cm->id,
-                ]), get_string('foldershared', 'mod_collaborativefolders'), null, \core\output\notification::NOTIFY_SUCCESS);
+                ]), get_string('foldershared', 'mod_collaborativefolders', $servicename), null,
+                         \core\output\notification::NOTIFY_SUCCESS);
                 // Intentional exit; to make sure that other methods/scripts don't continue execution.
                 exit;
             }

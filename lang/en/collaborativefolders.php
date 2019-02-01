@@ -55,12 +55,12 @@ $string['notingroup'] = 'You are not in any groups, so you do not have access to
 $string['teachersnotallowed'] = 'Sorry, teachers are not allowed to view this content.';
 
 // View: remote system (+authorise.php).
-$string['remotesystem'] = 'Connection to ownCloud';
+$string['remotesystem'] = 'Connection to {$a}';
 $string['btnlogin'] = 'Login';
 $string['btnlogout'] = 'Logout ({$a})';
-$string['logoutsuccess'] = 'Successfully logged out from ownCloud.';
-$string['loginsuccess'] = 'Successfully authorised to connect to ownCloud.';
-$string['loginfailure'] = 'A problem occurred: Not authorised to connect to ownCloud.';
+$string['logoutsuccess'] = 'Successfully logged out from {$a}.';
+$string['loginsuccess'] = 'Successfully authorised to connect to {$a}.';
+$string['loginfailure'] = 'A problem occurred: Not authorised to connect to {$a}.';
 
 // View: access folders.
 $string['accessfolders'] = 'Folder access';
@@ -68,25 +68,25 @@ $string['grouplabel'] = 'Group: {$a}';
 
 // View: name_form.
 $string['namefield'] = 'Name';
-$string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your ownCloud.';
+$string['namefield_explanation'] = 'Choose a name under which the shared folder will be stored in your {$a}.';
 $string['getaccess'] = 'Get access';
 $string['error_illegalpathchars'] = 'A valid folder or path name must be entered. Use \'/\' (slash) to delimit directories of a path.';
-$string['foldershared'] = 'The folder was successfully shared to your ownCloud.';
+$string['foldershared'] = 'The folder was successfully shared to your {$a}.';
 
 // View: information about shared folder.
-$string['sharedtoowncloud'] = 'This folder has already been shared to your ownCloud.';
+$string['sharedtoowncloud'] = 'This folder has already been shared to your {$a}.';
 $string['folder'] = 'Folder';
 $string['cannotaccessheader'] = 'No access?';
 $string['cannotaccess'] = 'If the above link does not work, and you cannot find the folder, click the button on the left to reset the share. This helps you regain access without making changes to the files within that folder.';
 $string['namemismatch'] = 'Warning: this folder was shared with \'{$a->link}\' but you are logged in as \'{$a->current}\' - you may need to switch logins to access the files.';
-$string['openinowncloud'] = 'Open in ownCloud';
+$string['openinowncloud'] = 'Open in {$a}';
 $string['solveproblems'] = 'Solve problems';
 $string['resetpressed'] = 'Share reset. You can now obtain access to your folder again.';
 
 // Systemic error messages.
-$string['problem_nosystemconnection'] = 'The system account is unable to connect to ownCloud, so folders for this activity will not be created. Please inform the administrator about this.';
+$string['problem_nosystemconnection'] = 'The system account is unable to connect to {$a}, so folders for this activity will not be created. Please inform the administrator about this.';
 $string['problem_misconfiguration'] = 'The plugin is not configured correctly or the server is not reachable. Please contact your administrator to resolve this issue.';
-$string['problem_sharessuppressed'] = 'The system account is unable to connect to ownCloud, so {$a} folders were not displayed. Please inform the administrator about this.';
+$string['problem_sharessuppressed'] = 'The system account is unable to connect to {$a->servicename}, so {$a->sharessuppressed} folders were not displayed. Please inform the administrator about this.';
 
 // Configuration/connection error messages.
 $string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
@@ -108,6 +108,7 @@ $string['issuervalidation_notconnected'] = 'Currently the valid {$a} issuer is a
 $string['right_issuers'] = 'The following issuers implement the required endpoints: {$a}';
 $string['no_right_issuers'] = 'None of the existing issuers implement all required endpoints. Please register an appropriate issuer.';
 $string['issuer_choice_unconfigured'] = '(unconfigured)';
+$string['servicename'] = 'Service display name';
 
 // Adding an instance (mod_form).
 $string['collaborativefoldersname'] = 'Collaborative folder name';
