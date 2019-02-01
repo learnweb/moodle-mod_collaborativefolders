@@ -291,6 +291,7 @@ class user_folder_access {
      * @return string URL where the folder should be found
      */
     public function link_from_foldername($foldername) : string {
-        return sprintf('%sindex.php/apps/files/?dir=/%s', $this->issuer->get('baseurl'), urlencode($foldername));
+        $baseurl = rtrim($this->issuer->get('baseurl'), '/').'/';
+        return sprintf('%sindex.php/apps/files/?dir=/%s', $baseurl, urlencode($foldername));
     }
 }
