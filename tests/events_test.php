@@ -81,40 +81,6 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
     }
 
     /**
-     * Tests for the implemented folder_created event for collaborativefolders.
-     */
-    public function test_folders_created() {
-        $cmid = $this->data['instance']->cmid;
-        $context = context_module::instance($cmid);
-        $instanceid = $this->data['instance']->id;
-
-        $params = array(
-                'context' => $context,
-                'objectid' => $instanceid
-        );
-
-        $event = \mod_collaborativefolders\event\folders_created::create($params);
-        $event = $this->get_event_result($event);
-
-        $this->assertInstanceOf('\mod_collaborativefolders\event\folders_created', $event);
-
-        // Verify the event's correctness by testing its fields.
-        $this->assertEquals($context->id, $event->contextid);
-        $this->assertEquals($this->data['course']->id, $event->courseid);
-        $this->assertEquals('collaborativefolders', $event->objecttable);
-        $this->assertEquals($instanceid, $event->objectid);
-        $this->assertEquals('c', $event->crud);
-        $this->assertEquals(0, $event->edulevel);
-
-        // Test the event methods, which were implemented within the event.
-        $this->assertNotEmpty($event->get_name());
-        $this->assertNotEmpty($event->get_description());
-
-        $url = new \moodle_url('/mod/collaborativefolders/view.php', array('id' => $cmid));
-        $this->assertEquals($url, $event->get_url());
-    }
-
-    /**
      * Tests for the implemented link_generated event for collaborativefolders.
      */
     public function test_link_generated() {

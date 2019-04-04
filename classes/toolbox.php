@@ -36,28 +36,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 class toolbox {
     /**
-     * Checks if the adhoc task for the folder creation has completed for the given instance.
-     *
-     * @param int $cmid Coursemodule ID of the instance
-     * @return bool false if task is running or scheduled
-     */
-    public static function is_create_task_running($cmid) {
-        global $DB;
-        $adhoc = $DB->get_records('task_adhoc', array('classname' => '\mod_collaborativefolders\task\collaborativefolders_create'));
-
-        foreach ($adhoc as $element) {
-            $content = json_decode($element->customdata);
-            $cmidoftask = $content->cmid;
-
-            // As long as at least one ad-hoc task exist, that has the same cm->id as the current cm the folders were not created.
-            if ($cmid == $cmidoftask) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Store a course_module_viewed event.
      *
      * @param \context_module $context

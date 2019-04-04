@@ -119,7 +119,6 @@ $string['teacher_mode_help'] = 'Usually only students have access to their folde
 $string['edit_after_creation'] = 'Please consider that teacher access and group-related settings cannot be changed after this activity is created.';
 
 // Events.
-$string['eventfolderscreated'] = 'The ad-hoc task successfully created all necessary folders for a collaborativefolders instance.';
 $string['eventlinkgenerated'] = 'A user-specific share to a collaborative folder was created successfully.';
 
 // Exceptions.
