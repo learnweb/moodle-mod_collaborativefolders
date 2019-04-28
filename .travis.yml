@@ -67,7 +67,6 @@ jobs:
       - moodle-plugin-ci validate
 
 install:
-  - moodle-plugin-ci add-plugin learnweb/moodle-repository_owncloud
   - moodle-plugin-ci install
 
 # Unit tests and behat tests against full matrix.

@@ -21,9 +21,6 @@ Learnweb (University of Münster) took over maintenance in 2017.
 ## Installation
 
 Place this plugin at `mod/collaborativefolders` in your Moodle directory.
-In addition, install the [ownCloud repository](https://moodle.org/plugins/repository_owncloud) 
-and configure it according to its documentation. The repository does *not* need to be publicly enabled,
-though.
 Before being able to use the plugin, a technical user account has to be authenticated in ownCloud. The regarding settings can be found under 
 `Site administration ► Plugins ► Activity modules ► collaborativefolders`. 
 While using the plugin the technical user should not be changed, because it could result in synchronization problems.
