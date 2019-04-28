@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 // General.
 $string['modulename'] = 'Collaborative folders';
 $string['modulenameplural'] = 'Collaborative folders';
-$string['modulename_help'] = 'Use collaborative folders to create folders in ownCloud for students for collaborative work. The folder is shared individually with members of the chosen groups as soon as they like. You do not need to collect ownCloud email addresses from your participants, everything is automated!';
+$string['modulename_help'] = 'Use collaborative folders to create folders in the cloud (ownCloud, Nextcloud) for students for collaborative work. The folder is shared individually with members of the chosen groups as soon as they like. You do not need to collect any email addresses from your participants, everything is automated!';
 $string['cachedef_token'] = 'OAuth system client token';
 $string['cachedef_userinfo'] = 'OAuth user client user info';
 $string['collaborativefolders:addinstance'] = 'Add a new collaborative folder';
@@ -89,7 +89,7 @@ $string['problem_misconfiguration'] = 'The plugin is not configured correctly or
 $string['problem_sharessuppressed'] = 'The system account is unable to connect to {$a->servicename}, so {$a->sharessuppressed} folders were not displayed. Please inform the administrator about this.';
 
 // Configuration/connection error messages.
-$string['usernotloggedin'] = 'You are currently not logged in at ownCloud.';
+$string['usernotloggedin'] = 'You are currently not logged in at the remote system.';
 $string['webdaverror'] = 'WebDAV error code {$a}';
 $string['socketerror'] = 'The WebDAV socket could not be opened.';
 $string['ocserror'] = 'An error with the OCS sharing API occurred.';
@@ -101,7 +101,7 @@ $string['incompletedata'] = 'Please check the module settings. Either no OAuth 2
 // Settings.
 $string['chooseissuer'] = 'Issuer';
 $string['oauth2serviceslink'] = '<a href="{$a}" title="Link to OAuth 2 services configuration">OAuth 2 services configuration</a>';
-$string['issuervalidation_without'] = 'You have not selected an ownCloud server as the OAuth 2 issuer yet.';
+$string['issuervalidation_without'] = 'You have not selected an OAuth 2 issuer yet.';
 $string['issuervalidation_valid'] = 'Currently the {$a} issuer is valid and active.';
 $string['issuervalidation_invalid'] = 'Currently the {$a} issuer is active, however it does not implement all necessary endpoints. The repository will not work. Please choose a valid issuer.';
 $string['issuervalidation_notconnected'] = 'Currently the valid {$a} issuer is active, but no system account is connected. The repository will not work. Please connect a system account.';
