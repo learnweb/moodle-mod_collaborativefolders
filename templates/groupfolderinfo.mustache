@@ -41,7 +41,9 @@
         "openfolder": "<a class=\"btn btn-primary\" href=\"https://owncloud.example/index.php/apps/files/?dir=/Hello+World\">@Open in ownCloud</a>"
     }
 }}
-<h4 id="folder-{{group.id}}">{{#str}}grouplabel, mod_collaborativefolders, {{group.name}}{{/str}}</h4>
+{{#group.id}}
+    <h4 id="folder-{{group.id}}">{{#str}}grouplabel, mod_collaborativefolders, {{group.name}}{{/str}}</h4>
+{{/group.id}}
 <div class="groupfolderinfo explanation">{{#str}}sharedtoowncloud, mod_collaborativefolders, {{servicename}}{{/str}}</div>
 <table class="groupfolderinfo details generaltable fullwidth">
     <tbody>

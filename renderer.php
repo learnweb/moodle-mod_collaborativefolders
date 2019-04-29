@@ -106,8 +106,10 @@ class mod_collaborativefolders_renderer extends plugin_renderer_base {
      * @param name_form $form
      */
     public function output_name_form($group, name_form $form) {
-        echo $this->output->heading(get_string('grouplabel', 'mod_collaborativefolders', $group->name), 4,
-            null, 'folder-'.$group->id);
+        if ($group->id !== \mod_collaborativefolders\toolbox::fake_course_group('')->id) {
+            echo $this->output->heading(get_string('grouplabel', 'mod_collaborativefolders', $group->name), 4,
+                null, 'folder-' . $group->id);
+        }
         $servicename = get_config('collaborativefolders', 'servicename');
         echo $this->output->box(get_string('namefield_explanation', 'mod_collaborativefolders', $servicename));
         $form->display();
