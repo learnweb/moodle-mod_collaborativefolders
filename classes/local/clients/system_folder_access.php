@@ -270,7 +270,7 @@ class system_folder_access {
         if ($recursive) {
             $result = true;
             $parts = array_filter(explode('/', $path));
-            $currpath = $this->davbasepath;
+            $currpath = rtrim($this->davbasepath, '/');
             foreach ($parts as $part) {
                 $currpath .= '/'.$part;
                 if (!$this->webdav->is_dir($currpath)) {
