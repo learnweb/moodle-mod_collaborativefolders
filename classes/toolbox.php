@@ -82,13 +82,13 @@ class toolbox {
             force_current_language($prevlang);
             if ($context->contextlevel == CONTEXT_SYSTEM) {
                 // Append the site short name to the root folder.
-                $foldername .= '_'.$SITE->shortname;
+                $foldername .= ' ('.$SITE->shortname.')';
                 // Append the relevant object id.
             } else if ($context->instanceid) {
-                $foldername .= '_id_'.$context->instanceid;
+                $foldername .= ' (id '.$context->instanceid.')';
             } else {
                 // This does not really happen but just in case.
-                $foldername .= '_ctx_'.$context->id;
+                $foldername .= ' (ctx '.$context->id.')';
             }
             $foldername = \clean_param($foldername, PARAM_FILE);
             $allfolders[] = $foldername;

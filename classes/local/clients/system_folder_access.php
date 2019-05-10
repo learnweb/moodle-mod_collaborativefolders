@@ -295,12 +295,12 @@ class system_folder_access {
      * @return bool true if we managed to locate a suitable folder
      */
     public function rename_by_id($path) {
-        $idregex = '|_id_(\d+)$|';
+        $idregex = '| \(id (\d+)\)$|';
         if (!preg_match($idregex, $path, $matches)) {
             return false;
         }
         list(, $id) = $matches;
-        $idmatch = "|_id_{$id}$|";
+        $idmatch = '| \(id '.$id.'\)$|';
         $dir = dirname($path);
         $files = $this->webdav->ls($dir);
         if (!$files) {
