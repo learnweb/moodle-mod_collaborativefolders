@@ -301,7 +301,7 @@ class system_folder_access {
         }
         list(, $id) = $matches;
         $idmatch = '| \(id '.$id.'\)$|';
-        $legacyidmatch = '|_id_'.$id.'$|';
+        $legacyidmatch = '|_id_'.$id.'$|'; // For folders created with earlier versions of mod_collaborativefolders.
         $dir = dirname($path);
         $files = $this->webdav->ls($dir);
         if (!$files) {
@@ -315,7 +315,9 @@ class system_folder_access {
             if ($file['resourcetype'] !== 'collection') {
                 continue;
             }
-            if (preg_match($idmatch, $filepath) || preg_match($legacyidmatch, $filepath)) {
+
+            if (substr($filepath, -strlen($idmatch)) === $idmatch ||
+                substr($filepath, -strlen($legacyidmatch)) === $legacyidmatch) {
                 // We've found a folder with the same id, but a different name - rename the folder.
                 if (!$this->webdav->move($filepath, $path, false)) {
                     return false;
