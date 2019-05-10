@@ -93,6 +93,8 @@ class toolbox {
             $foldername = \clean_param($foldername, PARAM_FILE);
             $allfolders[] = $foldername;
         }
+        // Add another subfolder that explicitly specifies the kind of module.
+        $allfolders[] = 'mod_collaborativefolders';
         return '/'.implode('/', $allfolders);
     }
 
