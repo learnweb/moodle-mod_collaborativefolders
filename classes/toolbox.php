@@ -90,7 +90,7 @@ class toolbox {
                 // This does not really happen but just in case.
                 $foldername .= '_ctx_'.$context->id;
             }
-            $foldername = clean_param($foldername, PARAM_PATH);
+            $foldername = \clean_param($foldername, PARAM_FILE);
             $allfolders[] = $foldername;
         }
         return '/'.implode('/', $allfolders);
