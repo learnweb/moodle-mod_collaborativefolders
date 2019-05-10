@@ -295,12 +295,13 @@ class system_folder_access {
      * @return bool true if we managed to locate a suitable folder
      */
     public function rename_by_id($path) {
-        $idregex = '|_id_(\d+)$|';
+        $idregex = '| \(id (\d+)\)$|';
         if (!preg_match($idregex, $path, $matches)) {
             return false;
         }
         list(, $id) = $matches;
-        $idmatch = "|_id_{$id}$|";
+        $idmatch = '| \(id '.$id.'\)$|';
+        $legacyidmatch = '|_id_'.$id.'$|'; // For folders created with earlier versions of mod_collaborativefolders.
         $dir = dirname($path);
         $files = $this->webdav->ls($dir);
         if (!$files) {
@@ -314,7 +315,9 @@ class system_folder_access {
             if ($file['resourcetype'] !== 'collection') {
                 continue;
             }
-            if (preg_match($idmatch, $filepath)) {
+
+            if (substr($filepath, -strlen($idmatch)) === $idmatch ||
+                substr($filepath, -strlen($legacyidmatch)) === $legacyidmatch) {
                 // We've found a folder with the same id, but a different name - rename the folder.
                 if (!$this->webdav->move($filepath, $path, false)) {
                     return false;

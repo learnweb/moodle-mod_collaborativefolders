@@ -75,5 +75,6 @@ if ($ADMIN->fulltree) {
             $issuervalidation,
         ]),
         0, $availableissuers));
-    $settings->add(new admin_setting_configtext('collaborativefolders/servicename', get_string('servicename', 'mod_collaborativefolders'), '', 'ownCloud'));
+    $settings->add(new admin_setting_configtext('collaborativefolders/servicename',
+        get_string('servicename', 'mod_collaborativefolders'), '', 'ownCloud'));
 }
