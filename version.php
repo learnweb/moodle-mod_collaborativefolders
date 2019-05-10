@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2019042900;
-$plugin->release = 'v3.7-r1';
+$plugin->version = 2019051000;
+$plugin->release = 'v3.7-r2';
 $plugin->requires = 2018051700;
 $plugin->maturity = MATURITY_STABLE;
