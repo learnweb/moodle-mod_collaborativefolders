@@ -24,6 +24,7 @@
 
 namespace mod_collaborativefolders\privacy;
 
+use core_privacy\local\metadata\collection;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\writer;
 
@@ -31,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 
 class provider implements \core_privacy\local\metadata\provider,
                           \core_privacy\local\request\plugin\provider {
-    public static function get_metadata(\core_privacy\local\metadata\collection $collection) : \core_privacy\local\metadata\collection {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table(
             'collaborativefolders_link',
             [
