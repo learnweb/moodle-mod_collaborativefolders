@@ -87,7 +87,7 @@ class view_controller {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('activityoverview', 'mod_collaborativefolders'));
         if (!empty($collaborativefolder->intro)) {
-            echo $OUTPUT->box(format_module_intro('collaborativefolder', $collaborativefolder, $cm->id), 'generalbox', 'intro');
+            echo $OUTPUT->box(format_module_intro('collaborativefolders', $collaborativefolder, $cm->id), 'generalbox', 'intro');
         }
 
         // Show notice if the plugin is not configured correctly.
