@@ -56,7 +56,7 @@ class ocs_client extends rest {
     const SHARE_PERMISSION_READ = 1;
 
     /**
-     * permissions=1 gives read permission for a share.
+     * permissions=31 gives all permissions for a share: 1 = read; 2 = update; 4 = create; 8 = delete; 16 = share.
      */
     const SHARE_PERMISSION_ALL = 31;
 
