@@ -53,16 +53,18 @@ if ($ADMIN->fulltree) {
     // Indicate quality of the chosen issuer.
     // Warning if no issuer chosen / issuer invalid / issuer valid but no system account connected.
     $issuerid = get_config("collaborativefolders", "issuerid");
-    $issuer = \core\oauth2\api::get_issuer($issuerid);
 
     if (empty($issuerid) || !array_key_exists($issuerid, $availableissuers)) {
         $issuervalidation = get_string('issuervalidation_without', 'mod_collaborativefolders');
     } else if (!in_array($issuerid, $validissuers)) {
         $issuervalidation = get_string('issuervalidation_invalid', 'mod_collaborativefolders', $availableissuers[$issuerid]);
-    } else if (!$issuer->is_system_account_connected()) {
-        $issuervalidation = get_string('issuervalidation_notconnected', 'mod_collaborativefolders', $availableissuers[$issuerid]);
     } else {
-        $issuervalidation = get_string('issuervalidation_valid', 'mod_collaborativefolders', $availableissuers[$issuerid]);
+        $issuer = \core\oauth2\api::get_issuer($issuerid);
+        if (!$issuer->is_system_account_connected()) {
+            $issuervalidation = get_string('issuervalidation_notconnected', 'mod_collaborativefolders', $availableissuers[$issuerid]);
+        } else {
+            $issuervalidation = get_string('issuervalidation_valid', 'mod_collaborativefolders', $availableissuers[$issuerid]);
+        }
     }
 
     // Render the form.
