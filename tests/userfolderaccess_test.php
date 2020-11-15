@@ -37,7 +37,7 @@ class mod_collaborativefolders_userfolderaccess_testcase extends \advanced_testc
      */
     private $generator;
 
-    public function setUp() {
+    public function setUp() : void {
         $this->resetAfterTest(true);
         $this->generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
     }

@@ -31,7 +31,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
     /** @var null|array data array containing groupings, course and instance information. */
     private $data = null;
 
-    public function setUp() {
+    public function setUp() : void {
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');

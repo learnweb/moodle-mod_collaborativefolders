@@ -43,7 +43,7 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
     /**
      * {@inheritdoc}
      */
-    protected function setUp() {
+    protected function setUp() : void {
         $this->resetAfterTest();
 
         global $DB;
