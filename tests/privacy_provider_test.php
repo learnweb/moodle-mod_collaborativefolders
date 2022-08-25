@@ -21,13 +21,17 @@
  * @copyright 2018 Davo Smith
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_collaborativefolders;
 
+use context_module;
 use core_privacy\local\metadata\collection;
 use mod_collaborativefolders\privacy\provider;
+use mod_collaborativefolders_generator;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\tests\provider_testcase {
+class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /** @var stdClass The student objects. */
     protected $students = [];
 
@@ -43,7 +47,7 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
     /**
      * {@inheritdoc}
      */
-    protected function setUp() {
+    protected function setUp(): void {
         $this->resetAfterTest();
 
         global $DB;

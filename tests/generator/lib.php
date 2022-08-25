@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_collaborativefolders_generator extends testing_module_generator {
+class mod_collaborativefolders_generator extends \testing_module_generator {
     /**
      * Create an issuer for testing purposes.
      * @param string $name Name; used as a name in the testing issuer and as its mock URL

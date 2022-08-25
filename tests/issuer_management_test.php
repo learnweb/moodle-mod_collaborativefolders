@@ -22,16 +22,18 @@
  * @copyright  2018 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_collaborativefolders;
 
 use core\oauth2\endpoint;
 use core\oauth2\issuer;
 use mod_collaborativefolders\issuer_management;
+use mod_collaborativefolders_generator;
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_collaborativefolders_issuer_management_testcase extends \advanced_testcase {
+class issuer_management_test extends \advanced_testcase {
 
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest(true);
     }
 

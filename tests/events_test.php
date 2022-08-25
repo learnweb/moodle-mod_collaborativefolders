@@ -23,15 +23,19 @@
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_collaborativefolders;
+
+use context_course;
+use context_module;
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_collaborativefolders_events_testcase extends \advanced_testcase {
+class events_test extends \advanced_testcase {
 
     /** @var null|array data array containing groupings, course and instance information. */
     private $data = null;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
