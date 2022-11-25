@@ -77,20 +77,21 @@ class toolbox {
         $allfolders = [];
         foreach ($contextlist as $context) {
             // Prepare human readable context folders names, making sure they are still unique within the site.
+            if ($context->contextlevel == CONTEXT_SYSTEM) {
+                // Append the site short name to the root folder.
+                $appendix = " ($SITE->shortname)";
+            } else if($context->instanceid) {
+                // Append the relevant object id.
+                $appendix = " (id $context->instanceid)";
+            } else {
+                // This does not really happen but just in case.
+                $appendix = " (ctx $context->id)";
+            }
             $prevlang = force_current_language($CFG->lang);
             $foldername = $context->get_context_name();
             force_current_language($prevlang);
-            if ($context->contextlevel == CONTEXT_SYSTEM) {
-                // Append the site short name to the root folder.
-                $foldername .= ' ('.$SITE->shortname.')';
-                // Append the relevant object id.
-            } else if ($context->instanceid) {
-                $foldername .= ' (id '.$context->instanceid.')';
-            } else {
-                // This does not really happen but just in case.
-                $foldername .= ' (ctx '.$context->id.')';
-            }
             $foldername = \clean_param($foldername, PARAM_FILE);
+            $foldername = substr($foldername, 0, 249 - strlen($appendix)) . $appendix;
             $allfolders[] = $foldername;
         }
         // Add another subfolder that explicitly specifies the kind of module.
