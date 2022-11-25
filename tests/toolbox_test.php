@@ -23,15 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core\oauth2\endpoint;
-use core\oauth2\issuer;
-use mod_collaborativefolders\issuer_management;
+namespace mod_collaborativefolders;
 
-defined('MOODLE_INTERNAL') || die();
+class toolbox_test extends \advanced_testcase {
 
-class mod_collaborativefolders_toolbox_testcase extends \advanced_testcase {
-
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest(true);
     }
 

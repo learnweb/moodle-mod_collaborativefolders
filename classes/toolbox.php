@@ -25,8 +25,6 @@
 
 namespace mod_collaborativefolders;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Helper class, which performs ownCloud access functions for collaborative folders.
  *
@@ -80,7 +78,7 @@ class toolbox {
             if ($context->contextlevel == CONTEXT_SYSTEM) {
                 // Append the site short name to the root folder.
                 $appendix = " ($SITE->shortname)";
-            } else if($context->instanceid) {
+            } else if ($context->instanceid) {
                 // Append the relevant object id.
                 $appendix = " (id $context->instanceid)";
             } else {

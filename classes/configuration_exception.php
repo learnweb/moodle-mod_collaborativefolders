@@ -24,8 +24,6 @@
 
 namespace mod_collaborativefolders;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Exception for when a client configuration data is missing.
  *

@@ -24,8 +24,6 @@
 
 namespace mod_collaborativefolders\local\clients;
 
-defined('MOODLE_INTERNAL') || die();
-
 class system_client extends \core\oauth2\client {
     protected function store_token($token) {
         // Call parent function, as $this->accesstoken is private, so can't set directly.

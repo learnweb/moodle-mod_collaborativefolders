@@ -29,8 +29,6 @@ namespace mod_collaborativefolders;
 use core\oauth2\client;
 use core\oauth2\rest;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * REST interface to Nextcloud's implementation of Open Collaboration Services.
  *

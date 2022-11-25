@@ -22,19 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_collaborativefolders;
+
 use core_privacy\local\metadata\collection;
 use mod_collaborativefolders\privacy\provider;
 
-defined('MOODLE_INTERNAL') || die();
-
-class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\tests\provider_testcase {
-    /** @var stdClass The student objects. */
+class privacy_provider_test extends \core_privacy\tests\provider_testcase {
+    /** @var \stdClass The student objects. */
     protected $students = [];
 
-    /** @var stdClass[] The collaborativefolders objects. */
+    /** @var \stdClass[] The collaborativefolders objects. */
     protected $collaborativefolders = [];
 
-    /** @var stdClass The course object. */
+    /** @var \stdClass The course object. */
     protected $course;
 
     /** @var array groups in the course */
@@ -43,7 +43,7 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
     /**
      * {@inheritdoc}
      */
-    protected function setUp() {
+    protected function setUp(): void {
         $this->resetAfterTest();
 
         global $DB;
@@ -51,7 +51,7 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
         $this->course = $gen->create_course();
 
         // Create 3 collaborativefolders.
-        /** @var mod_collaborativefolders_generator $plugingen */
+        /** @var \mod_collaborativefolders_generator $plugingen */
         $plugingen = $gen->get_plugin_generator('mod_collaborativefolders');
         $params = [
             'course' => $this->course->id,
@@ -152,8 +152,8 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
             3 => get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[3]->id),
         ];
         $expectedctxs = [
-            context_module::instance($cms[1]->id),
-            context_module::instance($cms[2]->id),
+            \context_module::instance($cms[1]->id),
+            \context_module::instance($cms[2]->id),
         ];
         $expectedctxids = [];
         foreach ($expectedctxs as $ctx) {
@@ -179,9 +179,9 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
             3 => get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[3]->id),
         ];
         $ctxs = [
-            1 => context_module::instance($cms[1]->id),
-            2 => context_module::instance($cms[2]->id),
-            3 => context_module::instance($cms[3]->id),
+            1 => \context_module::instance($cms[1]->id),
+            2 => \context_module::instance($cms[2]->id),
+            3 => \context_module::instance($cms[3]->id),
         ];
 
         // Export all of the data for the context.
@@ -209,14 +209,14 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
 
         // Delete data from the first collaborativefolders.
         $cm = get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[1]->id);
-        $cmcontext = context_module::instance($cm->id);
+        $cmcontext = \context_module::instance($cm->id);
         provider::delete_data_for_all_users_in_context($cmcontext);
         // After deletion, there should be 3 links.
         $this->assertEquals(3, $DB->count_records('collaborativefolders_link'));
 
         // Delete data from the second collaborativefolders.
         $cm = get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[2]->id);
-        $cmcontext = context_module::instance($cm->id);
+        $cmcontext = \context_module::instance($cm->id);
         provider::delete_data_for_all_users_in_context($cmcontext);
         // After deletion, there should be 0 links.
         $this->assertEquals(0, $DB->count_records('collaborativefolders_link'));
@@ -235,7 +235,7 @@ class mod_collaborativefolders_privacy_provider_testcase extends \core_privacy\t
         ];
         $ctxs = [];
         foreach ($cms as $idx => $cm) {
-            $ctxs[$idx] = context_module::instance($cm->id);
+            $ctxs[$idx] = \context_module::instance($cm->id);
         }
 
         // Before deletion, we should have 5 links.

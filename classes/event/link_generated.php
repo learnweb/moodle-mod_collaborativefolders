@@ -25,8 +25,6 @@
 
 namespace mod_collaborativefolders\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Describes the successful link generation event.
  *

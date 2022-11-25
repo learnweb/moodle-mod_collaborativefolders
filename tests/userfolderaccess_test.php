@@ -23,21 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core\oauth2\endpoint;
-use core\oauth2\issuer;
-use mod_collaborativefolders\issuer_management;
+namespace mod_collaborativefolders;
 
 defined('MOODLE_INTERNAL') || die();
 
-class mod_collaborativefolders_userfolderaccess_testcase extends \advanced_testcase {
+class userfolderaccess_test extends \advanced_testcase {
 
     /**
      * Data generator
-     * @var mod_collaborativefolders_generator
+     * @var \mod_collaborativefolders_generator
      */
     private $generator;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest(true);
         $this->generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
     }
@@ -57,7 +55,7 @@ class mod_collaborativefolders_userfolderaccess_testcase extends \advanced_testc
 
         // Third: Issuer is configured, but removed afterwards.
         set_config("issuerid", $nextcloud->get('id'), "collaborativefolders");
-        assertTrue($nextcloud->delete());
+        $this->assertTrue($nextcloud->delete());
         $this->expectException(\mod_collaborativefolders\configuration_exception::class);
         new \mod_collaborativefolders\local\clients\user_folder_access(\oauth2_client::callback_url());
 

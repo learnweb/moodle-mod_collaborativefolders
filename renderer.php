@@ -26,8 +26,6 @@ use core\output\notification;
 use mod_collaborativefolders\name_form;
 use mod_collaborativefolders\output\statusinfo;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Class of the mod_collaborativefolders renderer.
  *

@@ -31,8 +31,6 @@ use mod_collaborativefolders\local\sharing\share_failed_exception;
 use mod_collaborativefolders\output\statusinfo;
 use mod_collaborativefolders_renderer;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Controller for view.php
  *

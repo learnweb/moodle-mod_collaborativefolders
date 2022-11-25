@@ -24,8 +24,6 @@
 
 namespace mod_collaborativefolders\local\sharing;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Exception for when sharing has failed because a folder has *already* been shared prior to that.
  *

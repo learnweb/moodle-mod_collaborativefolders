@@ -23,18 +23,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_collaborativefolders;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/webdavlib.php');
 
-class mod_collaborativefolders_system_folder_access_testcase extends \advanced_testcase {
+class systemfolderaccess_test extends \advanced_testcase {
     /**
      * Data generator
-     * @var mod_collaborativefolders_generator
+     * @var \mod_collaborativefolders_generator
      */
     private $generator;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $this->resetAfterTest(true);
         $this->generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
     }
@@ -55,7 +57,7 @@ class mod_collaborativefolders_system_folder_access_testcase extends \advanced_t
 
         // Third: Issuer is configured, but removed afterwards.
         set_config("issuerid", $nextcloud->get('id'), "collaborativefolders");
-        assertTrue($nextcloud->delete());
+        $this->assertTrue($nextcloud->delete());
         $this->expectException(\mod_collaborativefolders\configuration_exception::class);
         new \mod_collaborativefolders\local\clients\system_folder_access();
 
