@@ -36,6 +36,12 @@ require_once($CFG->dirroot.'/lib/setuplib.php');
  */
 function collaborativefolders_supports($feature) {
 
+    if (defined('FEATURE_MOD_PURPOSE')) {
+        if ($feature == FEATURE_MOD_PURPOSE) {
+            return MOD_PURPOSE_COLLABORATION;
+        }
+    }
+
     switch($feature) {
         case FEATURE_MOD_INTRO:
             return true;
