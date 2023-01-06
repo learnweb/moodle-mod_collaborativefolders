@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2020060600;
-$plugin->release = 'v3.9-r1';
-$plugin->requires = 2018051700;
+$plugin->version = 2022112500;
+$plugin->release = 'v4.1-r1';
+$plugin->requires = 2020061500; // Requires Moodle 3.9+.
 $plugin->maturity = MATURITY_STABLE;

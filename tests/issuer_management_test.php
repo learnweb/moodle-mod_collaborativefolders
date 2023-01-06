@@ -23,15 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_collaborativefolders;
+
 use core\oauth2\endpoint;
 use core\oauth2\issuer;
-use mod_collaborativefolders\issuer_management;
 
-defined('MOODLE_INTERNAL') || die();
+class issuer_management_test extends \advanced_testcase {
 
-class mod_collaborativefolders_issuer_management_testcase extends \advanced_testcase {
-
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest(true);
     }
 
@@ -64,7 +63,7 @@ class mod_collaborativefolders_issuer_management_testcase extends \advanced_test
      */
     public function test_validate_issuer() {
         static::setAdminUser();
-        /* @var mod_collaborativefolders_generator $generator */
+        /* @var \mod_collaborativefolders_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
 
         // Validate a correct issuer first.

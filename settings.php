@@ -57,13 +57,16 @@ if ($ADMIN->fulltree) {
     if (empty($issuerid) || !array_key_exists($issuerid, $availableissuers)) {
         $issuervalidation = get_string('issuervalidation_without', 'mod_collaborativefolders');
     } else if (!in_array($issuerid, $validissuers)) {
-        $issuervalidation = get_string('issuervalidation_invalid', 'mod_collaborativefolders', $availableissuers[$issuerid]);
+        $issuervalidation = get_string('issuervalidation_invalid', 'mod_collaborativefolders',
+                $availableissuers[$issuerid]);
     } else {
         $issuer = \core\oauth2\api::get_issuer($issuerid);
         if (!$issuer->is_system_account_connected()) {
-            $issuervalidation = get_string('issuervalidation_notconnected', 'mod_collaborativefolders', $availableissuers[$issuerid]);
+            $issuervalidation = get_string('issuervalidation_notconnected', 'mod_collaborativefolders',
+                    $availableissuers[$issuerid]);
         } else {
-            $issuervalidation = get_string('issuervalidation_valid', 'mod_collaborativefolders', $availableissuers[$issuerid]);
+            $issuervalidation = get_string('issuervalidation_valid', 'mod_collaborativefolders',
+                    $availableissuers[$issuerid]);
         }
     }
 

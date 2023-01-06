@@ -57,5 +57,4 @@ class name_form extends \moodleform {
         $formid = $this->_customdata['id'] . '_' . get_class($this);
         return $formid;
     }
-
 }

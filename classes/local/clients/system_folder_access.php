@@ -191,7 +191,7 @@ class system_folder_access {
             'path' => $path,
             'shareType' => ocs_client::SHARE_TYPE_USER,
             'shareWith' => $username,
-            'permissions' => ocs_client::SHARE_PERMISSION_ALL, // (Read, update, create, delete, share).
+            'permissions' => ocs_client::SHARE_PERMISSION_ALL, // Meaning read, update, create, delete, share.
         ];
         if ($chosenname !== null) {
             $chosenname = \core_text::substr($chosenname, 0, 64); // Make sure the name is <= 64 characters.

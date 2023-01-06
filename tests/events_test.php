@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_collaborativefolders;
+
 /**
  * The class contains a test script for the mod_collaborativefolders activity module's
  * events.
@@ -23,15 +25,12 @@
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-class mod_collaborativefolders_events_testcase extends \advanced_testcase {
+class events_test extends \advanced_testcase {
 
     /** @var null|array data array containing groupings, course and instance information. */
     private $data = null;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
@@ -42,7 +41,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
      * Test the build in course_module_instance_list_viewed event.
      */
     public function test_instance_list_viewed() {
-        $context = context_course::instance($this->data['course']->id);
+        $context = \context_course::instance($this->data['course']->id);
 
         $params = array(
                 'context' => $context
@@ -62,7 +61,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
      */
     public function test_module_viewed() {
         $cmid = $this->data['instance']->cmid;
-        $context = context_module::instance($cmid);
+        $context = \context_module::instance($cmid);
         $instanceid = $this->data['instance']->id;
 
         $params = array(
@@ -85,7 +84,7 @@ class mod_collaborativefolders_events_testcase extends \advanced_testcase {
      */
     public function test_link_generated() {
         $cmid = $this->data['instance']->cmid;
-        $context = context_module::instance($cmid);
+        $context = \context_module::instance($cmid);
         $instanceid = $this->data['instance']->id;
 
         $params = array(

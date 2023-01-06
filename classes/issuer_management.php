@@ -24,7 +24,6 @@
  */
 namespace mod_collaborativefolders;
 
-defined('MOODLE_INTERNAL') || die();
 use core\oauth2\issuer;
 
 /**

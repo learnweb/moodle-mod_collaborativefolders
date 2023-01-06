@@ -24,8 +24,6 @@
  */
 namespace mod_collaborativefolders\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderer_base;
 use stdClass;
 
