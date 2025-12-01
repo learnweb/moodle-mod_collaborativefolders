@@ -34,7 +34,7 @@ use mod_collaborativefolders\configuration_exception;
 use mod_collaborativefolders\issuer_management;
 use mod_collaborativefolders\local\sharing\share_exists_exception;
 use mod_collaborativefolders\local\sharing\share_failed_exception;
-use mod_collaborativefolders\ocs_client;
+use repository_nextcloud\ocs_client;
 
 /**
  * ownCloud client wrapper, intended for operations on a system account.
@@ -62,7 +62,7 @@ class system_folder_access {
 
     /**
      * OCS Rest client for a system account
-     * @var \mod_collaborativefolders\ocs_client
+     * @var \repository_nextcloud\ocs_client
      */
     private $ocsclient = null;
 
