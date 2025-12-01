@@ -25,8 +25,9 @@
 
 namespace mod_collaborativefolders;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Test cases for user_folder_access.
+ */
 final class userfolderaccess_test extends \advanced_testcase {
     /**
      * Data generator

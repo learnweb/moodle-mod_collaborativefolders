@@ -24,7 +24,11 @@
 
 namespace mod_collaborativefolders\local\clients;
 
+/**
+ * Extend oauth\client to store token in application cache, not in the SESSION
+ */
 class system_client extends \core\oauth2\client {
+    #[\Override]
     protected function store_token($token) {
         // Call parent function, as $this->accesstoken is private, so can't set directly.
         parent::store_token($token);
@@ -38,6 +42,7 @@ class system_client extends \core\oauth2\client {
         }
     }
 
+    #[\Override]
     protected function get_stored_token() {
         $name = $this->get_tokenname();
         $cache = \cache::make('mod_collaborativefolders', 'token');
@@ -48,6 +53,7 @@ class system_client extends \core\oauth2\client {
         return null;
     }
 
+    #[\Override]
     public function upgrade_refresh_token(\core\oauth2\system_account $systemaccount): bool {
         $this->store_token(null); // Make sure the existing token is cleared, before calling refresh.
         return parent::upgrade_refresh_token($systemaccount);

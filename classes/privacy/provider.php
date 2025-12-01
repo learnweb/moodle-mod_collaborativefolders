@@ -28,9 +28,13 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\writer;
 
+/**
+ * Privacy provider for mod_collaborativefolders
+ */
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\plugin\provider {
+    #[\Override]
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'collaborativefolders_link',
@@ -46,6 +50,7 @@ class provider implements
         return $collection;
     }
 
+    #[\Override]
     public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
@@ -62,6 +67,7 @@ class provider implements
         return $contextlist;
     }
 
+    #[\Override]
     public static function export_user_data(\core_privacy\local\request\approved_contextlist $contextlist) {
         global $DB;
         if (!$contextlist->count()) {
@@ -108,6 +114,12 @@ class provider implements
         }
     }
 
+    /**
+     * Export user data for mod_collaborativefolders
+     * @param array $links links
+     * @param int $cmid course module ID
+     * @param \stdClass $user user record.
+     */
     private static function export_collaborativefolders_data_for_user(array $links, int $cmid, \stdClass $user) {
         // Fetch the generic module data for the choice.
         $context = \context_module::instance($cmid);
@@ -121,6 +133,7 @@ class provider implements
         helper::export_context_files($context, $user);
     }
 
+    #[\Override]
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
         if (!$context) {
@@ -139,6 +152,7 @@ class provider implements
         );
     }
 
+    #[\Override]
     public static function delete_data_for_user(\core_privacy\local\request\approved_contextlist $contextlist) {
         global $DB;
         if (!$contextlist->count()) {

@@ -65,10 +65,10 @@ function collaborativefolders_supports($feature) {
  * of the new instance.
  *
  * @param stdClass $collaborativefolders Submitted data from the form in mod_form.php
- * @param mod_collaborativefolders_mod_form $mform The form instance itself (if needed)
+ * @param mod_collaborativefolders_mod_form|null $mform The form instance itself (if needed)
  * @return int The id of the newly inserted collaborativefolders record
  */
-function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
+function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form|null $mform = null) {
     global $DB;
 
     $collaborativefolders->timecreated = time();
@@ -86,10 +86,10 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
  * will update an existing instance with new data.
  *
  * @param stdClass $collaborativefolders An object from the form in mod_form.php
- * @param mod_collaborativefolders_mod_form $mform The form instance itself (if needed)
+ * @param mod_collaborativefolders_mod_form|null $mform The form instance itself (if needed)
  * @return boolean Success/Fail
  */
-function collaborativefolders_update_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form $mform = null) {
+function collaborativefolders_update_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form|null $mform = null) {
     global $DB;
 
     $collaborativefolders->timemodified = time();

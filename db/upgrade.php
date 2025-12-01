@@ -22,6 +22,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Execute mod_collaborativefolders upgrade from the given old version.
+ *
+ * @param int $oldversion
+ * @return bool
+ */
 function xmldb_collaborativefolders_upgrade($oldversion = 0) {
     global $DB;
     $dbman = $DB->get_manager();

@@ -25,6 +25,9 @@
 
 namespace mod_collaborativefolders;
 
+/**
+ * Test cases for the toolbox class.
+ */
 final class toolbox_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();

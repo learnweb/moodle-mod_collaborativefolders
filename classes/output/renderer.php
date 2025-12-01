@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_collaborativefolders\output;
-
 /**
  * Renderer for the Web interface of collaborativefolders module.
  *
@@ -23,6 +21,8 @@ namespace mod_collaborativefolders\output;
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_collaborativefolders\output;
 
 use core\output\notification;
 use core\output\plugin_renderer_base;
@@ -62,6 +62,9 @@ class renderer extends plugin_renderer_base {
         return html_writer::link($loginurl, get_string('btnlogin', 'mod_collaborativefolders'), ['class' => 'btn btn-primary']);
     }
 
+    /**
+     * Render teachersnotallowed notification.
+     */
     public function render_widget_teachermaynotaccess() {
         $notification = new notification(
             get_string('teachersnotallowed', 'mod_collaborativefolders'),
@@ -71,6 +74,9 @@ class renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    /**
+     * Render notingroup notification.
+     */
     public function render_widget_nogroups(): string {
         $notification = new notification(
             get_string('notingroup', 'mod_collaborativefolders'),
@@ -80,6 +86,9 @@ class renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    /**
+     * Render problem_nosystemconnection notification.
+     */
     public function render_widget_nosystemconnection() {
         $servicename = get_config('collaborativefolders', 'servicename');
         $notification = new notification(
@@ -90,6 +99,9 @@ class renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    /**
+     * Render problem_misconfiguration notification.
+     */
     public function render_widget_misconfiguration() {
         $notification = new notification(
             get_string('problem_misconfiguration', 'mod_collaborativefolders'),
@@ -99,6 +111,9 @@ class renderer extends plugin_renderer_base {
         return $this->render($notification);
     }
 
+    /**
+     * Render problem_sharessuppressed notification.
+     */
     public function render_widget_noconnection_suppressed_share(int $sharessuppressed) {
         $info = (object)[
             'sharessuppressed' => $sharessuppressed,
@@ -114,6 +129,7 @@ class renderer extends plugin_renderer_base {
     }
 
     /**
+     * Render the name form.
      * @param name_form $form
      */
     public function output_name_form($group, name_form $form) {

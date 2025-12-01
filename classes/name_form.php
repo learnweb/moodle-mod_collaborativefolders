@@ -29,6 +29,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class name_form extends \moodleform {
+    #[\Override]
     public function definition() {
         $mform = $this->_form;
 
@@ -42,6 +43,7 @@ class name_form extends \moodleform {
         $mform->addElement('submit', 'enter', get_string('getaccess', 'mod_collaborativefolders'));
     }
 
+    #[\Override]
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
@@ -52,6 +54,7 @@ class name_form extends \moodleform {
         return $errors;
     }
 
+    #[\Override]
     protected function get_form_identifier() {
         $formid = $this->_customdata['id'] . '_' . get_class($this);
         return $formid;

@@ -33,7 +33,6 @@ use core\oauth2\issuer;
  * @copyright  2018 Jan Dageförde (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class issuer_management {
     /**
      * Create an ownCloud/Nextcloud ready OAuth 2 service. Generates all required endpoints and field mappings.

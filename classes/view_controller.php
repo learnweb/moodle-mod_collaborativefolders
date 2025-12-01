@@ -184,7 +184,6 @@ class view_controller {
      * @param bool $systemclientcanshare true if there is a connected system account that could create a share
      * @param user_folder_access $userclient connected client for the current user.
      * @return string Rendered view
-     * @internal param user_folder_access $userclient
      */
     private static function share_and_view_folders(
         \cm_info $cm,
@@ -250,7 +249,13 @@ class view_controller {
         return $out;
     }
 
-    private static function obtain_folders(statusinfo $statusinfo, \cm_info $cm, $isteacher) {
+    /**
+     * Obtain the folders.
+     * @param statusinfo $statusinfo status information.
+     * @param cm_info $cm course module information
+     * @param bool $isteacher whether a teacher
+     */
+    private static function obtain_folders(statusinfo $statusinfo, \cm_info $cm, bool $isteacher) {
         // Get applicable groups from $statusinfo.
         if ($isteacher && !$statusinfo->teachermayaccess) {
             // Refuse access for teacher because user config says so.
@@ -279,6 +284,7 @@ class view_controller {
     }
 
     /**
+     * Handle folder form submission.
      * @param array $userfolders array of folders applicable for the user
      * @param \cm_info $cm current coursemodule
      * @param user_folder_access $userclient connected client of the user

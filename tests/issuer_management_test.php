@@ -28,6 +28,9 @@ namespace mod_collaborativefolders;
 use core\oauth2\endpoint;
 use core\oauth2\issuer;
 
+/**
+ * Test cases for issuer_management.
+ */
 final class issuer_management_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();

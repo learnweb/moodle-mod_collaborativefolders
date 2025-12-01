@@ -46,6 +46,9 @@ class user_folder_access {
      */
     const SCOPES = 'files';
 
+    /**
+     * User information cache key.
+     */
     const USERINFO_CACHE_KEY = 1;
 
     /**
@@ -276,6 +279,9 @@ class user_folder_access {
         return $user;
     }
 
+    /**
+     * Return username.
+     */
     public function get_username() {
         $userinfo = $this->get_userinfo();
         return $userinfo['username'];

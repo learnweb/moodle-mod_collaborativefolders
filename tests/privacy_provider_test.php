@@ -27,6 +27,9 @@ namespace mod_collaborativefolders;
 use core_privacy\local\metadata\collection;
 use mod_collaborativefolders\privacy\provider;
 
+/**
+ * Test cases for the privacy provider.
+ */
 final class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /** @var \stdClass The student objects. */
     protected $students = [];

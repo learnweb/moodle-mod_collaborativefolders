@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/webdavlib.php');
 
+/**
+ * Tests cases for system_folder_access.
+ */
 final class systemfolderaccess_test extends \advanced_testcase {
     /**
      * Data generator
