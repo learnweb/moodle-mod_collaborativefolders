@@ -1,7 +1,6 @@
 # Collaborative folders
 
-[![Build Status](https://travis-ci.org/learnweb/moodle-mod_collaborativefolders.svg?branch=master)](https://travis-ci.org/learnweb/moodle-mod_collaborativefolders)
-[![codecov](https://codecov.io/gh/learnweb/moodle-mod_collaborativefolders/branch/master/graph/badge.svg)](https://codecov.io/gh/learnweb/moodle-mod_collaborativefolders)
+[![Moodle Plugin CI](https://github.com/learnweb/moodle-mod_collaborativefolders/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/learnweb/moodle-mod_collaborativefolders/actions/workflows/moodle-ci.yml)
 
 This Activity Module allows teachers to create folders in [ownCloud](https://owncloud.org/), 
 which may be allocated to groups of students who can then work collaboratively in these folders.
