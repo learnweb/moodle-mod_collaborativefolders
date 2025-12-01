@@ -123,8 +123,8 @@ class user_folder_access {
     /**
      * A method, which attempts to rename a given, privately shared, folder.
      *
-     * @param $pathtofolder string path, which leads to the folder that needs to be renamed.
-     * @param $newname string the name which needs to be set instead of the old.
+     * @param string $pathtofolder path, which leads to the folder that needs to be renamed.
+     * @param string $newname the name which needs to be set instead of the old.
      * @return array contains status (true means success, false failure) and content (generated
      *              link or error message) of the result.
      */
@@ -196,10 +196,10 @@ class user_folder_access {
      * database table. If the specific record already exists, it gets updated in the concerning field. Otherwise,
      * a new record is inserted into the table.
      *
-     * @param $cmid int ID of the course module. Needed to specify the concrete activity instance.
-     * @param $groupid int the group ID to specify one particular folder.
-     * @param $userid string ID of the user, which the value needs to be set for.
-     * @param $value string the specific value, which needs to be set or updated.
+     * @param int $cmid ID of the course module. Needed to specify the concrete activity instance.
+     * @param int $groupid  the group ID to specify one particular folder.
+     * @param string $userid ID of the user, which the value needs to be set for.
+     * @param string $value the specific value, which needs to be set or updated.
      */
     public function store_link($cmid, $groupid, $userid, $value) {
         // TODO use persistent API instead.
@@ -231,9 +231,9 @@ class user_folder_access {
      * database table. It is used to get a stored folder name or link for a specific user and course
      * module.
      *
-     * @param $cmid int the course module ID. Needed to specify the concrete activity instance.
-     * @param $groupid int the group ID to specify one particular folder.
-     * @param $userid string ID of the user, which the value needs to be gotten for.
+     * @param int $cmid the course module ID. Needed to specify the concrete activity instance.
+     * @param int $groupid the group ID to specify one particular folder.
+     * @param string $userid ID of the user, which the value needs to be gotten for.
      * @return object|false
      */
     public function get_link($cmid, $groupid, $userid) {

@@ -29,8 +29,6 @@ require_once($CFG->dirroot . '/lib/setuplib.php');
 /**
  * Returns the information on whether the module supports a feature.
  *
- * See {@link plugin_supports()} for more info.
- *
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */

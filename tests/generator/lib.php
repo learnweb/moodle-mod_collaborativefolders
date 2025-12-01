@@ -42,8 +42,8 @@ class mod_collaborativefolders_generator extends testing_module_generator {
 
     /**
      * Creates Course, course members, groups and groupings to test the module.
-     * @param $groupmode
-     * @param $grouping
+     * @param int $groupmode the group mode
+     * @param int $grouping the grouping id
      * @return array
      * @throws coding_exception
      */

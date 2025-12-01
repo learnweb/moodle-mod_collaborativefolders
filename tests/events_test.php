@@ -116,7 +116,7 @@ final class events_test extends \advanced_testcase {
     /**
      * Helper method to fetch the results from a triggered event.
      *
-     * @param $event \core\event\base event, which needs to be triggered.
+     * @param \core\event\base $event event, which needs to be triggered.
      * @return \core\event\base|mixed the caught event data.
      */
     protected function get_event_result($event) {

@@ -176,10 +176,10 @@ class view_controller {
      * # Defining a user-local name and generating a share
      * # Display the selected name, a link, and a button for problem solving (aka re-share).
      *
-     * @param \cm_info $cmid Course module info
-     * @param array $folderforms
-     * @param statusinfo $statusinfo
-     * @param mod_collaborativefolders\output\renderer $renderer
+     * @param cm_info $cm Course module info
+     * @param array $folderforms list of folder forms
+     * @param statusinfo $statusinfo status information
+     * @param mod_collaborativefolders\output\renderer $renderer plugin renderer
      * @param bool $isteacher true if the viewing user is a teacher
      * @param bool $systemclientcanshare true if there is a connected system account that could create a share
      * @param user_folder_access $userclient connected client for the current user.
@@ -289,7 +289,6 @@ class view_controller {
      * @param \cm_info $cm current coursemodule
      * @param user_folder_access $userclient connected client of the user
      * @param system_folder_access $systemclient connected system client
-     * @param int|Name $currentuserid Name of the user that the form will be shared with
      * @param \context_module $context context of the current coursemodule
      */
     public static function handle_folder_form_submitted(

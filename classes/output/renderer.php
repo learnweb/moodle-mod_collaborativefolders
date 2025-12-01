@@ -113,6 +113,8 @@ class renderer extends plugin_renderer_base {
 
     /**
      * Render problem_sharessuppressed notification.
+     * @param int $sharessuppressed sharesuppressed option
+     * @return string
      */
     public function render_widget_noconnection_suppressed_share(int $sharessuppressed) {
         $info = (object)[
@@ -130,7 +132,8 @@ class renderer extends plugin_renderer_base {
 
     /**
      * Render the name form.
-     * @param name_form $form
+     * @param \stdClass $group group record
+     * @param name_form $form the name form
      */
     public function output_name_form($group, name_form $form) {
         if ($group->id !== \mod_collaborativefolders\toolbox::fake_course_group('')->id) {
@@ -152,8 +155,8 @@ class renderer extends plugin_renderer_base {
      * @param stdClass $group Group object containing ID and name
      * @param int $cmid Course module ID
      * @param string $foldername Chosen (and assumed) name of the folder
-     * @param string $link Link into ownCloud instance
-     * @param string $warning (optional) warning message to display beside folder details
+     * @param string $folderlink Link into ownCloud instance
+     * @param string|null $warning (optional) warning message to display beside folder details
      * @return bool|string rendered template.
      */
     public function output_shared_folder($group, $cmid, $foldername, $folderlink, $warning = null) {
