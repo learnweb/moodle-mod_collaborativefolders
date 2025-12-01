@@ -29,7 +29,7 @@ use mod_collaborativefolders\local\clients\user_folder_access;
 use mod_collaborativefolders\local\sharing\share_exists_exception;
 use mod_collaborativefolders\local\sharing\share_failed_exception;
 use mod_collaborativefolders\output\statusinfo;
-use mod_collaborativefolders_renderer;
+use mod_collaborativefolders\output\renderer;
 
 /**
  * Controller for view.php
@@ -45,10 +45,10 @@ class view_controller {
      * @param \stdClass $collaborativefolder Collaborativefolder instance
      * @param \cm_info $cm Corresponding course module
      * @param \context_module $context Module context
-     * @param mod_collaborativefolders_renderer $renderer Plugin-specific renderer
+     * @param mod_collaborativefolders\output\renderer $renderer Plugin-specific renderer
      */
     public static function handle_request($collaborativefolder, \cm_info $cm, \context_module $context,
-                                          mod_collaborativefolders_renderer $renderer) {
+                                          renderer $renderer) {
         global $OUTPUT;
 
         \mod_collaborativefolders\toolbox::coursemodule_viewed($context, $cm);
@@ -167,7 +167,7 @@ class view_controller {
      * @param \cm_info $cmid Course module info
      * @param array $folderforms
      * @param statusinfo $statusinfo
-     * @param mod_collaborativefolders_renderer $renderer
+     * @param mod_collaborativefolders\output\renderer $renderer
      * @param bool $isteacher true if the viewing user is a teacher
      * @param bool $systemclientcanshare true if there is a connected system account that could create a share
      * @param user_folder_access $userclient connected client for the current user.
@@ -175,7 +175,7 @@ class view_controller {
      * @internal param user_folder_access $userclient
      */
     private static function share_and_view_folders(\cm_info $cm, $folderforms, statusinfo $statusinfo,
-                                                   mod_collaborativefolders_renderer $renderer, bool $isteacher,
+                                                   renderer $renderer, bool $isteacher,
                                                    bool $systemclientcanshare, user_folder_access $userclient) {
         global $USER;
 

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_collaborativefolders\output;
+
 /**
  * Renderer for the Web interface of collaborativefolders module.
  *
@@ -23,6 +25,7 @@
  */
 
 use core\output\notification;
+use core\output\plugin_renderer_base;
 use mod_collaborativefolders\name_form;
 use mod_collaborativefolders\output\statusinfo;
 
@@ -33,7 +36,7 @@ use mod_collaborativefolders\output\statusinfo;
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_collaborativefolders_renderer extends plugin_renderer_base {
+class renderer extends plugin_renderer_base {
     /**
      * Render a status table that is the intro to user-facing pages of collaborative folder instances.
      *
