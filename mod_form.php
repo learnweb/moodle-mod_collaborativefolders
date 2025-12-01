@@ -27,7 +27,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
  * Module instance settings form.
@@ -37,7 +37,6 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_collaborativefolders_mod_form extends moodleform_mod {
-
     public function definition() {
         $mform = $this->_form;
 
@@ -57,10 +56,14 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         $mform->addElement('warning', null, 'notifyproblem', get_string('edit_after_creation', 'mod_collaborativefolders'));
 
         // Checkbox, which indicates whether the course's teacher(s) should have access to the folder.
-        $mform->addElement('advcheckbox', 'teacher',
+        $mform->addElement(
+            'advcheckbox',
+            'teacher',
             get_string('teacher_access', 'mod_collaborativefolders'),
             get_string('teacher_mode', 'mod_collaborativefolders'),
-            [], array(0, 1));
+            [],
+            [0, 1]
+        );
         $mform->addHelpButton('teacher', 'teacher_mode', 'collaborativefolders');
 
         // Add standard elements, common to all modules.
@@ -75,5 +78,4 @@ class mod_collaborativefolders_mod_form extends moodleform_mod {
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
-
 }

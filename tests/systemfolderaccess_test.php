@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/webdavlib.php');
 
-class systemfolderaccess_test extends \advanced_testcase {
+final class systemfolderaccess_test extends \advanced_testcase {
     /**
      * Data generator
      * @var \mod_collaborativefolders_generator
@@ -37,6 +37,7 @@ class systemfolderaccess_test extends \advanced_testcase {
     private $generator;
 
     protected function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
         $this->generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
     }
@@ -45,7 +46,7 @@ class systemfolderaccess_test extends \advanced_testcase {
     /**
      * Test correct response if configuration is erroneous.
      */
-    public function test_erroneous_configuration() {
+    public function test_erroneous_configuration(): void {
         // First: No issuer exists.
         $this->expectException(\mod_collaborativefolders\configuration_exception::class);
         new \mod_collaborativefolders\local\clients\system_folder_access();
@@ -76,5 +77,4 @@ class systemfolderaccess_test extends \advanced_testcase {
         // Testing a correct validation would require that an access token could be redeemed. That's hard.
         // Let's assume that the Moodle OAuth API does that part correctly without us testing it.
     }
-
 }

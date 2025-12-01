@@ -86,7 +86,7 @@ class issuer_management {
             $record = (object) [
                 'issuerid' => $issuer->get('id'),
                 'externalfield' => $external,
-                'internalfield' => $internal
+                'internalfield' => $internal,
             ];
             $userfieldmapping = new \core\oauth2\user_field_mapping(0, $record);
             $userfieldmapping->create();

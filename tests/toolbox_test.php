@@ -25,19 +25,18 @@
 
 namespace mod_collaborativefolders;
 
-class toolbox_test extends \advanced_testcase {
-
+final class toolbox_test extends \advanced_testcase {
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
     }
 
     /**
      * Test fake course group creation
      */
-    public function test_fake_course_group() {
+    public function test_fake_course_group(): void {
         $fakegroup = \mod_collaborativefolders\toolbox::fake_course_group('fakename');
         $this->assertEquals('fakename', $fakegroup->name);
         $this->assertEquals(0, $fakegroup->id);
     }
-
 }

@@ -32,7 +32,6 @@ namespace mod_collaborativefolders;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class configuration_exception extends \moodle_exception {
-
     /**
      * Constructor
      * This exception is used when the configuration of the plugin can not be processed or database entries are

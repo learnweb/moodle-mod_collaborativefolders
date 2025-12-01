@@ -32,7 +32,6 @@ namespace mod_collaborativefolders\local\sharing;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class share_failed_exception extends \moodle_exception {
-
     /**
      * Constructor
      * @param string $hint optional param for additional information of the problem

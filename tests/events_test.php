@@ -25,12 +25,12 @@ namespace mod_collaborativefolders;
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class events_test extends \advanced_testcase {
-
+final class events_test extends \advanced_testcase {
     /** @var null|array data array containing groupings, course and instance information. */
     private $data = null;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
@@ -40,12 +40,12 @@ class events_test extends \advanced_testcase {
     /**
      * Test the build in course_module_instance_list_viewed event.
      */
-    public function test_instance_list_viewed() {
+    public function test_instance_list_viewed(): void {
         $context = \context_course::instance($this->data['course']->id);
 
-        $params = array(
-                'context' => $context
-        );
+        $params = [
+                'context' => $context,
+        ];
 
         $event = \mod_collaborativefolders\event\course_module_instance_list_viewed::create($params);
         $event = $this->get_event_result($event);
@@ -59,15 +59,15 @@ class events_test extends \advanced_testcase {
     /**
      * Test the build in course_module_viewed event.
      */
-    public function test_module_viewed() {
+    public function test_module_viewed(): void {
         $cmid = $this->data['instance']->cmid;
         $context = \context_module::instance($cmid);
         $instanceid = $this->data['instance']->id;
 
-        $params = array(
+        $params = [
                 'context' => $context,
-                'objectid' => $instanceid
-        );
+                'objectid' => $instanceid,
+        ];
 
         $event = \mod_collaborativefolders\event\course_module_viewed::create($params);
         $event = $this->get_event_result($event);
@@ -82,15 +82,15 @@ class events_test extends \advanced_testcase {
     /**
      * Tests for the implemented link_generated event for collaborativefolders.
      */
-    public function test_link_generated() {
+    public function test_link_generated(): void {
         $cmid = $this->data['instance']->cmid;
         $context = \context_module::instance($cmid);
         $instanceid = $this->data['instance']->id;
 
-        $params = array(
+        $params = [
                 'context' => $context,
-                'objectid' => $instanceid
-        );
+                'objectid' => $instanceid,
+        ];
 
         $event = \mod_collaborativefolders\event\link_generated::create($params);
         $event = $this->get_event_result($event);
@@ -109,7 +109,7 @@ class events_test extends \advanced_testcase {
         $this->assertNotEmpty($event->get_name());
         $this->assertNotEmpty($event->get_description());
 
-        $url = new \moodle_url('/mod/collaborativefolders/view.php', array('id' => $cmid));
+        $url = new \moodle_url('/mod/collaborativefolders/view.php', ['id' => $cmid]);
         $this->assertEquals($url, $event->get_url());
     }
 

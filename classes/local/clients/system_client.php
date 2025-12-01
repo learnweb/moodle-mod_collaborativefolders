@@ -48,7 +48,7 @@ class system_client extends \core\oauth2\client {
         return null;
     }
 
-    public function upgrade_refresh_token(\core\oauth2\system_account $systemaccount) : bool {
+    public function upgrade_refresh_token(\core\oauth2\system_account $systemaccount): bool {
         $this->store_token(null); // Make sure the existing token is cleared, before calling refresh.
         return parent::upgrade_refresh_token($systemaccount);
     }

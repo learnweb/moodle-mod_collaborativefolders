@@ -35,7 +35,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class statusinfo implements \renderable, \templatable {
-
     /** @var int 0 if teacher may not access folder; 1 otherwise */
     public $teachermayaccess;
     /** @var int 0 if whole course (NOGROUPS), >0 otherwise */
@@ -70,7 +69,7 @@ class statusinfo implements \renderable, \templatable {
      */
     public function export_for_template(renderer_base $output) {
         $export = (object)(array)$this;
-        $export->groups = array();
+        $export->groups = [];
         foreach ($this->groups as $group) {
             $export->groups[] = $group;
         }

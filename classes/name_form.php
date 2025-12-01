@@ -29,12 +29,11 @@ require_once($CFG->libdir . '/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class name_form extends \moodleform {
-
     public function definition() {
         $mform = $this->_form;
 
         // Name field.
-        $mform->addElement('text', 'namefield', get_string('namefield', 'mod_collaborativefolders'), array('size' => '64'));
+        $mform->addElement('text', 'namefield', get_string('namefield', 'mod_collaborativefolders'), ['size' => '64']);
         $mform->addRule('namefield', get_string('required'), 'required', null, 'client');
         // The default value is the name of the activity, chosen by it's creator.
         $mform->setDefault('namefield', $this->_customdata['namefield']);

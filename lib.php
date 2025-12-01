@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/lib/setuplib.php');
+require_once($CFG->dirroot . '/lib/setuplib.php');
 
 /**
  * Returns the information on whether the module supports a feature.
@@ -42,7 +42,7 @@ function collaborativefolders_supports($feature) {
         }
     }
 
-    switch($feature) {
+    switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_GROUPINGS:
@@ -118,7 +118,7 @@ function collaborativefolders_refresh_events($courseid = 0) {
             return true;
         }
     } else {
-        if (!$DB->get_records('collaborativefolders', array('course' => $courseid))) {
+        if (!$DB->get_records('collaborativefolders', ['course' => $courseid])) {
             return true;
         }
     }
@@ -142,7 +142,7 @@ function collaborativefolders_delete_instance($id) {
     if (!empty($cm->id)) {
         $DB->delete_records('collaborativefolders_link', ['cmid' => $cm->id]);
     }
-    $DB->delete_records('collaborativefolders', array('id' => $id));
+    $DB->delete_records('collaborativefolders', ['id' => $id]);
     return true;
 }
 

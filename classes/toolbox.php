@@ -40,10 +40,10 @@ class toolbox {
      * @param \cm_info $cm
      */
     public static function coursemodule_viewed(\context_module $context, \cm_info $cm) {
-        $params = array(
+        $params = [
             'context' => $context,
-            'objectid' => $cm->instance
-        );
+            'objectid' => $cm->instance,
+        ];
 
         $cmviewed = \mod_collaborativefolders\event\course_module_viewed::create($params);
         $cmviewed->trigger();
@@ -94,7 +94,7 @@ class toolbox {
         }
         // Add another subfolder that explicitly specifies the kind of module.
         $allfolders[] = 'mod_collaborativefolders';
-        return '/'.implode('/', $allfolders);
+        return '/' . implode('/', $allfolders);
     }
 
     /**
@@ -102,10 +102,10 @@ class toolbox {
      * @param int $groupid
      * @return string
      */
-    public static function get_group_folder(int $groupid) : string {
+    public static function get_group_folder(int $groupid): string {
         global $DB;
         $groupname = (string)$DB->get_field('groups', 'name', ['id' => $groupid]);
-        $groupname .= '_id_'.$groupid;
+        $groupname .= '_id_' . $groupid;
         return urlencode(clean_param($groupname, PARAM_PATH));
     }
 }

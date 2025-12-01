@@ -39,6 +39,7 @@ use mod_collaborativefolders\issuer_management;
  */
 class user_folder_access {
     use webdav_client_trait;
+
     /**
      * Additional scopes needed by the user account. Currently, ownCloud does not actually support/use scopes, so
      * this is intended as a hint at required functionality and will help declare future scopes.
@@ -76,7 +77,7 @@ class user_folder_access {
      * @param \moodle_url $oauthloginreturnurl URL that will be redirected to after the login callback has succeeded.
      * @throws configuration_exception If essential data is missing.
      */
-    public function __construct (\moodle_url $oauthloginreturnurl) {
+    public function __construct(\moodle_url $oauthloginreturnurl) {
         // Get issuer and system account client. Fail early, if needed.
         $selectedissuer = get_config("collaborativefolders", "issuerid");
         if (empty($selectedissuer)) {
@@ -97,7 +98,6 @@ class user_folder_access {
         if (!$this->userclient) {
             throw new configuration_exception(get_string('incompletedata', 'mod_collaborativefolders'));
         }
-
     }
 
     /**
@@ -130,16 +130,14 @@ class user_folder_access {
 
         $renamed = null;
 
-        $ret = array();
+        $ret = [];
 
         if ($this->webdav->open()) {
-
             // After the socket's opening, the WebDAV MOVE method has to be performed in
             // order to rename the folder.
             // TODO check number of slashes in `dst_path`.
-            $renamed = $this->webdav->move($this->davbasepath . $pathtofolder,  $this->davbasepath . '/' . $newname, false);
+            $renamed = $this->webdav->move($this->davbasepath . $pathtofolder, $this->davbasepath . '/' . $newname, false);
         } else {
-
             // If the socket could not be opened, a socket error needs to be returned.
             $ret['status'] = false;
             $ret['content'] = get_string('socketerror', 'mod_collaborativefolders');
@@ -151,7 +149,6 @@ class user_folder_access {
             $ret['status'] = true;
             return $ret;
         } else {
-
             // If the WebDAV operation failed, a error message, containing the specific response code,
             // is returned.
             $ret['status'] = false;
@@ -183,7 +180,7 @@ class user_folder_access {
      *
      * @return bool false, if no Access Token is set or can be requested.
      */
-    public function check_login() : bool {
+    public function check_login(): bool {
         if (!$this->userclient->is_logged_in()) {
             self::clear_userinfo_cache();
             return false;
@@ -205,11 +202,11 @@ class user_folder_access {
         // TODO use persistent API instead.
         global $DB;
 
-        $params = array(
+        $params = [
                 'cmid' => $cmid,
                 'groupid' => $groupid,
                 'userid' => $userid,
-        );
+        ];
 
         $record = $DB->get_record('collaborativefolders_link', $params);
 
@@ -240,11 +237,11 @@ class user_folder_access {
         // TODO use persistent API instead.
         global $DB;
 
-        $params = array(
+        $params = [
             'cmid' => $cmid,
             'groupid' => $groupid,
             'userid' => $userid,
-        );
+        ];
 
         return $DB->get_record('collaborativefolders_link', $params);
     }
@@ -253,7 +250,7 @@ class user_folder_access {
      * Get the session cache that stores the user info, to save on repeated webservice calls.
      * @return \cache
      */
-    private static function get_userinfo_cache() : \cache {
+    private static function get_userinfo_cache(): \cache {
         return \cache::make('mod_collaborativefolders', 'userinfo');
     }
 
@@ -290,8 +287,8 @@ class user_folder_access {
      * @param string $foldername Name of a folder
      * @return string URL where the folder should be found
      */
-    public function link_from_foldername($foldername) : string {
-        $baseurl = rtrim($this->issuer->get('baseurl'), '/').'/';
+    public function link_from_foldername($foldername): string {
+        $baseurl = rtrim($this->issuer->get('baseurl'), '/') . '/';
         return sprintf('%sindex.php/apps/files/?dir=/%s', $baseurl, urlencode($foldername));
     }
 }

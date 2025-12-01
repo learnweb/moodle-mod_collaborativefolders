@@ -27,7 +27,7 @@ namespace mod_collaborativefolders;
 use core_privacy\local\metadata\collection;
 use mod_collaborativefolders\privacy\provider;
 
-class privacy_provider_test extends \core_privacy\tests\provider_testcase {
+final class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /** @var \stdClass The student objects. */
     protected $students = [];
 
@@ -44,6 +44,7 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
      * {@inheritdoc}
      */
     protected function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
 
         global $DB;
@@ -121,7 +122,7 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /**
      * Test for provider::get_metadata().
      */
-    public function test_get_metadata() {
+    public function test_get_metadata(): void {
         $collection = new collection('mod_collaborativefolders');
         $newcollection = provider::get_metadata($collection);
         $itemcollection = $newcollection->get_collection();
@@ -145,7 +146,7 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /**
      * Test for provider::get_contexts_for_userid().
      */
-    public function test_get_contexts_for_userid() {
+    public function test_get_contexts_for_userid(): void {
         $cms = [
             1 => get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[1]->id),
             2 => get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[2]->id),
@@ -172,7 +173,7 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /**
      * Test for provider::export_user_data().
      */
-    public function test_export_for_context() {
+    public function test_export_for_context(): void {
         $cms = [
             1 => get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[1]->id),
             2 => get_coursemodule_from_instance('collaborativefolders', $this->collaborativefolders[2]->id),
@@ -201,7 +202,7 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /**
      * Test for provider::delete_data_for_all_users_in_context().
      */
-    public function test_delete_data_for_all_users_in_context() {
+    public function test_delete_data_for_all_users_in_context(): void {
         global $DB;
 
         // Before deletion, we should have 5 links.
@@ -225,7 +226,7 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /**
      * Test for provider::delete_data_for_user().
      */
-    public function test_delete_data_for_user() {
+    public function test_delete_data_for_user(): void {
         global $DB;
 
         $cms = [
@@ -242,8 +243,11 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(5, $DB->count_records('collaborativefolders_link'));
 
         // Delete the data for the first student, but only for the first collaborativefolders.
-        $contextlist = new \core_privacy\local\request\approved_contextlist($this->students[1], 'collaborativefolders',
-                                                                            [$ctxs[1]->id]);
+        $contextlist = new \core_privacy\local\request\approved_contextlist(
+            $this->students[1],
+            'collaborativefolders',
+            [$ctxs[1]->id]
+        );
         provider::delete_data_for_user($contextlist);
 
         // After deletion, we should have 4 links.
@@ -253,8 +257,11 @@ class privacy_provider_test extends \core_privacy\tests\provider_testcase {
 
         // Delete the data for the first student, for all collaborativefolderss.
         $contextids = [$ctxs[1]->id, $ctxs[2]->id, $ctxs[3]->id];
-        $contextlist = new \core_privacy\local\request\approved_contextlist($this->students[1], 'collaborativefolders',
-                                                                            $contextids);
+        $contextlist = new \core_privacy\local\request\approved_contextlist(
+            $this->students[1],
+            'collaborativefolders',
+            $contextids
+        );
         provider::delete_data_for_user($contextlist);
 
         // After deletion, we should have 2 links.

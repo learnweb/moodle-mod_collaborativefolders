@@ -28,9 +28,10 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\writer;
 
-class provider implements \core_privacy\local\metadata\provider,
-                          \core_privacy\local\request\plugin\provider {
-    public static function get_metadata(collection $collection) : collection {
+class provider implements
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\plugin\provider {
+    public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'collaborativefolders_link',
             [
@@ -45,7 +46,7 @@ class provider implements \core_privacy\local\metadata\provider,
         return $collection;
     }
 
-    public static function get_contexts_for_userid(int $userid) : \core_privacy\local\request\contextlist {
+    public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         $sql = "
@@ -67,7 +68,7 @@ class provider implements \core_privacy\local\metadata\provider,
             return;
         }
         $user = $contextlist->get_user();
-        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
 
         $sql = "
             SELECT cm.id AS cmid, cl.groupid, cl.link, cl.owncloudusername
@@ -131,8 +132,11 @@ class provider implements \core_privacy\local\metadata\provider,
         if (!$cm = get_coursemodule_from_id('collaborativefolders', $context->instanceid)) {
             return;
         }
-        $DB->delete_records_select('collaborativefolders_link', 'cmid = :cmid',
-                                   ['cmid' => $cm->id]);
+        $DB->delete_records_select(
+            'collaborativefolders_link',
+            'cmid = :cmid',
+            ['cmid' => $cm->id]
+        );
     }
 
     public static function delete_data_for_user(\core_privacy\local\request\approved_contextlist $contextlist) {
@@ -149,8 +153,11 @@ class provider implements \core_privacy\local\metadata\provider,
             if (!$cm = get_coursemodule_from_id('collaborativefolders', $context->instanceid)) {
                 continue;
             }
-            $DB->delete_records_select('collaborativefolders_link', 'cmid = :cmid AND userid = :userid',
-                                       ['cmid' => $cm->id, 'userid' => $userid]);
+            $DB->delete_records_select(
+                'collaborativefolders_link',
+                'cmid = :cmid AND userid = :userid',
+                ['cmid' => $cm->id, 'userid' => $userid]
+            );
         }
     }
 }

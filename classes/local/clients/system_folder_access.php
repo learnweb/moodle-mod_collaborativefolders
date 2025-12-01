@@ -88,7 +88,7 @@ class system_folder_access {
      * Construct the wrapper and initialise the clients.
      * @throws \mod_collaborativefolders\configuration_exception if essential data is missing.
      */
-    public function __construct () {
+    public function __construct() {
         // Get issuer and system account client. Fail early, if needed.
         $selectedissuer = get_config("collaborativefolders", "issuerid");
         if (empty($selectedissuer)) {
@@ -216,7 +216,6 @@ class system_folder_access {
         }
 
         throw new share_failed_exception(get_string('ocserror', 'mod_collaborativefolders'));
-
     }
 
     /**
@@ -263,7 +262,7 @@ class system_folder_access {
      * @return int status code received from the client.
      * @throws \moodle_exception on connection error.
      */
-    public function make_folder($path, $recursive = true) : int {
+    public function make_folder($path, $recursive = true): int {
         $this->initiate_webdavclient($this->systemclient);
         if (!$this->webdav->open()) {
             throw new \moodle_exception(get_string('socketerror', 'mod_collaborativefolders'));
@@ -273,7 +272,7 @@ class system_folder_access {
             $parts = array_filter(explode('/', $path));
             $currpath = rtrim($this->davbasepath, '/');
             foreach ($parts as $part) {
-                $currpath .= '/'.$part;
+                $currpath .= '/' . $part;
                 if (!$this->webdav->is_dir($currpath)) {
                     // Folder doesn't already exist.
                     if (!$this->rename_by_id($currpath)) {
@@ -283,7 +282,7 @@ class system_folder_access {
                 }
             }
         } else {
-            $result = $this->webdav->mkcol($this->davbasepath.$path);
+            $result = $this->webdav->mkcol($this->davbasepath . $path);
         }
         $this->webdav->close();
         return $result;
@@ -300,9 +299,9 @@ class system_folder_access {
         if (!preg_match($idregex, $path, $matches)) {
             return false;
         }
-        list(, $id) = $matches;
-        $idmatch = '| \(id '.$id.'\)$|';
-        $legacyidmatch = '|_id_'.$id.'$|'; // For folders created with earlier versions of mod_collaborativefolders.
+        [, $id] = $matches;
+        $idmatch = '| \(id ' . $id . '\)$|';
+        $legacyidmatch = '|_id_' . $id . '$|'; // For folders created with earlier versions of mod_collaborativefolders.
         $dir = dirname($path);
         $files = $this->webdav->ls($dir);
         if (!$files) {
@@ -317,8 +316,10 @@ class system_folder_access {
                 continue;
             }
 
-            if (substr($filepath, -strlen($idmatch)) === $idmatch ||
-                substr($filepath, -strlen($legacyidmatch)) === $legacyidmatch) {
+            if (
+                substr($filepath, -strlen($idmatch)) === $idmatch ||
+                substr($filepath, -strlen($legacyidmatch)) === $legacyidmatch
+            ) {
                 // We've found a folder with the same id, but a different name - rename the folder.
                 if (!$this->webdav->move($filepath, $path, false)) {
                     return false;

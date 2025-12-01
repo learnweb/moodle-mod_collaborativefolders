@@ -47,30 +47,30 @@ class mod_collaborativefolders_generator extends testing_module_generator {
      * @return array
      * @throws coding_exception
      */
-    public function create_preparation ($groupmode, $grouping): array {
+    public function create_preparation($groupmode, $grouping): array {
         $generator = advanced_testcase::getDataGenerator();
-        $data = array();
-        $course = $generator->create_course(array('name' => 'A course'));
+        $data = [];
+        $course = $generator->create_course(['name' => 'A course']);
         $data['course'] = $course;
 
         // Creates groups.
-        $group1 = $generator->create_group(array('courseid' => $course->id));
+        $group1 = $generator->create_group(['courseid' => $course->id]);
         $data['group1'] = $group1;
-        $group2 = $generator->create_group(array('courseid' => $course->id));
+        $group2 = $generator->create_group(['courseid' => $course->id]);
         $data['group2'] = $group2;
-        $group21 = $generator->create_group(array('courseid' => $course->id));
+        $group21 = $generator->create_group(['courseid' => $course->id]);
         $data['group21'] = $group21;
         // Create 3 groupings in course 2.
-        $grouping1 = $generator->create_grouping(array('courseid' => $course->id));
+        $grouping1 = $generator->create_grouping(['courseid' => $course->id]);
         $data['grouping1'] = $grouping1;
-        $grouping2 = $generator->create_grouping(array('courseid' => $course->id));
+        $grouping2 = $generator->create_grouping(['courseid' => $course->id]);
         $data['grouping2'] = $grouping2;
-        $grouping3 = $generator->create_grouping(array('courseid' => $course->id));
+        $grouping3 = $generator->create_grouping(['courseid' => $course->id]);
         $data['grouping3'] = $grouping3;
         // Add Grouping to groups.
-        $generator->create_grouping_group(array('groupingid' => $grouping1->id, 'groupid' => $group1->id));
-        $generator->create_grouping_group(array('groupingid' => $grouping2->id, 'groupid' => $group2->id));
-        $generator->create_grouping_group(array('groupingid' => $grouping2->id, 'groupid' => $group21->id));
+        $generator->create_grouping_group(['groupingid' => $grouping1->id, 'groupid' => $group1->id]);
+        $generator->create_grouping_group(['groupingid' => $grouping2->id, 'groupid' => $group2->id]);
+        $generator->create_grouping_group(['groupingid' => $grouping2->id, 'groupid' => $group21->id]);
 
         // Initiates the groupings and grouping members.
         // Creates 4 Users, enrols them in course.
@@ -79,19 +79,19 @@ class mod_collaborativefolders_generator extends testing_module_generator {
             $generator->enrol_user($user->id, $course->id);
             $data['user' . $i] = $user;
         }
-        $generator->create_group_member(array('groupid' => $group1->id, 'userid' => $data['user1']->id));
-        $generator->create_group_member(array('groupid' => $group1->id, 'userid' => $data['user2']->id));
-        $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $data['user3']->id));
-        $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user4']->id));
-        $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user3']->id));
-        $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $data['user4']->id));
-        $generator->create_group_member(array('groupid' => $group21->id, 'userid' => $data['user2']->id));
+        $generator->create_group_member(['groupid' => $group1->id, 'userid' => $data['user1']->id]);
+        $generator->create_group_member(['groupid' => $group1->id, 'userid' => $data['user2']->id]);
+        $generator->create_group_member(['groupid' => $group2->id, 'userid' => $data['user3']->id]);
+        $generator->create_group_member(['groupid' => $group21->id, 'userid' => $data['user4']->id]);
+        $generator->create_group_member(['groupid' => $group21->id, 'userid' => $data['user3']->id]);
+        $generator->create_group_member(['groupid' => $group2->id, 'userid' => $data['user4']->id]);
+        $generator->create_group_member(['groupid' => $group21->id, 'userid' => $data['user2']->id]);
 
-        $params = array(
+        $params = [
                 'course' => $data['course']->id,
                 'groupmode' => $groupmode,
-                'groupingid' => $grouping
-        );
+                'groupingid' => $grouping,
+        ];
 
         $data["instance"] = $this->create_instance($params);
         return $data; // Return the user, course and group objects.

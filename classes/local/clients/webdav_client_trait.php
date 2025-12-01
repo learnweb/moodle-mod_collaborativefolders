@@ -43,7 +43,7 @@ trait webdav_client_trait {
      * @return \webdav_client An initialised WebDAV client for ownCloud.
      * @throws configuration_exception If configuration is missing (endpoints).
      */
-    private function initiate_webdavclient($client) : \webdav_client {
+    private function initiate_webdavclient($client): \webdav_client {
         if ($this->webdav !== null) {
             return $this->webdav;
         }
@@ -72,8 +72,14 @@ trait webdav_client_trait {
         }
 
         // Authentication method is `bearer` for OAuth 2. Pass oauth client from which WebDAV obtains the token when needed.
-        $this->webdav = new \webdav_client($server, '', '', 'bearer', $webdavtype,
-            $client->get_accesstoken()->token);
+        $this->webdav = new \webdav_client(
+            $server,
+            '',
+            '',
+            'bearer',
+            $webdavtype,
+            $client->get_accesstoken()->token
+        );
 
         $this->davbasepath = $webdavendpoint['path'];
 

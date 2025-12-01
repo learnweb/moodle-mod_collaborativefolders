@@ -27,7 +27,6 @@ function xmldb_collaborativefolders_upgrade($oldversion = 0) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2018110200) {
-
         // Define field owncloudusername to be added to collaborativefolders_link.
         $table = new xmldb_table('collaborativefolders_link');
         $field = new xmldb_field('owncloudusername', XMLDB_TYPE_CHAR, '254', null, null, null, null, 'link');
@@ -42,7 +41,6 @@ function xmldb_collaborativefolders_upgrade($oldversion = 0) {
     }
 
     if ($oldversion < 2018110201) {
-
         // Changing type of field teacher on table collaborativefolders to int.
         $table = new xmldb_table('collaborativefolders');
         $field = new xmldb_field('teacher', XMLDB_TYPE_INTEGER, '2', null, null, null, null, 'timemodified');

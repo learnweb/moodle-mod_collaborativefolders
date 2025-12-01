@@ -52,4 +52,3 @@ $userclient = new \mod_collaborativefolders\local\clients\user_folder_access(
 
 $userclient->store_link($cmid, $groupid, $USER->id, null);
 redirect($nextpage, get_string('resetpressed', 'mod_collaborativefolders'));
-

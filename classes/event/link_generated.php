@@ -32,8 +32,7 @@ namespace mod_collaborativefolders\event;
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class link_generated extends  \core\event\base {
-
+class link_generated extends \core\event\base {
     /**
      * Init method.
      *
@@ -70,6 +69,6 @@ class link_generated extends  \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/collaborativefolders/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/collaborativefolders/view.php', ['id' => $this->contextinstanceid]);
     }
 }

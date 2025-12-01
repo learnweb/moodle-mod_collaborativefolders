@@ -47,8 +47,12 @@ class view_controller {
      * @param \context_module $context Module context
      * @param mod_collaborativefolders\output\renderer $renderer Plugin-specific renderer
      */
-    public static function handle_request($collaborativefolder, \cm_info $cm, \context_module $context,
-                                          renderer $renderer) {
+    public static function handle_request(
+        $collaborativefolder,
+        \cm_info $cm,
+        \context_module $context,
+        renderer $renderer
+    ) {
         global $OUTPUT;
 
         \mod_collaborativefolders\toolbox::coursemodule_viewed($context, $cm);
@@ -63,9 +67,8 @@ class view_controller {
             $userclient = new user_folder_access(new \moodle_url('/mod/collaborativefolders/authorise.php', [
                     'action' => 'login',
                     'id' => $cm->id,
-                    'sesskey' => sesskey()
-                ])
-            );
+                    'sesskey' => sesskey(),
+                ]));
         } catch (configuration_exception $e) {
             $userclient = null;
         }
@@ -113,8 +116,10 @@ class view_controller {
                 new \moodle_url('/mod/collaborativefolders/authorise.php', [
                     'action' => 'logout',
                     'id' => $cm->id,
-                    'sesskey' => sesskey()
-                ]), get_string('btnlogout', 'mod_collaborativefolders', $username)));
+                    'sesskey' => sesskey(),
+                ]),
+                get_string('btnlogout', 'mod_collaborativefolders', $username)
+            ));
         } else {
             echo $renderer->render_widget_login($userclient->get_login_url());
         }
@@ -122,8 +127,15 @@ class view_controller {
         // Interaction with instance.
         if ($userclient->check_login()) {
             echo $OUTPUT->heading(get_string('accessfolders', 'mod_collaborativefolders'), 3);
-                echo self::share_and_view_folders($cm, $userfolders, $statusinfo, $renderer, $isteacher,
-                    $systemclient !== null, $userclient);
+                echo self::share_and_view_folders(
+                    $cm,
+                    $userfolders,
+                    $statusinfo,
+                    $renderer,
+                    $isteacher,
+                    $systemclient !== null,
+                    $userclient
+                );
         }
 
         echo $OUTPUT->footer();
@@ -143,7 +155,7 @@ class view_controller {
         // Check if folders are per-group.
         $groupmode = groups_get_activity_groupmode($cm) != 0;
 
-        $groups = array();
+        $groups = [];
         // If in groupmode, find out which groups are relevant (own groups, except if teacher, then all groups).
         if ($groupmode) {
             if ($asteacher) {
@@ -174,9 +186,15 @@ class view_controller {
      * @return string Rendered view
      * @internal param user_folder_access $userclient
      */
-    private static function share_and_view_folders(\cm_info $cm, $folderforms, statusinfo $statusinfo,
-                                                   renderer $renderer, bool $isteacher,
-                                                   bool $systemclientcanshare, user_folder_access $userclient) {
+    private static function share_and_view_folders(
+        \cm_info $cm,
+        $folderforms,
+        statusinfo $statusinfo,
+        renderer $renderer,
+        bool $isteacher,
+        bool $systemclientcanshare,
+        user_folder_access $userclient
+    ) {
         global $USER;
 
         if ($isteacher && !$statusinfo->teachermayaccess) {
@@ -214,8 +232,13 @@ class view_controller {
                     $info = (object)['current' => $currentusername, 'link' => $link->owncloudusername];
                     $warning = get_string('namemismatch', 'mod_collaborativefolders', $info);
                 }
-                $out .= $renderer->output_shared_folder($group, $cm->id, $link->link,
-                    $userclient->link_from_foldername($link->link), $warning);
+                $out .= $renderer->output_shared_folder(
+                    $group,
+                    $cm->id,
+                    $link->link,
+                    $userclient->link_from_foldername($link->link),
+                    $warning
+                );
             }
         }
 
@@ -231,7 +254,7 @@ class view_controller {
         // Get applicable groups from $statusinfo.
         if ($isteacher && !$statusinfo->teachermayaccess) {
             // Refuse access for teacher because user config says so.
-            return array();
+            return [];
         }
 
         if ($isteacher || !$statusinfo->groupmode) {
@@ -243,14 +266,13 @@ class view_controller {
             $folders = $statusinfo->groups;
         }
 
-        $forms = array();
+        $forms = [];
         // Per group: Either define user-local name or access share.
         foreach ($folders as $f) {
             $form = new name_form(qualified_me(), [
                     'id' => $f->id,
                     'namefield' => sprintf("%s (%s)", $cm->name, $f->name),
-                ]
-            );
+                ]);
             $forms[$f->id] = $form;
         }
         return $forms;
@@ -264,29 +286,41 @@ class view_controller {
      * @param int|Name $currentuserid Name of the user that the form will be shared with
      * @param \context_module $context context of the current coursemodule
      */
-    public static function handle_folder_form_submitted($userfolders, \cm_info $cm, user_folder_access $userclient,
-                                                        system_folder_access $systemclient,
-                                                        \context_module $context) {
+    public static function handle_folder_form_submitted(
+        $userfolders,
+        \cm_info $cm,
+        user_folder_access $userclient,
+        system_folder_access $systemclient,
+        \context_module $context
+    ) {
         foreach ($userfolders as $groupid => $form) {
-
             // Iterate over forms to find the submitted one (is_submitted() is implicit in get_data()).
             /* @var name_form $form */
             if ($fromform = $form->get_data()) {
                 // TODO handle exception cases properly!
-                self::share_folder_with_user($groupid, $fromform->namefield, $systemclient,
-                                                   $userclient, $cm->id);
+                self::share_folder_with_user(
+                    $groupid,
+                    $fromform->namefield,
+                    $systemclient,
+                    $userclient,
+                    $cm->id
+                );
 
                 $generatedevent = \mod_collaborativefolders\event\link_generated::create([
                     'context' => $context,
-                    'objectid' => $cm->instance
+                    'objectid' => $cm->instance,
                 ]);
                 $generatedevent->trigger();
 
                 $servicename = get_config('collaborativefolders', 'servicename');
-                redirect(new \moodle_url('/mod/collaborativefolders/view.php#folder-'.$groupid, [
+                redirect(
+                    new \moodle_url('/mod/collaborativefolders/view.php#folder-' . $groupid, [
                     'id' => $cm->id,
-                ]), get_string('foldershared', 'mod_collaborativefolders', $servicename), null,
-                         \core\output\notification::NOTIFY_SUCCESS);
+                    ]),
+                    get_string('foldershared', 'mod_collaborativefolders', $servicename),
+                    null,
+                    \core\output\notification::NOTIFY_SUCCESS
+                );
                 // Intentional exit; to make sure that other methods/scripts don't continue execution.
                 exit;
             }
@@ -303,14 +337,19 @@ class view_controller {
      * @param int $cmid ID of the coursemodule of this activity
      * @throws share_failed_exception An error occurred when using the ownCloud API
      */
-    private static function share_folder_with_user(int $groupid, string $chosenname, system_folder_access $systemclient,
-                                                   user_folder_access $userclient, int $cmid) {
+    private static function share_folder_with_user(
+        int $groupid,
+        string $chosenname,
+        system_folder_access $systemclient,
+        user_folder_access $userclient,
+        int $cmid
+    ) {
         global $USER;
 
         // Derive $sharepath (original path) from $groupid.
         $sharepath = toolbox::get_base_path($cmid);
         if ($groupid !== toolbox::fake_course_group('')->id) {
-            $sharepath .= '/'.toolbox::get_group_folder($groupid);
+            $sharepath .= '/' . toolbox::get_group_folder($groupid);
         }
 
         // Share from system to user.
@@ -323,7 +362,6 @@ class view_controller {
             // The only exception we handle is `share_exists_exception, because we can recover from that.
             $shared = $systemclient->generate_share($sharepath, $shareusername, $chosenname);
             $finalpath = (string)$shared->file_target;
-
         } catch (share_exists_exception $e) {
             $finalpath = $systemclient->get_existing_share_path($sharepath, $shareusername);
         }

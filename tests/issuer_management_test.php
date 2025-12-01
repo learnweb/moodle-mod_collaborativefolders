@@ -28,16 +28,16 @@ namespace mod_collaborativefolders;
 use core\oauth2\endpoint;
 use core\oauth2\issuer;
 
-class issuer_management_test extends \advanced_testcase {
-
+final class issuer_management_test extends \advanced_testcase {
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
     }
 
     /**
      * Test creating issuers, either correct or incorrect
      */
-    public function test_create_issuer() {
+    public function test_create_issuer(): void {
         // Add a correct issuer to database.
         $issuer = issuer_management::create_issuer('nextcloud', 'https://nextcloud.local');
         $this->assertEquals($issuer->get('name'), 'nextcloud');
@@ -61,7 +61,7 @@ class issuer_management_test extends \advanced_testcase {
     /**
      * Test issuer validation
      */
-    public function test_validate_issuer() {
+    public function test_validate_issuer(): void {
         static::setAdminUser();
         /* @var \mod_collaborativefolders_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
@@ -74,5 +74,4 @@ class issuer_management_test extends \advanced_testcase {
         $issuer2 = \core\oauth2\api::create_standard_issuer('facebook');
         $this->assertFalse(issuer_management::is_valid_issuer($issuer2), 'Validation of a known-to-be-wrong issuer.');
     }
-
 }

@@ -27,17 +27,21 @@ require_once(__DIR__ . '/../../config.php');
 
 // Page and parameter setup.
 $cmid = required_param('id', PARAM_INT);
-list ($course, $cm) = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
+ [$course, $cm] = get_course_and_cm_from_cmid($cmid, 'collaborativefolders');
 require_login($course, false, $cm);
 $context = context_module::instance($cmid);
 $collaborativefolder = $DB->get_record('collaborativefolders', ['id' => $cm->instance]);
 
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', array('id' => $cmid)));
+$PAGE->set_url(new moodle_url('/mod/collaborativefolders/view.php', ['id' => $cmid]));
 $PAGE->set_title(format_string($cm->name));
 $PAGE->set_heading(format_string($course->fullname));
 
 require_capability('mod/collaborativefolders:view', $context);
 
 \mod_collaborativefolders\view_controller::handle_request(
-    $collaborativefolder, $cm, $context, $PAGE->get_renderer('mod_collaborativefolders'));
+    $collaborativefolder,
+    $cm,
+    $context,
+    $PAGE->get_renderer('mod_collaborativefolders')
+);

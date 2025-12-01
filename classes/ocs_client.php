@@ -37,7 +37,6 @@ use core\oauth2\rest;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class ocs_client extends rest {
-
     /**
      * shareType=0 creates a private user share.
      */
@@ -81,7 +80,7 @@ class ocs_client extends rest {
         }
         $this->ocsendpoint = new \moodle_url($ocsendpoint);
         if (empty($this->ocsendpoint->get_param('format'))) {
-            $this->ocsendpoint->params(array('format' => 'xml'));
+            $this->ocsendpoint->params(['format' => 'xml']);
         }
     }
 
@@ -106,17 +105,17 @@ class ocs_client extends rest {
                     'publicUpload' => PARAM_RAW, // Actually Boolean, but neither String-Boolean ('false') nor PARAM_BOOL (0/1).
                     'permissions' => PARAM_INT,
                     'shareWith' => PARAM_TEXT,
-                    'expireDate' => PARAM_TEXT
+                    'expireDate' => PARAM_TEXT,
                 ],
-                'response' => 'text/xml'
+                'response' => 'text/xml',
             ],
             'delete_share' => [
                 'endpoint' => $this->build_share_url(),
                 'method' => 'delete',
                 'args' => [
-                    'share_id' => PARAM_INT
+                    'share_id' => PARAM_INT,
                 ],
-                'response' => 'text/xml'
+                'response' => 'text/xml',
             ],
             'get_shares' => [
                 'endpoint' => $this->ocsendpoint->out(false),
@@ -126,15 +125,15 @@ class ocs_client extends rest {
                     'reshares' => PARAM_RAW, // Returns not only the shares from the current user but all of the given file.
                     'subfiles' => PARAM_RAW, // Returns all shares within a folder, given that path defines a folder.
                 ],
-                'response' => 'text/xml'
+                'response' => 'text/xml',
             ],
             'get_information_of_share' => [
                 'endpoint' => $this->build_share_url(),
                 'method' => 'get',
                 'args' => [
-                    'share_id' => PARAM_INT
+                    'share_id' => PARAM_INT,
                 ],
-                'response' => 'text/xml'
+                'response' => 'text/xml',
             ],
         ];
     }
@@ -176,5 +175,4 @@ class ocs_client extends rest {
             return parent::call($functionname, $functionargs, $rawpost, $contenttype);
         }
     }
-
 }

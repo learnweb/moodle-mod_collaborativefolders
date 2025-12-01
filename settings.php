@@ -44,7 +44,7 @@ if ($ADMIN->fulltree) {
     if (count($validissuers) === 0) {
         $issuershint = get_string('no_right_issuers', 'mod_collaborativefolders');
     } else {
-        $validissuerstext = array_map(function($id) use ($availableissuers) {
+        $validissuerstext = array_map(function ($id) use ($availableissuers) {
                 return $availableissuers[$id];
         }, $validissuers);
         $issuershint = get_string('right_issuers', 'mod_collaborativefolders', implode(', ', $validissuerstext));
@@ -57,29 +57,45 @@ if ($ADMIN->fulltree) {
     if (empty($issuerid) || !array_key_exists($issuerid, $availableissuers)) {
         $issuervalidation = get_string('issuervalidation_without', 'mod_collaborativefolders');
     } else if (!in_array($issuerid, $validissuers)) {
-        $issuervalidation = get_string('issuervalidation_invalid', 'mod_collaborativefolders',
-                $availableissuers[$issuerid]);
+        $issuervalidation = get_string(
+            'issuervalidation_invalid',
+            'mod_collaborativefolders',
+            $availableissuers[$issuerid]
+        );
     } else {
         $issuer = \core\oauth2\api::get_issuer($issuerid);
         if (!$issuer->is_system_account_connected()) {
-            $issuervalidation = get_string('issuervalidation_notconnected', 'mod_collaborativefolders',
-                    $availableissuers[$issuerid]);
+            $issuervalidation = get_string(
+                'issuervalidation_notconnected',
+                'mod_collaborativefolders',
+                $availableissuers[$issuerid]
+            );
         } else {
-            $issuervalidation = get_string('issuervalidation_valid', 'mod_collaborativefolders',
-                    $availableissuers[$issuerid]);
+            $issuervalidation = get_string(
+                'issuervalidation_valid',
+                'mod_collaborativefolders',
+                $availableissuers[$issuerid]
+            );
         }
     }
 
     // Render the form.
     $url = new \moodle_url('/admin/tool/oauth2/issuers.php');
-    $settings->add(new admin_setting_configselect('collaborativefolders/issuerid',
+    $settings->add(new admin_setting_configselect(
+        'collaborativefolders/issuerid',
         get_string('chooseissuer', 'mod_collaborativefolders'),
         implode('<br>', [
             get_string('oauth2serviceslink', 'mod_collaborativefolders', $url->out()),
             $issuershint,
             $issuervalidation,
         ]),
-        0, $availableissuers));
-    $settings->add(new admin_setting_configtext('collaborativefolders/servicename',
-        get_string('servicename', 'mod_collaborativefolders'), '', 'ownCloud'));
+        0,
+        $availableissuers
+    ));
+    $settings->add(new admin_setting_configtext(
+        'collaborativefolders/servicename',
+        get_string('servicename', 'mod_collaborativefolders'),
+        '',
+        'ownCloud'
+    ));
 }

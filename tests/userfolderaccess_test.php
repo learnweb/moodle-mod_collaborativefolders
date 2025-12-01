@@ -27,8 +27,7 @@ namespace mod_collaborativefolders;
 
 defined('MOODLE_INTERNAL') || die();
 
-class userfolderaccess_test extends \advanced_testcase {
-
+final class userfolderaccess_test extends \advanced_testcase {
     /**
      * Data generator
      * @var \mod_collaborativefolders_generator
@@ -36,6 +35,7 @@ class userfolderaccess_test extends \advanced_testcase {
     private $generator;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
         $this->generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
     }
@@ -43,7 +43,7 @@ class userfolderaccess_test extends \advanced_testcase {
     /**
      * Test correct response if configuration is erroneous.
      */
-    public function test_erroneous_configuration() {
+    public function test_erroneous_configuration(): void {
         // First: No issuer exists.
         $this->expectException(\mod_collaborativefolders\configuration_exception::class);
         new \mod_collaborativefolders\local\clients\user_folder_access(\oauth2_client::callback_url());
@@ -69,11 +69,10 @@ class userfolderaccess_test extends \advanced_testcase {
     /**
      * Test correct response if configuration is valid.
      */
-    public function test_correct_configuration() {
+    public function test_correct_configuration(): void {
         $nextcloud = $this->generator->create_test_issuer('nextcloud');
         set_config("issuerid", $nextcloud->get('id'), "collaborativefolders");
         $ufa = new \mod_collaborativefolders\local\clients\user_folder_access(\oauth2_client::callback_url());
         $this->assertInstanceOf(\moodle_url::class, $ufa->get_login_url());
     }
-
 }

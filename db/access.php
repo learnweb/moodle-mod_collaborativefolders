@@ -31,36 +31,36 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'mod/collaborativefolders:addinstance' => array(
+$capabilities = [
+    'mod/collaborativefolders:addinstance' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 
-    'mod/collaborativefolders:view' => array(
+    'mod/collaborativefolders:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
             'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW
-        )
-    ),
+            'teacher' => CAP_ALLOW,
+        ],
+    ],
 
-    'mod/collaborativefolders:isteacher' => array( // Negative capabibility intended for exclusion!
+    'mod/collaborativefolders:isteacher' => [ // Negative capabibility intended for exclusion!
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW
-        )
-    ),
-);
+            'teacher' => CAP_ALLOW,
+        ],
+    ],
+];
