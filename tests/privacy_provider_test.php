@@ -29,6 +29,7 @@ use mod_collaborativefolders\privacy\provider;
 
 /**
  * Test cases for the privacy provider.
+ * @covers \mod_collaborativefolders\privacy\provider
  */
 final class privacy_provider_test extends \core_privacy\tests\provider_testcase {
     /** @var \stdClass The student objects. */

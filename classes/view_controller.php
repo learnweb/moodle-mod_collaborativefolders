@@ -300,7 +300,6 @@ class view_controller {
     ) {
         foreach ($userfolders as $groupid => $form) {
             // Iterate over forms to find the submitted one (is_submitted() is implicit in get_data()).
-            /* @var name_form $form */
             if ($fromform = $form->get_data()) {
                 // TODO handle exception cases properly!
                 self::share_folder_with_user(

@@ -36,6 +36,7 @@ final class toolbox_test extends \advanced_testcase {
 
     /**
      * Test fake course group creation
+     * @covers \mod_collaborativefolders\toolbox::fake_course_group
      */
     public function test_fake_course_group(): void {
         $fakegroup = \mod_collaborativefolders\toolbox::fake_course_group('fakename');

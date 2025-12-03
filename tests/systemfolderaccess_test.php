@@ -31,6 +31,7 @@ require_once($CFG->libdir . '/webdavlib.php');
 
 /**
  * Tests cases for system_folder_access.
+ * @covers \mod_collaborativefolders\local\clients\system_folder_access
  */
 final class systemfolderaccess_test extends \advanced_testcase {
     /**

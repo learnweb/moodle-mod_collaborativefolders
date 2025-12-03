@@ -24,6 +24,9 @@ namespace mod_collaborativefolders;
  * @group      mod_collaborativefolders
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers \mod_collaborativefolders\event\course_module_viewed
+ * @covers \mod_collaborativefolders\event\course_module_instance_list_viewed
+ * @covers \mod_collaborativefolders\event\link_generated
  */
 final class events_test extends \advanced_testcase {
     /** @var null|array data array containing groupings, course and instance information. */

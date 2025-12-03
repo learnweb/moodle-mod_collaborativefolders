@@ -30,6 +30,7 @@ use core\oauth2\issuer;
 
 /**
  * Test cases for issuer_management.
+ * @covers \mod_collaborativefolders\issuer_management
  */
 final class issuer_management_test extends \advanced_testcase {
     public function setUp(): void {
@@ -66,7 +67,6 @@ final class issuer_management_test extends \advanced_testcase {
      */
     public function test_validate_issuer(): void {
         static::setAdminUser();
-        /* @var \mod_collaborativefolders_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_collaborativefolders');
 
         // Validate a correct issuer first.

@@ -87,7 +87,10 @@ function collaborativefolders_add_instance(stdClass $collaborativefolders, mod_c
  * @param mod_collaborativefolders_mod_form|null $mform The form instance itself (if needed)
  * @return boolean Success/Fail
  */
-function collaborativefolders_update_instance(stdClass $collaborativefolders, mod_collaborativefolders_mod_form|null $mform = null) {
+function collaborativefolders_update_instance(
+    stdClass $collaborativefolders,
+    mod_collaborativefolders_mod_form|null $mform = null
+) {
     global $DB;
 
     $collaborativefolders->timemodified = time();
