@@ -19,14 +19,15 @@
  *
  * @package    mod_collaborativefolders
  * @copyright  2017 Project seminar (Learnweb, University of Münster)
+ * @copyright  2026 Thomas Niedermaier University Münster
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_collaborativefolders';
-$plugin->version = 2025030600;
-$plugin->release = 'v5.0.0-dev';
+$plugin->version = 2026022700;
+$plugin->release = 'v5.1-r1';
 $plugin->supported = [500, 501];
 $plugin->requires = 2025041400; // Requires Moodle 5.0+.
 $plugin->maturity = MATURITY_ALPHA;

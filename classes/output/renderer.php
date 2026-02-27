@@ -24,10 +24,16 @@
 
 namespace mod_collaborativefolders\output;
 
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
+use core\output\html_writer;
 use core\output\notification;
+use core\output\pix_icon;
 use core\output\plugin_renderer_base;
 use mod_collaborativefolders\name_form;
 use mod_collaborativefolders\output\statusinfo;
+use mod_collaborativefolders\toolbox;
+use stdClass;
 
 /**
  * Class of the mod_collaborativefolders renderer.
@@ -42,6 +48,7 @@ class renderer extends plugin_renderer_base {
      *
      * @param statusinfo $statusinfo
      * @return string
+     * @throws moodle_exception
      */
     public function render_statusinfo(statusinfo $statusinfo) {
         $exported = $statusinfo->export_for_template($this);
@@ -53,6 +60,7 @@ class renderer extends plugin_renderer_base {
      *
      * @param \moodle_url $loginurl URL of the remote system that handles login
      * @return string
+     * @throws \coding_exception
      */
     public function render_widget_login(\moodle_url $loginurl) {
         /* TODO change to the following line as soon as MDL-59902 is resolved.
@@ -134,9 +142,11 @@ class renderer extends plugin_renderer_base {
      * Render the name form.
      * @param \stdClass $group group record
      * @param name_form $form the name form
+     * @throws \coding_exception
+     * @throws \dml_exception|coding_exception
      */
     public function output_name_form($group, name_form $form) {
-        if ($group->id !== \mod_collaborativefolders\toolbox::fake_course_group('')->id) {
+        if ($group->id !== toolbox::fake_course_group('')->id) {
             echo $this->output->heading(
                 get_string('grouplabel', 'mod_collaborativefolders', $group->name),
                 4,
@@ -158,6 +168,7 @@ class renderer extends plugin_renderer_base {
      * @param string $folderlink Link into ownCloud instance
      * @param string|null $warning (optional) warning message to display beside folder details
      * @return bool|string rendered template.
+     * @throws moodle_exception
      */
     public function output_shared_folder($group, $cmid, $foldername, $folderlink, $warning = null) {
         $solveproblemsurl = new \moodle_url('/mod/collaborativefolders/resetshare.php', [
